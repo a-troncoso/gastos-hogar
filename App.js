@@ -1,19 +1,22 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { StyleSheet, View } from "react-native";
+
+import Router from "./src/router/Router";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <View style={styles.app}>
+      <View style={{ ...styles.appSection, ...styles.appBody }}>
+        <Router />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  app: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    flexDirection: "column",
+    backgroundColor: "#fff"
+  }
 });
