@@ -15,29 +15,41 @@ const CATEGORIES = [
     id: "3",
     name: "Ropa"
   },
-  // {
-  //   id: "4",
-  //   name: "Comida"
-  // },
-  // {
-  //   id: "5",
-  //   name: "Aseo"
-  // },
-  // {
-  //   id: "6",
-  //   name: "Ropa"
-  // },
-  // {
-  //   id: "7",
-  //   name: "XXX"
-  // }
+  {
+    id: "4",
+    name: "Comida"
+  },
+  {
+    id: "5",
+    name: "Aseo"
+  },
+  {
+    id: "6",
+    name: "Ropa"
+  },
+  {
+    id: "7",
+    name: "XXX"
+  },
+  {
+    id: "8",
+    name: "Aseo"
+  },
+  {
+    id: "9",
+    name: "Ropa"
+  },
+  {
+    id: "10",
+    name: "XXX"
+  }
 ];
 
 const CategoriesList = props => {
-  const { categories } = props;
+  const { categories, onPressCategory } = props;
 
-  const handlePressCategory = idx => {
-    console.log("idx", idx);
+  const handlePressCategory = id => {
+    onPressCategory(id);
   };
 
   return (
@@ -58,12 +70,22 @@ const CategoriesList = props => {
   );
 };
 
-const Categories = () => {
+const Categories = props => {
+  const { navigation } = props;
+
+  const handlePressCategory = id => {
+    // TODO: need to register selected category
+    navigation.navigate("Scan");
+  };
+
   return (
     <View style={styles.categories}>
       <View style={styles.categoriesListView}>
         <SafeAreaView>
-          <CategoriesList categories={CATEGORIES} />
+          <CategoriesList
+            categories={CATEGORIES}
+            onPressCategory={handlePressCategory}
+          />
         </SafeAreaView>
       </View>
     </View>

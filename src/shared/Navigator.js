@@ -1,29 +1,36 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity} from "react-native";
+import PropTypes from "prop-types";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
-export default function Navigator() {
+const Navigator = props => {
+  const { onPressNavigationTab } = props;
 
-  const handlePress = () => {}
   return (
     <View style={styles.navigator}>
-      <TouchableOpacity onPress={handlePress} style={styles.navigatorItem}>
+      <TouchableOpacity
+        onPress={() => onPressNavigationTab("CATEGORIES")}
+        style={styles.navigatorItem}
+      >
         <View style={styles.navigatorItemTextView}>
           <Text>Categories</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handlePress} style={styles.navigatorItem}>
+      <TouchableOpacity
+        onPress={() => onPressNavigationTab("SCAN")}
+        style={styles.navigatorItem}
+      >
         <View style={styles.navigatorItemTextView}>
           <Text>Scan</Text>
         </View>
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   navigator: {
     height: 70,
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: "#fff",
     alignSelf: "stretch",
     borderColor: "lime",
@@ -39,3 +46,12 @@ const styles = StyleSheet.create({
     borderWidth: 2
   }
 });
+
+Navigator.defaultProps = {
+  onPressNavigationTab: () => {}
+};
+Navigator.propTypes = {
+  onPressNavigationTab: PropTypes.func
+};
+
+export default Navigator;
