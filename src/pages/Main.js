@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, Text } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, Text, Button } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Categories from "../pages/Categories";
@@ -7,10 +7,12 @@ import Scan from "../pages/Scan";
 
 const Tab = createBottomTabNavigator();
 
-const Main = () => {
+const Main = props => {
+  console.log("props", props);
+
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Categorias" component={Categories} />
+      <Tab.Screen name="Categories" component={Categories} />
       <Tab.Screen name="Scan" component={Scan} />
     </Tab.Navigator>
   );

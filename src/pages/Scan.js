@@ -4,8 +4,13 @@ import { Camera } from "expo-camera";
 import * as Permissions from "expo-permissions";
 import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
+import * as SQLite from "expo-sqlite";
 
-const Scan = () => {
+const db = SQLite.openDatabase("db.GastosHogarDB");
+
+const Scan = props => {
+  const { navigation } = props;
+
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [hasCameraRollPermission, setHasCameraRollPermission] = useState(null);
   const [cameraReady, setCameraReady] = useState(false);
@@ -14,10 +19,6 @@ const Scan = () => {
 
   useEffect(() => {
     _requestCameraPermission();
-
-    return () => {
-      setHasCameraPermission(false);
-    };
   }, []);
 
   const _requestCameraPermission = async () => {
@@ -34,46 +35,70 @@ const Scan = () => {
   const handlePressTakePicture = () => {
     if (!cameraRef) return;
 
-    // cameraRef.current.takePictureAsync({ onPictureSaved: handlePictureSaved });
     cameraRef.current.takePictureAsync().then(data => {
       _handlePictureSaved(data);
+      navigation.navigate("Categories");
     });
   };
 
   const _handlePictureSaved = e => {
-    console.log("picture saved", e);
+    console.log("picture saved: ", e);
     setPictureTaked(true);
     const { uri } = e;
-    _copyImage(uri);
+    _savePictureInAppMemory(uri);
+    _savePictureInAppInternalStorage(uri);
   };
 
-  const _copyImage = async uri => {
-    const to = `${FileSystem.documentDirectory}${uri.substring(
-      uri.lastIndexOf("/") + 1,
-      uri.length
+  const _savePictureInAppMemory = async pictureURI => {
+    const to = `${FileSystem.documentDirectory}${pictureURI.substring(
+      pictureURI.lastIndexOf("/") + 1,
+      pictureURI.length
     )}`;
-    console.log("to", to);
-
-    let result = null;
 
     try {
-      // To save in a memory of application
-      result = await FileSystem.copyAsync({
-        from: uri,
+      const result = await FileSystem.copyAsync({
+        from: pictureURI,
         to
       });
-      console.log("result copyAsync", result);
+      console.log("Se guarda imagen en memoria de la App", result);
+      _savePurchaseInDB(pictureURI);
     } catch (err) {
-      console.log("Error on copyAsync", err);
+      console.error("Error on copyAsync", err);
     }
+  };
+
+  const _savePictureInAppInternalStorage = async pictureURI => {
+    const to = `${FileSystem.documentDirectory}${pictureURI.substring(
+      pictureURI.lastIndexOf("/") + 1,
+      pictureURI.length
+    )}`;
 
     try {
-      // To save in phone internal storage
-      result = await MediaLibrary.createAssetAsync(to);
-      console.log("result", result);
+      const result = await MediaLibrary.createAssetAsync(to);
+      console.log("Se guarda imagen en Internal Storage", result);
     } catch (err) {
-      console.log("Error on createAssetAsync", err);
+      console.error("Error on createAssetAsync", err);
     }
+  };
+
+  const _savePurchaseInDB = pictureURI => {
+    const currendDate = new Date();
+    db.transaction(tx => {
+      tx.executeSql(
+        "insert into purchase (image, category, subcategory, amount, comment, date) values (?, 'comida', '', 0, '', ?);",
+        [pictureURI, currendDate.toISOString()],
+        (transaction, result) => {
+          console.info("Purchase inserted in DataBase", transaction);
+          console.info("Purchase inserted in DataBase", result);
+        },
+        error => {
+          console.error("Error inserting Purchase in Database", error);
+        }
+      );
+      tx.executeSql("select * from purchase;", [], (transaction, result) => {
+        console.log("Purchases", result.rows._array);
+      });
+    });
   };
 
   return (
