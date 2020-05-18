@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, View, SafeAreaView, FlatList, Text, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  FlatList,
+  Text,
+  TouchableOpacity
+} from "react-native";
 import { toAmount } from "../utils/number";
 
 // TODO: This data must be obtained from the Database
@@ -76,8 +83,9 @@ const Purchases = props => {
   const { navigation } = props;
 
   const handlePressPurchase = id => {
-    console.log("Purchase id", id);
-    navigation.navigate("Purchase");
+    navigation.navigate("Purchase", {
+      purchaseId: id
+    });
   };
 
   return (
@@ -98,13 +106,13 @@ const styles = StyleSheet.create({
   purchases: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#fff"
   },
   purchasesListView: {
     flex: 1,
     justifyContent: "center",
     alignSelf: "stretch",
-    paddingHorizontal: 16,
+    paddingHorizontal: 16
   },
   purchase: {
     height: 72,
@@ -128,7 +136,7 @@ const styles = StyleSheet.create({
   },
   purchaseInfoView: {
     flex: 1,
-    justifyContent: "space-between",
+    justifyContent: "space-between"
   },
   purchaseDateView: {
     padding: 8,

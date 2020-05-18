@@ -12,7 +12,6 @@ const CategoriesList = props => {
   return (
     <FlatList
       data={categories}
-      style={styles.categoriesList}
       renderItem={({ item }) => (
         <View style={styles.categoriesListViewCategory}>
           <Category
