@@ -4,16 +4,13 @@ import { Camera } from "expo-camera";
 import * as Permissions from "expo-permissions";
 import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
-import * as SQLite from "expo-sqlite";
-
-const db = SQLite.openDatabase("db.GastosHogarDB");
+import { insertPurchase } from "../dbOperations/purchase/purchaseBDTransactions";
 
 const Scan = props => {
-  const { navigation } = props;
+  const { navigation, route } = props;
 
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [hasCameraRollPermission, setHasCameraRollPermission] = useState(null);
-  const [cameraReady, setCameraReady] = useState(false);
   const [pictureTaked, setPictureTaked] = useState(false);
   const cameraRef = useRef(null);
 
@@ -42,7 +39,6 @@ const Scan = props => {
   };
 
   const _handlePictureSaved = e => {
-    console.log("picture saved: ", e);
     setPictureTaked(true);
     const { uri } = e;
     _savePictureInAppMemory(uri);
@@ -60,7 +56,6 @@ const Scan = props => {
         from: pictureURI,
         to
       });
-      console.log("Se guarda imagen en memoria de la App", result);
       _savePurchaseInDB(pictureURI);
     } catch (err) {
       console.error("Error on copyAsync", err);
@@ -74,31 +69,14 @@ const Scan = props => {
     )}`;
 
     try {
-      const result = await MediaLibrary.createAssetAsync(to);
-      console.log("Se guarda imagen en Internal Storage", result);
+      await MediaLibrary.createAssetAsync(to);
     } catch (err) {
       console.error("Error on createAssetAsync", err);
     }
   };
 
   const _savePurchaseInDB = pictureURI => {
-    const currendDate = new Date();
-    db.transaction(tx => {
-      tx.executeSql(
-        "insert into purchase (image, category, subcategory, amount, comment, date) values (?, 'comida', '', 0, '', ?);",
-        [pictureURI, currendDate.toISOString()],
-        (transaction, result) => {
-          console.info("Purchase inserted in DataBase", transaction);
-          console.info("Purchase inserted in DataBase", result);
-        },
-        error => {
-          console.error("Error inserting Purchase in Database", error);
-        }
-      );
-      tx.executeSql("select * from purchase;", [], (transaction, result) => {
-        console.log("Purchases", result.rows._array);
-      });
-    });
+    insertPurchase(pictureURI, route.params.categoryId);
   };
 
   return (
@@ -118,9 +96,6 @@ const Scan = props => {
                 backgroundColor: "transparent"
               }}
             >
-              <Text style={{ fontSize: 16, color: "white" }}>
-                Camera ready!
-              </Text>
               {pictureTaked && (
                 <Text style={{ fontSize: 16, color: "white" }}>
                   Picture taked!
@@ -156,10 +131,10 @@ const Scan = props => {
 const styles = StyleSheet.create({
   app: {
     flex: 1,
-    backgroundColor: "#fff",
-    borderColor: "red",
-    borderStyle: "solid",
-    borderWidth: 1
+    backgroundColor: "#fff"
+    // borderColor: "red",
+    // borderStyle: "solid",
+    // borderWidth: 1
   }
 });
 

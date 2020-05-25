@@ -12,13 +12,13 @@ const CategoriesList = props => {
   return (
     <FlatList
       data={categories}
+      keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
         <View style={styles.categoriesListViewCategory}>
           <Category
             key={item.id}
             name={item.name}
             extraInfo={item.extraInfo}
-            keyExtractor={item => item.id}
             onPress={() => handlePressCategory(item.id)}
           />
         </View>

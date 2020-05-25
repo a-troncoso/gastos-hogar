@@ -1,56 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, SafeAreaView } from "react-native";
 import CategoriesList from "../domain/category/CategoriesList";
-
-const CATEGORIES = [
-  {
-    id: "1",
-    name: "Comida"
-  },
-  {
-    id: "2",
-    name: "Aseo"
-  },
-  {
-    id: "3",
-    name: "Ropa"
-  },
-  {
-    id: "4",
-    name: "Comida"
-  },
-  {
-    id: "5",
-    name: "Aseo"
-  },
-  {
-    id: "6",
-    name: "Ropa"
-  },
-  {
-    id: "7",
-    name: "XXX"
-  },
-  {
-    id: "8",
-    name: "Aseo"
-  },
-  {
-    id: "9",
-    name: "Ropa"
-  },
-  {
-    id: "10",
-    name: "XXX"
-  }
-];
+import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
 const Categories = props => {
   const { navigation } = props;
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    const categories = await fetchAllCategories();
+    setCategories(categories);
+  };
 
   const handlePressCategory = id => {
-    // TODO: need to register selected category
-    navigation.navigate("Scan");
+    navigation.navigate("Scan", {
+      categoryId: id
+    });
   };
 
   return (
@@ -58,7 +27,7 @@ const Categories = props => {
       <View style={styles.categoriesListView}>
         <SafeAreaView>
           <CategoriesList
-            categories={CATEGORIES}
+            categories={categories}
             onPressCategory={handlePressCategory}
           />
         </SafeAreaView>
@@ -72,7 +41,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "#fff",
-    alignSelf: "stretch",
+    alignSelf: "stretch"
     // borderColor: "red",
     // borderStyle: "solid",
     // borderWidth: 1
@@ -81,7 +50,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignSelf: "stretch",
-    paddingHorizontal: 16,
+    paddingHorizontal: 16
     // borderColor: "blue",
     // borderStyle: "solid",
     // borderWidth: 1,

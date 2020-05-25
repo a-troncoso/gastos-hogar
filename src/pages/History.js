@@ -1,27 +1,28 @@
-import React from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { StyleSheet, View, SafeAreaView } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import CategoriesList from "../domain/category/CategoriesList";
-
-// TODO: This data must be obtained from the Database
-const CATEGORIES = [
-  {
-    id: "1",
-    name: "Comida",
-    extraInfo: { amount: 500 }
-  },
-  {
-    id: "2",
-    name: "Aseo",
-    extraInfo: { amount: 10000 }
-  }
-];
+import { fetchTotalPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
 
 const History = props => {
   const { navigation } = props;
+  const [categories, setCategories] = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchTotalPurchases("05");
+    }, [])
+  );
+
+  const fetchTotalPurchases = async month => {
+    const categories = await fetchTotalPurchasesByCategory(month);
+    setCategories(categories);
+  };
 
   const handlePressCategory = id => {
-    console.log("category id", id);
-    navigation.navigate("Purchases");
+    navigation.navigate("Purchases", {
+      categoryId: id
+    });
   };
 
   return (
@@ -29,7 +30,7 @@ const History = props => {
       <View style={styles.categoriesListView}>
         <SafeAreaView>
           <CategoriesList
-            categories={CATEGORIES}
+            categories={categories}
             onPressCategory={handlePressCategory}
           />
         </SafeAreaView>
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "#fff",
-    alignSelf: "stretch",
+    alignSelf: "stretch"
     // borderColor: "red",
     // borderStyle: "solid",
     // borderWidth: 1

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { toAmount } from "../../utils/number";
+import { toCurrencyFormat } from "../../utils/number";
 
 const Category = props => {
   const { name, extraInfo, onPress } = props;
@@ -14,7 +14,7 @@ const Category = props => {
       {Object.keys(extraInfo).length > 0 && (
         <View style={styles.categoryExtraInfo}>
           <Text>Total este mes</Text>
-          <Text>{toAmount(extraInfo.amount)}</Text>
+          <Text>{toCurrencyFormat(extraInfo.amount)}</Text>
         </View>
       )}
     </TouchableOpacity>
@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   categoryCategoryName: {
-    fontSize: 24
+    fontSize: 24,
+    textTransform: "capitalize"
   },
   categoryTextView: {
     flex: 1,

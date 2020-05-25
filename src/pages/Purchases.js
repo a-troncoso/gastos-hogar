@@ -1,35 +1,17 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import {
   StyleSheet,
   View,
   SafeAreaView,
   FlatList,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from "react-native";
-import { toAmount } from "../utils/number";
-
-// TODO: This data must be obtained from the Database
-const PURCHASES = [
-  {
-    id: "1",
-    image: "img",
-    date: "21 de Junio",
-    amount: 500
-  },
-  {
-    id: "2",
-    image: "img",
-    date: "23 de Junio",
-    amount: 10000
-  },
-  {
-    id: "3",
-    image: "img",
-    date: "3 de Junio",
-    amount: 10000
-  }
-];
+import { useFocusEffect } from "@react-navigation/native";
+import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
+import { toCurrencyFormat } from "../utils/number";
+import { formatDate } from "../utils/date";
 
 const Purchase = props => {
   const { image, date, amount, onPress } = props;
@@ -37,15 +19,15 @@ const Purchase = props => {
   return (
     <TouchableOpacity style={styles.purchase} onPress={onPress}>
       <View style={styles.purchaseImageView}>
-        <Text style={styles.purchaseImage}>{image}</Text>
+        <Image style={styles.purchaseImage} source={{ uri: image }} />
       </View>
       <View style={styles.purchaseInfoView}>
         <View style={styles.purchaseDateView}>
-          <Text style={styles.purchaseDate}>{date}</Text>
+          <Text style={styles.purchaseDate}>{formatDate(date)}</Text>
         </View>
         <View style={styles.purchaseExtraInfo}>
           <Text>Total compra</Text>
-          <Text>{toAmount(amount)}</Text>
+          <Text>{toCurrencyFormat(amount)}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -63,6 +45,7 @@ const PurchasesList = props => {
     <FlatList
       data={purchases}
       style={styles.purchasesList}
+      keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
         <View style={styles.purchasesListViewPurchase}>
           <Purchase
@@ -70,7 +53,6 @@ const PurchasesList = props => {
             image={item.image}
             date={item.date}
             amount={item.amount}
-            keyExtractor={item => item.id}
             onPress={() => handlePressPurchase(item.id)}
           />
         </View>
@@ -80,7 +62,21 @@ const PurchasesList = props => {
 };
 
 const Purchases = props => {
-  const { navigation } = props;
+  const { navigation, route } = props;
+
+  const [purchases, setPurchases] = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchPurchases("05", route.params.categoryId);
+    }, [])
+  );
+
+  const fetchPurchases = async (month, categoryId) => {
+    const purchases = await fetchPurchasesByCategory(month, categoryId);
+    setPurchases(purchases);
+    console.log("purchases", purchases);
+  };
 
   const handlePressPurchase = id => {
     navigation.navigate("Purchase", {
@@ -93,7 +89,7 @@ const Purchases = props => {
       <View style={styles.purchasesListView}>
         <SafeAreaView>
           <PurchasesList
-            purchases={PURCHASES}
+            purchases={purchases}
             onPressPurchase={handlePressPurchase}
           />
         </SafeAreaView>
@@ -133,6 +129,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderBottomWidth: 1,
     backgroundColor: "#E8E8E8"
+  },
+  purchaseImage: {
+    width: "100%",
+    height: "100%"
   },
   purchaseInfoView: {
     flex: 1,
