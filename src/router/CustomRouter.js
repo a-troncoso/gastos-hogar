@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import {
   Text,
   View,
   TouchableWithoutFeedback,
-  TouchableHighlight,
   TouchableOpacity,
   StyleSheet,
   Dimensions
@@ -22,37 +22,11 @@ const screenHeight =
 
 const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
-
-const Menu = props => {
-  const { onClickOutsideMenu, onPressItem } = props;
-
-  const items = [{ id: 1, name: "Historial", screen: "History" }];
-
-  return (
-    <TouchableWithoutFeedback
-      onPress={onClickOutsideMenu}
-      style={styles.menuZone}
-    >
-      <View style={styles.menuWrapper}>
-        <View style={styles.menu}>
-          {items.map(item => (
-            <TouchableOpacity
-              key={item.id}
-              style={styles.menuItem}
-              onPress={() => onPressItem(item.screen)}
-            >
-              <Text>{item.name}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-    </TouchableWithoutFeedback>
-  );
-};
+const PurchaseRegistryStack = createStackNavigator();
+const SummaryStack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
 const CustomRouter = () => {
-  const [isMenuDisplayed, setMenuDisplayed] = useState(false);
-
   const screenOptions = {
     title: "",
     headerStyle: {
@@ -61,13 +35,7 @@ const CustomRouter = () => {
     headerTitleStyle: {
       fontSize: 16,
       textAlign: "center"
-    },
-    headerRight: () => (
-      <TouchableOpacity onPress={() => setMenuDisplayed(!isMenuDisplayed)}>
-        <SimpleLineIcons name="menu" size={24} color="black" />
-      </TouchableOpacity>
-    ),
-    headerRightContainerStyle: { padding: 8 }
+    }
   };
 
   const PurchaseImagesModal = ({ route, navigation }) => {
@@ -111,30 +79,53 @@ const CustomRouter = () => {
     );
   };
 
-  const MainStackScreen = () => {
+  const SummaryStackScreen = () => {
     return (
-      <MainStack.Navigator>
-        <MainStack.Screen
-          name="PurchaseRegistry"
-          component={PurchaseRegistry}
-          options={{ ...screenOptions, title: "Registrar Compra" }}
-        />
-        <MainStack.Screen
+      <SummaryStack.Navigator>
+        <SummaryStack.Screen
           name="History"
           component={History}
           options={{ ...screenOptions, title: "Historial" }}
         />
-        <MainStack.Screen
+        <SummaryStack.Screen
           name="Purchases"
           component={Purchases}
           options={{ ...screenOptions, title: "Compras este Mes" }}
         />
-        <MainStack.Screen
+        <SummaryStack.Screen
           name="Purchase"
           component={Purchase}
           options={{ ...screenOptions, title: "Detalle de la Compra" }}
         />
-      </MainStack.Navigator>
+      </SummaryStack.Navigator>
+    );
+  };
+
+  const PurchaseRegistryStackScreen = () => {
+    return (
+      <PurchaseRegistryStack.Navigator headerMode="none">
+        <PurchaseRegistryStack.Screen
+          name="PurchaseRegistry"
+          component={PurchaseRegistry}
+        />
+      </PurchaseRegistryStack.Navigator>
+    );
+  };
+
+  const MainStackScreen = () => {
+    return (
+      <Drawer.Navigator initialRouteName="PurchaseRegistry">
+        <Drawer.Screen
+          name="PurchaseRegistry"
+          component={PurchaseRegistryStackScreen}
+          options={{ title: "Registrar Compra" }}
+        />
+        <Drawer.Screen
+          name="Summary"
+          component={SummaryStackScreen}
+          options={{ title: "Resumen" }}
+        />
+      </Drawer.Navigator>
     );
   };
 
@@ -167,53 +158,11 @@ const CustomRouter = () => {
   return (
     <NavigationContainer>
       <RootStackScreen />
-      {isMenuDisplayed && (
-        <Menu
-          onClickOutsideMenu={() => setMenuDisplayed(!isMenuDisplayed)}
-          onPressItem={e => console.log(e)}
-        />
-      )}
     </NavigationContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  menuZone: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0
-    // borderColor: "red",
-    // borderStyle: "solid",
-    // borderWidth: 10
-  },
-  menuWrapper: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#000000b3"
-  },
-  menu: {
-    position: "absolute",
-    top: Constants.statusBarHeight,
-    right: 8,
-    backgroundColor: "#fff",
-    borderColor: "black",
-    borderStyle: "solid",
-    borderWidth: 1
-  },
-  menuItem: {
-    paddingVertical: 8,
-    paddingRight: 64,
-    paddingLeft: 8,
-    backgroundColor: "#fff",
-    borderColor: "black",
-    borderStyle: "solid",
-    borderWidth: 1
-  },
   purchaseImagesModal: {
     flex: 1,
     justifyContent: "space-between",

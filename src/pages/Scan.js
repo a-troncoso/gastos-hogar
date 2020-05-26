@@ -95,34 +95,37 @@ const Scan = props => {
                 flex: 1,
                 backgroundColor: "transparent"
               }}
-            >
-              {pictureTaked && (
-                <Text style={{ fontSize: 16, color: "white" }}>
-                  Picture taked!
-                </Text>
-              )}
-            </View>
+            ></View>
             <View
               style={{
                 flex: 1,
                 backgroundColor: "transparent",
-                alignItems: "flex-end"
+                alignItems: "center",
+                justifyContent: "flex-end"
               }}
             >
               <TouchableOpacity
                 style={{
-                  alignItems: "center",
-                  backgroundColor: "red"
+                  width: 80,
+                  height: 80,
+                  marginBottom: 24,
+                  borderRadius: 100 / 2,
+                  borderColor: "white",
+                  borderStyle: "solid",
+                  borderWidth: 3,
+                  backgroundColor: "transparent"
                 }}
                 onPress={handlePressTakePicture}
-              >
-                <Text style={{ fontSize: 30, color: "white" }}>¡Take Pic!</Text>
-              </TouchableOpacity>
+              />
             </View>
           </View>
         </Camera>
       ) : (
-        <Text>No access to camera</Text>
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Text>Loading...</Text>
+        </View>
       )}
     </View>
   );
