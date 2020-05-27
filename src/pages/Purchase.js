@@ -17,8 +17,6 @@ import { formatDate } from "../utils/date";
 const Purchase = props => {
   const { route, navigation } = props;
 
-  console.info("[LOG] Purchase ID", route.params.purchaseId);
-
   const [purchase, setPurchase] = useState([]);
   const [amountEditMode, setAmountEditMode] = useState(false);
   const [amountValueEdited, setAmountValueEdited] = useState("");
@@ -82,6 +80,7 @@ const Purchase = props => {
               style={styles.purchaseAmountInput}
               value={amountValueEdited}
               autoFocus={true}
+              keyboardType="number-pad"
               onChangeText={value => setAmountValueEdited(value)}
               onSubmitEditing={handleSubmitEditAmount}
             />

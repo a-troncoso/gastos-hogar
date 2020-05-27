@@ -3,6 +3,7 @@ import { StyleSheet, View, SafeAreaView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import CategoriesList from "../domain/category/CategoriesList";
 import { fetchTotalPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
+import { currentMonth } from "../utils/date";
 
 const History = props => {
   const { navigation } = props;
@@ -10,7 +11,7 @@ const History = props => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchTotalPurchases("05");
+      fetchTotalPurchases(currentMonth(true));
     }, [])
   );
 

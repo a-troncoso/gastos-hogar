@@ -10,3 +10,13 @@ export const formatDate = _date => {
 
   return `${dt}-${month}-${year}`;
 };
+
+export const currentDate = () => new Date();
+
+export const currentMonth = (inTwoDigits = false) => {
+  const currentDate = new Date();
+
+  return inTwoDigits
+    ? `0${currentDate.getMonth() + 1}`.slice(-2)
+    : currentDate.getMonth();
+};

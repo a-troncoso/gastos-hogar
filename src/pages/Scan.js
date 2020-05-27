@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import * as Permissions from "expo-permissions";
 import * as FileSystem from "expo-file-system";
@@ -10,23 +11,23 @@ const Scan = props => {
   const { navigation, route } = props;
 
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [hasCameraRollPermission, setHasCameraRollPermission] = useState(null);
-  const [pictureTaked, setPictureTaked] = useState(false);
+  const [cameraMounted, setCameraMounted] = useState(false);
   const cameraRef = useRef(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      setCameraMounted(true);
+    }, [])
+  );
 
   useEffect(() => {
     _requestCameraPermission();
   }, []);
 
   const _requestCameraPermission = async () => {
-    const cameraPermissionResult = await Permissions.askAsync(
-      Permissions.CAMERA
-    );
-    const cameraRollPermissionResult = await Permissions.askAsync(
-      Permissions.CAMERA_ROLL
-    );
-    setHasCameraPermission(cameraPermissionResult.granted);
-    setHasCameraRollPermission(cameraRollPermissionResult.granted);
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    setHasCameraPermission(status === "granted");
+    await Permissions.askAsync(Permissions.CAMERA_ROLL);
   };
 
   const handlePressTakePicture = () => {
@@ -34,12 +35,12 @@ const Scan = props => {
 
     cameraRef.current.takePictureAsync().then(data => {
       _handlePictureSaved(data);
+      setCameraMounted(false);
       navigation.navigate("Categories");
     });
   };
 
   const _handlePictureSaved = e => {
-    setPictureTaked(true);
     const { uri } = e;
     _savePictureInAppMemory(uri);
     _savePictureInAppInternalStorage(uri);
@@ -52,10 +53,7 @@ const Scan = props => {
     )}`;
 
     try {
-      const result = await FileSystem.copyAsync({
-        from: pictureURI,
-        to
-      });
+      await FileSystem.copyAsync({ from: pictureURI, to });
       _savePurchaseInDB(pictureURI);
     } catch (err) {
       console.error("Error on copyAsync", err);
@@ -81,7 +79,7 @@ const Scan = props => {
 
   return (
     <View style={styles.app}>
-      {hasCameraPermission && hasCameraRollPermission ? (
+      {hasCameraPermission && cameraMounted ? (
         <Camera style={{ flex: 1 }} ref={cameraRef}>
           <View
             style={{

@@ -11,7 +11,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
 import { toCurrencyFormat } from "../utils/number";
-import { formatDate } from "../utils/date";
+import { formatDate, currentMonth } from "../utils/date";
 
 const Purchase = props => {
   const { image, date, amount, onPress } = props;
@@ -68,14 +68,13 @@ const Purchases = props => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchPurchases("05", route.params.categoryId);
+      fetchPurchases(currentMonth(true), route.params.categoryId);
     }, [])
   );
 
   const fetchPurchases = async (month, categoryId) => {
     const purchases = await fetchPurchasesByCategory(month, categoryId);
     setPurchases(purchases);
-    console.log("purchases", purchases);
   };
 
   const handlePressPurchase = id => {
