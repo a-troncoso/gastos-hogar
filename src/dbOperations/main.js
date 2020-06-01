@@ -2,7 +2,9 @@ import * as SQLite from "expo-sqlite";
 import { MAIN_QUERIES } from "./mainQueries";
 
 export const createInitialTables = () => {
-  const db = SQLite.openDatabase("db.GastosHogarDB");
+  const db = SQLite.openDatabase(
+    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
+  );
 
   db.transaction(
     tx => {
@@ -57,7 +59,9 @@ export const createInitialTables = () => {
 };
 
 export const insertBasicData = () => {
-  const db = SQLite.openDatabase("db.GastosHogarDB");
+  const db = SQLite.openDatabase(
+    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
+  );
 
   db.transaction(tx => {
     tx.executeSql("delete from category;");

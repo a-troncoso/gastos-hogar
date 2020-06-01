@@ -1,8 +1,11 @@
 import * as SQLite from "expo-sqlite";
+import * as FileSystem from "expo-file-system";
 import { CATEGORY_QUERIES } from "./categoryQueries";
 
 export const fetchAllCategories = () => {
-  const db = SQLite.openDatabase("db.GastosHogarDB");
+  const db = SQLite.openDatabase(
+    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
+  );
 
   return new Promise(resolve => {
     db.transaction(tx => {

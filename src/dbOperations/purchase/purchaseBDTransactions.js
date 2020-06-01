@@ -2,7 +2,9 @@ import * as SQLite from "expo-sqlite";
 import { PURCHASE_QUERIES } from "./purchaseQueries";
 
 export const insertPurchase = (pictureURI, categoryID) => {
-  const db = SQLite.openDatabase("db.GastosHogarDB");
+  const db = SQLite.openDatabase(
+    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
+  );
   const currendDate = new Date();
 
   db.transaction(tx => {
@@ -20,7 +22,9 @@ export const insertPurchase = (pictureURI, categoryID) => {
 };
 
 export const fetchTotalPurchasesByCategory = month => {
-  const db = SQLite.openDatabase("db.GastosHogarDB");
+  const db = SQLite.openDatabase(
+    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
+  );
 
   return new Promise(resolve => {
     db.transaction(tx => {
@@ -43,7 +47,9 @@ export const fetchTotalPurchasesByCategory = month => {
 };
 
 export const fetchPurchasesByCategory = (month, categoryId) => {
-  const db = SQLite.openDatabase("db.GastosHogarDB");
+  const db = SQLite.openDatabase(
+    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
+  );
 
   return new Promise(resolve => {
     db.transaction(tx => {
@@ -62,7 +68,9 @@ export const fetchPurchasesByCategory = (month, categoryId) => {
 };
 
 export const fetchPurchaseById = purchaseId => {
-  const db = SQLite.openDatabase("db.GastosHogarDB");
+  const db = SQLite.openDatabase(
+    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
+  );
 
   return new Promise(resolve => {
     db.transaction(tx => {
@@ -81,7 +89,9 @@ export const fetchPurchaseById = purchaseId => {
 };
 
 export const patchPurchaseAmount = (purchaseId, amount) => {
-  const db = SQLite.openDatabase("db.GastosHogarDB");
+  const db = SQLite.openDatabase(
+    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
+  );
 
   return new Promise(resolve => {
     db.transaction(tx => {
