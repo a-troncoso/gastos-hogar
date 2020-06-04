@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, SafeAreaView } from "react-native";
+import { StyleSheet, View, SafeAreaView, Alert } from "react-native";
 import CategoriesList from "../domain/category/CategoriesList";
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
@@ -42,19 +42,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#fff",
     alignSelf: "stretch"
-    // borderColor: "red",
-    // borderStyle: "solid",
-    // borderWidth: 1
   },
   categoriesListView: {
     flex: 1,
     justifyContent: "center",
     alignSelf: "stretch",
     paddingHorizontal: 16
-    // borderColor: "blue",
-    // borderStyle: "solid",
-    // borderWidth: 1,
-    // backgroundColor: "#fff"
   }
 });
 

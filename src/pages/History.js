@@ -46,9 +46,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#fff",
     alignSelf: "stretch"
-    // borderColor: "red",
-    // borderStyle: "solid",
-    // borderWidth: 1
   },
   categoriesListView: {
     flex: 1,
@@ -56,9 +53,6 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     paddingHorizontal: 16,
     backgroundColor: "#fff"
-    // borderColor: "brown",
-    // borderStyle: "solid",
-    // borderWidth: 1,
   }
 });
 

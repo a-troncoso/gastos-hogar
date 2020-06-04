@@ -47,7 +47,7 @@ const Scan = props => {
   };
 
   const _savePictureInAppMemory = async pictureURI => {
-    const to = `${FileSystem.documentDirectory}${pictureURI.substring(
+    const to = `${FileSystem.documentDirectory}/${pictureURI.substring(
       pictureURI.lastIndexOf("/") + 1,
       pictureURI.length
     )}`;
@@ -61,7 +61,7 @@ const Scan = props => {
   };
 
   const _savePictureInAppInternalStorage = async pictureURI => {
-    const to = `${FileSystem.documentDirectory}${pictureURI.substring(
+    const to = `${FileSystem.documentDirectory}/${pictureURI.substring(
       pictureURI.lastIndexOf("/") + 1,
       pictureURI.length
     )}`;
@@ -133,9 +133,6 @@ const styles = StyleSheet.create({
   app: {
     flex: 1,
     backgroundColor: "#fff"
-    // borderColor: "red",
-    // borderStyle: "solid",
-    // borderWidth: 1
   }
 });
 

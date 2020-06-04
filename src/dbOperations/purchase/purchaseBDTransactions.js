@@ -1,13 +1,10 @@
-import * as SQLite from "expo-sqlite";
+import DB from "../../utils/database";
 import { PURCHASE_QUERIES } from "./purchaseQueries";
 
 export const insertPurchase = (pictureURI, categoryID) => {
-  const db = SQLite.openDatabase(
-    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
-  );
   const currendDate = new Date();
 
-  db.transaction(tx => {
+  DB.transaction(tx => {
     tx.executeSql(
       PURCHASE_QUERIES.INSERT_PURCHASE,
       [pictureURI, categoryID, currendDate.toISOString()],
@@ -22,12 +19,8 @@ export const insertPurchase = (pictureURI, categoryID) => {
 };
 
 export const fetchTotalPurchasesByCategory = month => {
-  const db = SQLite.openDatabase(
-    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
-  );
-
   return new Promise(resolve => {
-    db.transaction(tx => {
+    DB.transaction(tx => {
       tx.executeSql(
         PURCHASE_QUERIES.SELECT_TOTAL_PURCHASES_BY_CATEGORY,
         [month],
@@ -47,12 +40,8 @@ export const fetchTotalPurchasesByCategory = month => {
 };
 
 export const fetchPurchasesByCategory = (month, categoryId) => {
-  const db = SQLite.openDatabase(
-    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
-  );
-
   return new Promise(resolve => {
-    db.transaction(tx => {
+    DB.transaction(tx => {
       tx.executeSql(
         PURCHASE_QUERIES.SELECT_PURCHASES_BY_CATEGORY,
         [month, categoryId],
@@ -68,12 +57,8 @@ export const fetchPurchasesByCategory = (month, categoryId) => {
 };
 
 export const fetchPurchaseById = purchaseId => {
-  const db = SQLite.openDatabase(
-    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
-  );
-
   return new Promise(resolve => {
-    db.transaction(tx => {
+    DB.transaction(tx => {
       tx.executeSql(
         PURCHASE_QUERIES.SELECT_PURCHASE_BY_ID,
         [purchaseId],
@@ -89,12 +74,8 @@ export const fetchPurchaseById = purchaseId => {
 };
 
 export const patchPurchaseAmount = (purchaseId, amount) => {
-  const db = SQLite.openDatabase(
-    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
-  );
-
   return new Promise(resolve => {
-    db.transaction(tx => {
+    DB.transaction(tx => {
       tx.executeSql(
         PURCHASE_QUERIES.UPDATE_PURCHASE,
         [parseInt(amount, 10), purchaseId],
