@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+  Image
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import * as Permissions from "expo-permissions";
@@ -11,18 +18,27 @@ const Scan = props => {
   const { navigation, route } = props;
 
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [cameraMounted, setCameraMounted] = useState(false);
+  const [cameraMounted, setCameraMounted] = useState(true);
+  const [pictures, setPictures] = useState([]);
   const cameraRef = useRef(null);
 
   useFocusEffect(
     useCallback(() => {
       setCameraMounted(true);
+
+      return () => {
+        setCameraMounted(false);
+      };
     }, [])
   );
 
   useEffect(() => {
     _requestCameraPermission();
   }, []);
+
+  useEffect(() => {
+    if (!cameraMounted) navigation.navigate("Categories");
+  }, [cameraMounted]);
 
   const _requestCameraPermission = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -33,10 +49,11 @@ const Scan = props => {
   const handlePressTakePicture = () => {
     if (!cameraRef) return;
 
+    setCameraMounted(false);
+
     cameraRef.current.takePictureAsync().then(data => {
+      setPictures([...pictures, data.uri]);
       _handlePictureSaved(data);
-      setCameraMounted(false);
-      navigation.navigate("Categories");
     });
   };
 
@@ -78,41 +95,27 @@ const Scan = props => {
   };
 
   return (
-    <View style={styles.app}>
+    <View style={styles.scan}>
       {hasCameraPermission && cameraMounted ? (
         <Camera style={{ flex: 1 }} ref={cameraRef}>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "space-around",
-              backgroundColor: "transparent"
-            }}
-          >
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: "transparent"
-              }}
-            ></View>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: "transparent",
-                alignItems: "center",
-                justifyContent: "flex-end"
-              }}
-            >
+          <View style={styles.scanCameraContent}>
+            <View style={styles.scanPicturesRollView}>
+              <FlatList
+                data={pictures}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={item => item}
+                renderItem={({ item }) => (
+                  <Image
+                    style={styles.scanTakedPicture}
+                    source={{ uri: item }}
+                  ></Image>
+                )}
+              ></FlatList>
+            </View>
+            <View style={styles.scanTakePictureView}>
               <TouchableOpacity
-                style={{
-                  width: 80,
-                  height: 80,
-                  marginBottom: 24,
-                  borderRadius: 100 / 2,
-                  borderColor: "white",
-                  borderStyle: "solid",
-                  borderWidth: 3,
-                  backgroundColor: "transparent"
-                }}
+                style={styles.scanTakePictureBtn}
                 onPress={handlePressTakePicture}
               />
             </View>
@@ -130,9 +133,51 @@ const Scan = props => {
 };
 
 const styles = StyleSheet.create({
-  app: {
+  scan: {
     flex: 1,
     backgroundColor: "#fff"
+  },
+  scanCameraContent: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "transparent"
+  },
+  scanPicturesRollView: {
+    height: 100,
+    justifyContent: "flex-end",
+    flexDirection: "row",
+    paddingVertical: 10,
+    // borderColor: "green",
+    // borderWidth: 1,
+    // borderStyle: "solid"
+  },
+  scanTakedPicture: {
+    width: 80,
+    marginHorizontal: 4,
+    // backgroundColor: "#E8E8E8",
+    // borderColor: "red",
+    // borderWidth: 1,
+    // borderStyle: "solid"
+  },
+  scanTakePictureView: {
+    // borderColor: "white",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    flex: 0.1,
+    minHeight: 80,
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  scanTakePictureBtn: {
+    width: 80,
+    height: 80,
+    // marginBottom: 24,
+    borderRadius: 100 / 2,
+    borderColor: "white",
+    borderStyle: "solid",
+    borderWidth: 3,
+    backgroundColor: "transparent"
   }
 });
 
