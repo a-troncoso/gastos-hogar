@@ -2,15 +2,17 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import PurchaseImagesModal from "../domain/purchase/PurchaseImagesModal";
 import PurchaseRegistry from "../pages/PurchaseRegistry";
 import History from "../pages/History";
 import Purchases from "../pages/Purchases";
 import Purchase from "../pages/Purchase";
-import PurchaseImagesModal from "../domain/purchase/PurchaseImagesModal";
+import CategoriesAdminGate from "../pages/CategoriesAdminGate";
 
 const RootStack = createStackNavigator();
 const PurchaseRegistryStack = createStackNavigator();
 const SummaryStack = createStackNavigator();
+const CategoryManagementStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const CustomRouter = () => {
@@ -23,6 +25,17 @@ const CustomRouter = () => {
       fontSize: 16,
       textAlign: "center"
     }
+  };
+
+  const PurchaseRegistryStackScreen = () => {
+    return (
+      <PurchaseRegistryStack.Navigator headerMode="none">
+        <PurchaseRegistryStack.Screen
+          name="PurchaseRegistry"
+          component={PurchaseRegistry}
+        />
+      </PurchaseRegistryStack.Navigator>
+    );
   };
 
   const SummaryStackScreen = () => {
@@ -47,14 +60,14 @@ const CustomRouter = () => {
     );
   };
 
-  const PurchaseRegistryStackScreen = () => {
+  const CategoryManagementStackScreen = () => {
     return (
-      <PurchaseRegistryStack.Navigator headerMode="none">
-        <PurchaseRegistryStack.Screen
-          name="PurchaseRegistry"
-          component={PurchaseRegistry}
+      <CategoryManagementStack.Navigator headerMode="none">
+        <CategoryManagementStack.Screen
+          name="CategoriesAdminGate"
+          component={CategoriesAdminGate}
         />
-      </PurchaseRegistryStack.Navigator>
+      </CategoryManagementStack.Navigator>
     );
   };
 
@@ -70,6 +83,11 @@ const CustomRouter = () => {
           name="Summary"
           component={SummaryStackScreen}
           options={{ title: "Resumen" }}
+        />
+        <Drawer.Screen
+          name="CategoryManagement"
+          component={CategoryManagementStackScreen}
+          options={{ title: "Administrar Categorías" }}
         />
       </Drawer.Navigator>
     );
