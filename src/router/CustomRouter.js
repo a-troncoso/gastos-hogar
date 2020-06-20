@@ -8,6 +8,7 @@ import History from "../pages/History";
 import Purchases from "../pages/Purchases";
 import Purchase from "../pages/Purchase";
 import CategoriesAdminGate from "../pages/CategoriesAdminGate";
+import CategoryDetail from "../pages/CategoryDetail";
 
 const RootStack = createStackNavigator();
 const PurchaseRegistryStack = createStackNavigator();
@@ -66,6 +67,10 @@ const CustomRouter = () => {
         <CategoryManagementStack.Screen
           name="CategoriesAdminGate"
           component={CategoriesAdminGate}
+        />
+        <CategoryManagementStack.Screen
+          name="CategoryDetail"
+          component={CategoryDetail}
         />
       </CategoryManagementStack.Navigator>
     );

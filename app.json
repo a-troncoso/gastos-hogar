@@ -1,5 +1,11 @@
 {
   "expo": {
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "packagerOpts": {
+      "assetExts": ["db"]
+    },
     "name": "gastos-hogar",
     "slug": "gastos-hogar",
     "platforms": [
@@ -18,9 +24,6 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
     "ios": {
       "supportsTablet": true
     },

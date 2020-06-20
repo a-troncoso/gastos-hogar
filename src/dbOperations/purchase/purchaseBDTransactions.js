@@ -19,7 +19,7 @@ export const insertPurchase = (pictureURI, categoryID) => {
 };
 
 export const fetchTotalPurchasesByCategory = month => {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     DB.transaction(tx => {
       tx.executeSql(
         PURCHASE_QUERIES.SELECT_TOTAL_PURCHASES_BY_CATEGORY,
@@ -32,7 +32,7 @@ export const fetchTotalPurchasesByCategory = month => {
           );
         },
         error => {
-          console.error("Error fetching TOTAL_PURCHASES_BY_CATEGORY: ", error);
+          reject(error);
         }
       );
     });

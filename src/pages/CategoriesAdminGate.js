@@ -1,28 +1,33 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet, View, SafeAreaView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import CategoriesList from "../domain/category/CategoriesList";
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
-const Categories = props => {
+const CategoriesAdminGate = props => {
   const { navigation } = props;
+
   const [categories, setCategories] = useState([]);
 
   useFocusEffect(
     useCallback(() => {
-      _fetchCategories();
+      fetchCategories();
     }, [])
   );
 
-  const _fetchCategories = async () => {
+  const fetchCategories = async () => {
     const categories = await fetchAllCategories();
     setCategories(categories);
   };
 
   const handlePressCategory = id => {
-    navigation.navigate("Scan", {
+    navigation.navigate("CategoryDetail", {
       categoryId: id
     });
+  };
+
+  const handlePressAddCategory = () => {
+    navigation.navigate("NewCategory");
   };
 
   return (
@@ -31,7 +36,9 @@ const Categories = props => {
         <SafeAreaView>
           <CategoriesList
             categories={categories}
+            features={["add-category"]}
             onPressCategory={handlePressCategory}
+            onPressAddCategory={handlePressAddCategory}
           />
         </SafeAreaView>
       </View>
@@ -54,4 +61,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Categories;
+export default CategoriesAdminGate;

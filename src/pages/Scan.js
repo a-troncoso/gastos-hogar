@@ -49,9 +49,8 @@ const Scan = props => {
   const handlePressTakePicture = () => {
     if (!cameraRef) return;
 
-    setCameraMounted(false);
-
     cameraRef.current.takePictureAsync().then(data => {
+      setCameraMounted(false);
       setPictures([...pictures, data.uri]);
       _handlePictureSaved(data);
     });
@@ -146,14 +145,14 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: "flex-end",
     flexDirection: "row",
-    paddingVertical: 10,
+    paddingVertical: 10
     // borderColor: "green",
     // borderWidth: 1,
     // borderStyle: "solid"
   },
   scanTakedPicture: {
     width: 80,
-    marginHorizontal: 4,
+    marginHorizontal: 4
     // backgroundColor: "#E8E8E8",
     // borderColor: "red",
     // borderWidth: 1,

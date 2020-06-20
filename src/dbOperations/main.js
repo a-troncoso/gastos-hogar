@@ -95,19 +95,76 @@ export const createInitialTables = () => {
   });
 };
 
+export const dropTables = () => {
+  return new Promise(resolve => {
+    DB.transaction(tx => {
+      tx.executeSql(
+        "DROP TABLE IF EXISTS user;",
+        [],
+        () => {
+          resolve("OK");
+          console.log("Table user droped");
+        },
+        error => {
+          reject("ERROR");
+          console.log("Table user not droped: ", error);
+        }
+      );
+      tx.executeSql(
+        "DROP TABLE IF EXISTS category;",
+        [],
+        () => {
+          resolve("OK");
+          console.log("Table category droped");
+        },
+        error => {
+          reject("ERROR");
+          console.log("Table category not droped: ", error);
+        }
+      );
+      tx.executeSql(
+        "DROP TABLE IF EXISTS table_name;",
+        [],
+        () => {
+          resolve("OK");
+          console.log("Table subcategory droped");
+        },
+        error => {
+          reject("ERROR");
+          console.log("Table subcategory not droped: ", error);
+        }
+      );
+      tx.executeSql(
+        "DROP TABLE IF EXISTS purchase;",
+        [],
+        () => {
+          resolve("OK");
+          console.log("Table purchase droped");
+        },
+        error => {
+          reject("ERROR");
+          console.log("Table purchase not droped: ", error);
+        }
+      );
+    });
+  });
+};
+
 export const insertBasicData = () => {
+  const querysInsert = [
+    `INSERT INTO "category" ("name","image","active") VALUES ("comida","",1);`,
+    `INSERT INTO "category" ("name","image","active") VALUES ("salud","",1);`,
+    `INSERT INTO "category" ("name","image","active") VALUES ("aseo","",1);`,
+    `INSERT INTO "category" ("name","image","active") VALUES ("ropa","",1);`,
+    `INSERT INTO "category" ("name","image","active") VALUES ("entretención","",1);`
+  ];
+
   return new Promise(resolve => {
     DB.transaction(tx => {
       tx.executeSql("delete from category;");
-      tx.executeSql(
-        "insert into category (name, image) values ('comida', '');"
-      );
-      tx.executeSql("insert into category (name, image) values ('salud', '');");
-      tx.executeSql("insert into category (name, image) values ('aseo', '');");
-      tx.executeSql("insert into category (name, image) values ('ropa', '');");
-      tx.executeSql(
-        "insert into category (name, image) values ('entretención', '');"
-      );
+      querysInsert.forEach(query => {
+        tx.executeSql(query);
+      });
       resolve("OK");
     });
   });

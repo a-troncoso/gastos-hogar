@@ -16,8 +16,11 @@ const History = props => {
   );
 
   const fetchTotalPurchases = async month => {
-    const categories = await fetchTotalPurchasesByCategory(month);
-    setCategories(categories);
+    try {
+      const categories = await fetchTotalPurchasesByCategory(month);
+
+      setCategories(categories);
+    } catch (err) {}
   };
 
   const handlePressCategory = id => {
