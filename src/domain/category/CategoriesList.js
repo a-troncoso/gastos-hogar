@@ -37,6 +37,7 @@ const CategoriesList = props => {
     <FlatList
       data={categories}
       keyExtractor={item => item.id.toString()}
+      showsVerticalScrollIndicator={false}
       ListFooterComponent={
         hasAddCategoryFeature && (
           <AddCategoryButton onPress={handlePressAddCategory} />

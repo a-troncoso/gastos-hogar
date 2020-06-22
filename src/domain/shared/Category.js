@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   categoryTextView: {
     flex: 1,
     padding: 16,
-    alignSelf: "stretch",
+    alignSelf: 'flex-start',
     justifyContent: "center"
   },
   categoryExtraInfo: {

@@ -20,3 +20,26 @@ export const currentMonth = (inTwoDigits = false) => {
     ? `0${currentDate.getMonth() + 1}`.slice(-2)
     : currentDate.getMonth();
 };
+
+export const formattedMonth = (monthNumber, inTwoDigits = false) => {
+  return inTwoDigits ? `0${monthNumber + 1}`.slice(-2) : monthNumber;
+};
+
+export const monthName = monthNumber => {
+  const monthNames = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre"
+  ];
+
+  return monthNames[monthNumber];
+};

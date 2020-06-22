@@ -27,7 +27,7 @@ const CategoriesAdminGate = props => {
   };
 
   const handlePressAddCategory = () => {
-    navigation.navigate("NewCategory");
+    navigation.navigate("CategoryCreation");
   };
 
   return (

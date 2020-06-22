@@ -5,28 +5,45 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  TextInput
+  TextInput,
+  Picker
 } from "react-native";
 import {
   fetchPurchaseById,
-  patchPurchaseAmount
+  patchPurchaseAmount,
+  patchPurchaseCategory
 } from "../dbOperations/purchase/purchaseBDTransactions";
 import { toCurrencyFormat } from "../utils/number";
 import { formatDate } from "../utils/date";
+import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
 const Purchase = props => {
   const { route, navigation } = props;
 
-  const [purchase, setPurchase] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [categorySelected, setCategorySelected] = useState(0);
+  const [purchase, setPurchase] = useState({});
   const [amountEditMode, setAmountEditMode] = useState(false);
+  const [categoryEditMode, setCategoryEditMode] = useState(false);
   const [amountValueEdited, setAmountValueEdited] = useState("");
 
   useEffect(() => {
     _fetchPurchase(route.params.purchaseId);
+    _fetchCategories();
   }, []);
+
+  useEffect(() => {
+    if (purchase.categoryId) setCategorySelected(purchase.categoryId);
+  }, [purchase.categoryId]);
+
+  const _fetchCategories = async () => {
+    const categories = await fetchAllCategories();
+    setCategories(categories);
+  };
 
   const _fetchPurchase = async purchaseId => {
     const purchase = await fetchPurchaseById(purchaseId);
+
     setPurchase({
       ...purchase,
       amount: toCurrencyFormat(purchase.amount),
@@ -36,7 +53,7 @@ const Purchase = props => {
 
   const handlePressImageTouchable = () => {
     navigation.navigate("PurchaseImagesModal", {
-      images: [purchase.image]
+      images: purchase.images
     });
   };
 
@@ -44,15 +61,30 @@ const Purchase = props => {
     setAmountEditMode(true);
   };
 
-  const handleSubmitEditAmount = async () => {
-    const patchResult = await patchPurchaseAmount(
-      route.params.purchaseId,
-      amountValueEdited
-    );
-    if (patchResult === "OK") {
-      setAmountEditMode(false);
-      _fetchPurchase(route.params.purchaseId);
-    }
+  const callPatchService = async data => {
+    let patchResult = "";
+
+    if (data.field === "amount")
+      patchResult = await patchPurchaseAmount(
+        route.params.purchaseId,
+        data.value
+      );
+    else if (data.field === "category")
+      patchResult = await patchPurchaseCategory(
+        route.params.purchaseId,
+        data.value
+      );
+
+    if (patchResult === "OK") _fetchPurchase(route.params.purchaseId);
+  };
+
+  const handleSubmitEditAmount = () => {
+    callPatchService({ field: "amount", value: amountValueEdited });
+  };
+
+  const handleChangeCategory = categoryId => {
+    setCategorySelected(categoryId);
+    callPatchService({ field: "category", value: categoryId });
   };
 
   return (
@@ -61,7 +93,12 @@ const Purchase = props => {
         style={styles.purchaseImageTouchable}
         onPress={handlePressImageTouchable}
       >
-        <Image style={styles.purchaseImage} source={{ uri: purchase.image }} />
+        {purchase.images && (
+          <Image
+            style={styles.purchaseImage}
+            source={{ uri: purchase.images[0] }}
+          />
+        )}
       </TouchableOpacity>
       <View style={styles.purchaseFeaturesView}>
         <View style={styles.featureView}>
@@ -86,6 +123,20 @@ const Purchase = props => {
             />
           )}
         </TouchableOpacity>
+        <View style={styles.featureView}>
+          <Text>Categoría</Text>
+          <Picker
+            style={styles.purchaseCategoryPicker}
+            selectedValue={categorySelected}
+            onValueChange={(categoryId, itemIndex) =>
+              handleChangeCategory(categoryId)
+            }
+          >
+            {categories.map((c, i) => (
+              <Picker.Item key={i} label={c.name} value={c.id} />
+            ))}
+          </Picker>
+        </View>
         <View style={styles.featureView}>
           <Text>Subcategoría</Text>
           <Text>{purchase.subcategory}</Text>
@@ -131,6 +182,14 @@ const styles = StyleSheet.create({
   },
   purchaseAmountInput: {
     textAlign: "right"
+  },
+  purchaseCategoryPicker: {
+    width: 200,
+    height: 44,
+    borderColor: "black",
+    borderWidth: 1,
+    borderStyle: "solid",
+    textAlign: "left"
   },
   border: { borderColor: "red", borderStyle: "solid", borderWidth: 1 }
 });

@@ -1,18 +1,60 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import PropTypes from "prop-types";
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   FlatList,
   Image
 } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import * as Permissions from "expo-permissions";
 import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
 import { insertPurchase } from "../dbOperations/purchase/purchaseBDTransactions";
+
+import { Octicons } from "@expo/vector-icons";
+
+const PurchaseImage = props => {
+  const { uri, onRemoveImage } = props;
+
+  const [isRemoveIconVisible, setIsRemoveIconVisible] = useState(false);
+
+  const handlePressImage = () => {
+    if (isRemoveIconVisible) onRemoveImage({ uri });
+    else setIsRemoveIconVisible(true);
+  };
+
+  return (
+    <TouchableWithoutFeedback onPress={handlePressImage}>
+      <View style={styles.purchaseImageView}>
+        <Image style={styles.purchaseImageImage} source={{ uri }} />
+        {isRemoveIconVisible && (
+          <View style={styles.purchaseImageRemoveView}>
+            <Octicons
+              style={styles.purchaseImageRemoveIcon}
+              name="trashcan"
+              size={40}
+              color="#f02e2e"
+            />
+          </View>
+        )}
+      </View>
+    </TouchableWithoutFeedback>
+  );
+};
+
+PurchaseImage.defaultProps = {
+  onRemoveImage: () => {}
+};
+
+PurchaseImage.propTypes = {
+  onRemoveImage: PropTypes.func
+};
 
 const Scan = props => {
   const { navigation, route } = props;
@@ -21,10 +63,12 @@ const Scan = props => {
   const [cameraMounted, setCameraMounted] = useState(true);
   const [pictures, setPictures] = useState([]);
   const cameraRef = useRef(null);
+  const picturesRoll = useRef(null);
 
   useFocusEffect(
     useCallback(() => {
       setCameraMounted(true);
+      setPictures([]);
 
       return () => {
         setCameraMounted(false);
@@ -50,7 +94,7 @@ const Scan = props => {
     if (!cameraRef) return;
 
     cameraRef.current.takePictureAsync().then(data => {
-      setCameraMounted(false);
+      // setCameraMounted(false);
       setPictures([...pictures, data.uri]);
       _handlePictureSaved(data);
     });
@@ -70,7 +114,7 @@ const Scan = props => {
 
     try {
       await FileSystem.copyAsync({ from: pictureURI, to });
-      _savePurchaseInDB(pictureURI);
+      // _savePurchaseInDB(pictureURI);
     } catch (err) {
       console.error("Error on copyAsync", err);
     }
@@ -89,8 +133,18 @@ const Scan = props => {
     }
   };
 
-  const _savePurchaseInDB = pictureURI => {
-    insertPurchase(pictureURI, route.params.categoryId);
+  // const _savePurchaseInDB = pictureURI => {
+  //   insertPurchase(pictureURI, route.params.categoryId);
+  // };
+
+  const handleRemoveImage = imageURI => {
+    const filteredPictures = pictures.filter(p => p !== imageURI);
+    setPictures(filteredPictures);
+  };
+
+  const handlePressSavePurchaseBtn = () => {
+    insertPurchase(pictures, route.params.categoryId);
+    setCameraMounted(false);
   };
 
   return (
@@ -100,23 +154,39 @@ const Scan = props => {
           <View style={styles.scanCameraContent}>
             <View style={styles.scanPicturesRollView}>
               <FlatList
+                ref={picturesRoll}
                 data={pictures}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={item => item}
                 renderItem={({ item }) => (
-                  <Image
-                    style={styles.scanTakedPicture}
-                    source={{ uri: item }}
-                  ></Image>
+                  <PurchaseImage
+                    uri={item}
+                    onRemoveImage={e => handleRemoveImage(e.uri)}
+                  />
                 )}
+                onContentSizeChange={() => picturesRoll.current.scrollToEnd()}
               ></FlatList>
             </View>
             <View style={styles.scanTakePictureView}>
-              <TouchableOpacity
-                style={styles.scanTakePictureBtn}
-                onPress={handlePressTakePicture}
-              />
+              <View style={styles.scanTakePictureButtonsView}>
+                <TouchableOpacity
+                  style={styles.scanTakePictureBtn}
+                  onPress={handlePressTakePicture}
+                />
+                {pictures.length > 0 && (
+                  <TouchableOpacity
+                    style={styles.scanSavePurchaseBtn}
+                    onPress={handlePressSavePurchaseBtn}
+                  >
+                    <MaterialIcons
+                      name="navigate-next"
+                      size={32}
+                      color="#0062ff"
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </View>
         </Camera>
@@ -142,28 +212,30 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent"
   },
   scanPicturesRollView: {
+    // borderColor: "green",
+    // borderWidth: 1,
+    // borderStyle: "solid",
     height: 100,
     justifyContent: "flex-end",
     flexDirection: "row",
     paddingVertical: 10
-    // borderColor: "green",
-    // borderWidth: 1,
-    // borderStyle: "solid"
-  },
-  scanTakedPicture: {
-    width: 80,
-    marginHorizontal: 4
-    // backgroundColor: "#E8E8E8",
-    // borderColor: "red",
-    // borderWidth: 1,
-    // borderStyle: "solid"
   },
   scanTakePictureView: {
     // borderColor: "white",
     // borderWidth: 1,
     // borderStyle: "solid",
-    flex: 0.1,
+    height: 150,
     minHeight: 80,
+    backgroundColor: "transparent"
+  },
+  scanTakePictureButtonsView: {
+    // borderColor: "red",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    position: "relative",
+    flexDirection: "row",
+    minHeight: 80,
+    marginTop: 8,
     backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center"
@@ -171,12 +243,46 @@ const styles = StyleSheet.create({
   scanTakePictureBtn: {
     width: 80,
     height: 80,
-    // marginBottom: 24,
     borderRadius: 100 / 2,
     borderColor: "white",
     borderStyle: "solid",
     borderWidth: 3,
     backgroundColor: "transparent"
+  },
+  scanSavePurchaseBtn: {
+    position: "absolute",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    right: 16,
+    width: 60,
+    height: 60,
+    borderRadius: 100 / 2,
+    borderColor: "#0062ff",
+    borderStyle: "solid",
+    borderWidth: 3
+  },
+  purchaseImageView: {
+    position: "relative",
+    width: 80,
+    marginHorizontal: 4,
+    borderColor: "white",
+    borderWidth: 2,
+    borderStyle: "solid",
+    opacity: 0.75
+  },
+  purchaseImageImage: {
+    width: "100%",
+    height: "100%"
+  },
+  purchaseImageRemoveView: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 

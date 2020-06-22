@@ -1,15 +1,43 @@
 import DB from "../../utils/database";
 import { PURCHASE_QUERIES } from "./purchaseQueries";
 
-export const insertPurchase = (pictureURI, categoryID) => {
+export const insertPurchase = (pictures, categoryID) => {
   const currendDate = new Date();
 
   DB.transaction(tx => {
     tx.executeSql(
       PURCHASE_QUERIES.INSERT_PURCHASE,
-      [pictureURI, categoryID, currendDate.toISOString()],
+      [categoryID, currendDate.toISOString()],
       (_, result) => {
         console.info("Purchase inserted in DataBase: ", result);
+
+        const purchaseId = result.insertId;
+
+        pictures.forEach(pictureURI => {
+          tx.executeSql(
+            PURCHASE_QUERIES.INSERT_PURCHASE_IMAGE,
+            [purchaseId, pictureURI],
+            (_, result) => {
+              console.info("Purchase Image inserted  ", result);
+            },
+            error => {
+              console.error(
+                "Error inserting Purchase Image in Database: ",
+                error
+              );
+            }
+          );
+          tx.executeSql(
+            "select * from purchase_image;",
+            [],
+            (_, result) => {
+              console.info("select * from purchase_image", result);
+            },
+            error => {
+              console.error("Error select * from purchase_image: ", error);
+            }
+          );
+        });
       },
       error => {
         console.error("Error inserting Purchase in Database: ", error);
@@ -49,7 +77,7 @@ export const fetchPurchasesByCategory = (month, categoryId) => {
           resolve(rows._array);
         },
         error => {
-          console.error("Error fetching PURCHASES_BY_CATEGORY: ", error);
+          console.error("Error fetching SELECT_PURCHASES_BY_CATEGORY: ", error);
         }
       );
     });
@@ -63,7 +91,15 @@ export const fetchPurchaseById = purchaseId => {
         PURCHASE_QUERIES.SELECT_PURCHASE_BY_ID,
         [purchaseId],
         (_, { rows }) => {
-          resolve(rows._array[0]);
+          const returned =
+            rows._array.length > 0 ? { ...rows._array[0], images: [] } : {};
+          delete returned.image;
+
+          rows._array.forEach(r => {
+            returned.images = returned.images.concat(r.image);
+          });
+
+          resolve(returned);
         },
         error => {
           console.error("Error fetching PURCHASE_BY_ID: ", error);
@@ -77,13 +113,30 @@ export const patchPurchaseAmount = (purchaseId, amount) => {
   return new Promise(resolve => {
     DB.transaction(tx => {
       tx.executeSql(
-        PURCHASE_QUERIES.UPDATE_PURCHASE,
+        PURCHASE_QUERIES.UPDATE_PURCHASE_AMOUNT,
         [parseInt(amount, 10), purchaseId],
         () => {
           resolve("OK");
         },
         error => {
-          console.error("Error fetching UPDATE_PURCHASE: ", error);
+          console.error("Error fetching UPDATE_PURCHASE_AMOUNT: ", error);
+        }
+      );
+    });
+  });
+};
+
+export const patchPurchaseCategory = (purchaseId, categoryId) => {
+  return new Promise(resolve => {
+    DB.transaction(tx => {
+      tx.executeSql(
+        PURCHASE_QUERIES.UPDATE_PURCHASE_CATEGORY,
+        [categoryId, purchaseId],
+        () => {
+          resolve("OK");
+        },
+        error => {
+          console.error("Error fetching UPDATE_PURCHASE_CATEGORY: ", error);
         }
       );
     });

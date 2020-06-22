@@ -10,7 +10,6 @@ export const MAIN_QUERIES = {
   CREATE_TABLE_PURCHASE: `
     CREATE TABLE IF NOT EXISTS "purchase" (
       "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-      "image"	TEXT DEFAULT "",
       "categoryId"	INTEGER,
       "subcategoryId"	INTEGER,
       "amount"	INTEGER,
@@ -35,5 +34,13 @@ export const MAIN_QUERIES = {
       "image"	TEXT DEFAULT "",
       "active"	INTEGER DEFAULT 1
     );
+  `,
+  CREATE_TABLE_PURCHASE_IMAGE: `
+    CREATE TABLE IF NOT EXISTS "purchase_image" (
+      "purchaseId"	INTEGER NOT NULL,
+      "image"	TEXT NOT NULL,
+      PRIMARY KEY("purchaseId","image"),
+      FOREIGN KEY("purchaseId") REFERENCES "purchase_image"("id")
+    )
   `
 };

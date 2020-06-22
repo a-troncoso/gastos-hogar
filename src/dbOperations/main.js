@@ -77,13 +77,33 @@ const _createSubcategoryTable = () => {
   });
 };
 
+const _createPurchaseImageTable = () => {
+  return new Promise(resolve => {
+    DB.transaction(tx => {
+      tx.executeSql(
+        MAIN_QUERIES.CREATE_TABLE_PURCHASE_IMAGE,
+        [],
+        () => {
+          resolve("OK");
+          console.log("Table urchaseImage created");
+        },
+        error => {
+          reject("ERROR");
+          console.log("Table urchaseImage not created: ", error);
+        }
+      );
+    });
+  });
+};
+
 export const createInitialTables = () => {
   return new Promise((resolve, reject) => {
     return new Promise.all([
       _createUserTable(),
       _createPurchaseTable(),
       _createCategoryTable(),
-      _createSubcategoryTable()
+      _createSubcategoryTable(),
+      _createPurchaseImageTable()
     ]).then(
       () => {
         resolve("OK");
@@ -144,6 +164,18 @@ export const dropTables = () => {
         error => {
           reject("ERROR");
           console.log("Table purchase not droped: ", error);
+        }
+      );
+      tx.executeSql(
+        "DROP TABLE IF EXISTS purchase_image;",
+        [],
+        () => {
+          resolve("OK");
+          console.log("Table purchase_image droped");
+        },
+        error => {
+          reject("ERROR");
+          console.log("Table purchase_image not droped: ", error);
         }
       );
     });

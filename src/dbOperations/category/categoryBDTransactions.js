@@ -68,3 +68,20 @@ export const removeCategory = categoryId => {
     });
   });
 };
+
+export const addCategory = (name, imageURI) => {
+  return new Promise(resolve => {
+    DB.transaction(tx => {
+      tx.executeSql(
+        CATEGORY_QUERIES.ADD_CATEGORY,
+        [name, imageURI],
+        () => {
+          resolve("OK");
+        },
+        error => {
+          console.error("Error adding ADD_CATEGORY: ", error);
+        }
+      );
+    });
+  });
+};

@@ -4,6 +4,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import CategoriesList from "../domain/category/CategoriesList";
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
+import Constants from "expo-constants";
+
 const Categories = props => {
   const { navigation } = props;
   const [categories, setCategories] = useState([]);
@@ -44,7 +46,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "#fff",
-    alignSelf: "stretch"
+    alignSelf: "stretch",
+    paddingTop: Constants.statusBarHeight
   },
   categoriesListView: {
     flex: 1,

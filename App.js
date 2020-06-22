@@ -16,6 +16,7 @@ const App = () => {
   }, []);
 
   const _createBasicData = async () => {
+    // await dropTables();
     // await createInitialTables();
     // await insertBasicData();
     setIsBasicDataCreated(true);

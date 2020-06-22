@@ -8,22 +8,25 @@ import History from "../pages/History";
 import Purchases from "../pages/Purchases";
 import Purchase from "../pages/Purchase";
 import CategoriesAdminGate from "../pages/CategoriesAdminGate";
+import DashbhoardGate from "../pages/DashbhoardGate";
 import CategoryDetail from "../pages/CategoryDetail";
+import CategoryCreation from "../pages/CategoryCreation";
 
 const RootStack = createStackNavigator();
 const PurchaseRegistryStack = createStackNavigator();
 const SummaryStack = createStackNavigator();
 const CategoryManagementStack = createStackNavigator();
+const DashboardStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const CustomRouter = () => {
   const summaryScreenOptions = {
     title: "",
     headerStyle: {
-      height: 60
+      height: 64
     },
     headerTitleStyle: {
-      fontSize: 16,
+      fontSize: 20,
       textAlign: "center"
     }
   };
@@ -63,22 +66,44 @@ const CustomRouter = () => {
 
   const CategoryManagementStackScreen = () => {
     return (
-      <CategoryManagementStack.Navigator headerMode="none">
+      <CategoryManagementStack.Navigator>
         <CategoryManagementStack.Screen
           name="CategoriesAdminGate"
           component={CategoriesAdminGate}
+          options={{ ...summaryScreenOptions, title: "Administrar Categorías" }}
         />
         <CategoryManagementStack.Screen
           name="CategoryDetail"
           component={CategoryDetail}
         />
+        <CategoryManagementStack.Screen
+          name="CategoryCreation"
+          component={CategoryCreation}
+        />
       </CategoryManagementStack.Navigator>
+    );
+  };
+
+  const DashboardStackScreen = () => {
+    return (
+      <DashboardStack.Navigator>
+        <DashboardStack.Screen
+          name="DashbhoardGate"
+          component={DashbhoardGate}
+          options={{ ...summaryScreenOptions, title: "Dashboard" }}
+        />
+      </DashboardStack.Navigator>
     );
   };
 
   const MainStackScreen = () => {
     return (
       <Drawer.Navigator initialRouteName="PurchaseRegistry">
+        <Drawer.Screen
+          name="Dashboard"
+          component={DashboardStackScreen}
+          options={{ title: "Dashboard" }}
+        />
         <Drawer.Screen
           name="PurchaseRegistry"
           component={PurchaseRegistryStackScreen}

@@ -17,12 +17,11 @@ const PurchaseImagesModal = ({ route, navigation }) => {
 
   const { images } = route.params;
 
-  useEffect(() => {
-    // if (idxActiveImage === images.length - 1) navigation.goBack();
-  }, [idxActiveImage]);
-
   const handlePressMainImage = () => {
-    setIdxActiveImage(idxActiveImage + 1);
+    const next = idxActiveImage + 1;
+
+    if (idxActiveImage === images.length - 1) setIdxActiveImage(0);
+    else setIdxActiveImage(next);
   };
 
   return (
@@ -30,7 +29,7 @@ const PurchaseImagesModal = ({ route, navigation }) => {
       <TouchableWithoutFeedback onPress={handlePressMainImage}>
         <Image
           style={styles.purchaseImagesModalMainImage}
-          source={{ uri: images[0] }}
+          source={{ uri: images[idxActiveImage] }}
         />
       </TouchableWithoutFeedback>
       <View style={styles.purchaseImagesModalSecondaryImagesView}>
@@ -71,12 +70,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingTop: 8,
     paddingBottom: 16,
-    paddingHorizontal: 8,
-    justifyContent: "space-between"
+    paddingHorizontal: 8
   },
   purchaseImagesModalSecondaryImageView: {
     width: 100,
     height: 100,
+    marginRight: 8,
     backgroundColor: "#E8E8E8"
   },
   purchaseImagesModalMiniImage: {
