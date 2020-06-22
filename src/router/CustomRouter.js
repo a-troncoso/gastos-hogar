@@ -98,7 +98,8 @@ const CustomRouter = () => {
 
   const MainStackScreen = () => {
     return (
-      <Drawer.Navigator initialRouteName="PurchaseRegistry">
+      // <Drawer.Navigator initialRouteName="PurchaseRegistry">
+      <Drawer.Navigator initialRouteName="Dashboard">
         <Drawer.Screen
           name="Dashboard"
           component={DashboardStackScreen}
@@ -112,7 +113,7 @@ const CustomRouter = () => {
         <Drawer.Screen
           name="Summary"
           component={SummaryStackScreen}
-          options={{ title: "Resumen" }}
+          options={{ title: "Historial" }}
         />
         <Drawer.Screen
           name="CategoryManagement"
