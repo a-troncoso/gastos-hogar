@@ -184,7 +184,6 @@ const dateNavigatorStyles = StyleSheet.create({
     height: "auto",
     flex: 0,
     flexDirection: "row",
-    // justifyContent: "space-between",
     alignSelf: "stretch",
     alignItems: "center"
   },
