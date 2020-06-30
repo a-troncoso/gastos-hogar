@@ -1,106 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, View, Text } from "react-native";
-import { currentDate } from "../../utils/date";
-
-const Row = props => {
-  const { labels, isLastRow } = props;
-
-  const Cell = props => {
-    const { data, isLastCell } = props;
-
-    if (typeof data === "object")
-      return (
-        <View
-          style={[
-            rowStyles.cell,
-            data.score ? rowStyles[`cellScore${data.score}`] : {},
-            isLastCell ? rowStyles.borderRight : {},
-            isLastRow ? rowStyles.borderBottom : {}
-          ]}
-        >
-          <Text style={rowStyles.cellLabel}>{data.label}</Text>
-        </View>
-      );
-    else if (typeof data === "string")
-      return (
-        <View
-          style={[
-            rowStyles.cell,
-            isLastCell ? rowStyles.borderRight : {},
-            isLastRow ? rowStyles.borderBottom : {}
-          ]}
-        >
-          <Text style={rowStyles.cellLabel}>{data}</Text>
-        </View>
-      );
-  };
-
-  return (
-    <View style={rowStyles.row}>
-      {labels.map((l, i) => (
-        <Cell data={l} key={i} isLastCell={i === labels.length - 1} />
-      ))}
-    </View>
-  );
-};
-
-const rowStyles = StyleSheet.create({
-  row: {
-    // borderColor: "red",
-    // borderStyle: "solid",
-    // borderWidth: 1,
-    flex: 0,
-    height: "auto",
-    alignSelf: "stretch",
-    flexDirection: "row"
-  },
-  cell: {
-    flex: 1,
-    padding: 4,
-    justifyContent: "center",
-    alignItems: "center",
-    borderColor: "black",
-    borderStyle: "solid",
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    alignSelf: "stretch",
-    backgroundColor: "rgb(255, 255, 255)"
-  },
-  fixedHeight: {
-    height: 40
-  },
-  cellScore1: {
-    backgroundColor: "rgba(0, 0, 0, 0.1)"
-  },
-  cellScore2: {
-    backgroundColor: "rgba(0, 0, 0, 0.2)"
-  },
-  cellScore3: {
-    backgroundColor: "rgba(0, 0, 0, 0.3)"
-  },
-  cellScore4: {
-    backgroundColor: "rgba(0, 0, 0, 0.4)"
-  },
-  cellScore5: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)"
-  },
-  cellScore6: {
-    backgroundColor: "rgba(0, 0, 0, 0.6)"
-  },
-  cellScore7: {
-    backgroundColor: "rgba(0, 0, 0, 0.7)"
-  },
-  cellScore8: {
-    backgroundColor: "rgba(0, 0, 0, 0.8)"
-  },
-  cellScore9: {
-    backgroundColor: "rgba(0, 0, 0, 0.9)"
-  },
-  cellLabel: { color: "black" },
-  borderRight: { borderRightWidth: 1 },
-  borderBottom: { borderBottomWidth: 1 }
-});
+import { StyleSheet, View } from "react-native";
+import Row from "../shared/Row";
 
 const MonthView = props => {
   const DaysTable = props => {
@@ -218,44 +119,82 @@ const MonthView = props => {
     </View>
   );
 };
+
 const YearView = props => {
   const MonthsTable = props => {
     const { relevantMonths } = props;
 
-    const [monthData, setMonthData] = useState([]);
+    const [yearData, setYearData] = useState([]);
 
-    useEffect(() => {}, []);
+    const monthsPerRow = 4;
+    const monthLabels = [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic"
+    ];
 
-    const _generateMothStructureWithRelevantMonths = monthData => {};
+    useEffect(() => {
+      const yearStructure = _generateYearDataStructure(monthsPerRow);
 
-    const _generateMonthDataStructure = () => {};
+      if (relevantMonths && Object.keys(relevantMonths).length > 0)
+        setYearData(_generateMothStructureWithRelevantMonths(yearStructure));
+      else setYearData(yearStructure);
+    }, []);
+
+    const _generateMothStructureWithRelevantMonths = yearData => {
+      const ms = [...yearData];
+
+      ms.forEach(r => {
+        r.forEach(m => {
+          relevantMonths.forEach(rm => {
+            if (rm.month === m.month) m.score = rm.relevance;
+          });
+        });
+      });
+      return ms;
+    };
+
+    const _generateYearDataStructure = _monthsPerRow => {
+      let rowDataStructure = new Array(_monthsPerRow);
+      rowDataStructure.fill(undefined);
+      let yearDataStructure = new Array();
+
+      let monthsCounter = 0;
+
+      for (let i = 0; i < monthLabels.length / _monthsPerRow; i++) {
+        for (let j = 0; j < rowDataStructure.length; j++) {
+          rowDataStructure[j] = { month: monthsCounter };
+          monthsCounter = monthsCounter + 1;
+        }
+
+        yearDataStructure = yearDataStructure.concat([
+          Array.from(rowDataStructure)
+        ]);
+        rowDataStructure.fill(undefined);
+      }
+      return yearDataStructure;
+    };
 
     return (
       <View>
-        <Row
-          labels={[
-            { label: "Ene", score: 1 },
-            { label: "Feb", score: 5 },
-            { label: "Mar", score: 9 },
-            { label: "Abr", score: 7 }
-          ]}
-        />
-        <Row
-          labels={[
-            { label: "May", score: 2 },
-            { label: "Jun", score: 3 },
-            { label: "Jul", score: 1 },
-            { label: "Ago", score: 2 }
-          ]}
-        />
-        <Row
-          labels={[
-            { label: "Sep", score: 7 },
-            { label: "Oct", score: 2 },
-            { label: "Nov", score: 7 },
-            { label: "Dic", score: 8 }
-          ]}
-        />
+        {yearData.map((r, i) => (
+          <Row
+            key={i}
+            labels={r.map(m => {
+              return { label: monthLabels[m.month], score: m.score };
+            })}
+            isLastRow={i === yearData.length - 1}
+          />
+        ))}
       </View>
     );
   };
@@ -278,6 +217,7 @@ const Calendar = props => {
         <MonthView month={month} year={year} relevantDays={relevantDays} />
       ),
       year: <YearView year={year} relevantMonths={relevantMonths} />
+      // year: <YearView year={year} />
     }[view];
   };
 

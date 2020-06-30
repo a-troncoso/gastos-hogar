@@ -74,15 +74,17 @@ const DashbhoardGate = () => {
         <Calendar
           view={viewMode}
           month={dateSelected.getMonth()}
-          year="2021"
+          year={dateSelected.getFullYear()}
           relevantMonths={[
             { month: 0, relevance: 1 },
             { month: 1, relevance: 5 },
             { month: 2, relevance: 9 },
             { month: 3, relevance: 5 },
+            { month: 10, relevance: 7 },
             { month: 4, relevance: 2 },
             { month: 5, relevance: 3 },
             { month: 6, relevance: 1 },
+            { month: 11, relevance: 9 },
             { month: 7, relevance: 1 },
             { month: 8, relevance: 5 },
             { month: 9, relevance: 4 }
