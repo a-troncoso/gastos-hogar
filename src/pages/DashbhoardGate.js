@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
 import DateNavigator from "../domain/shared/DateNavigator";
 import DateFilterSelector from "../domain/shared/DateFilterSelector";
 import Chart from "../domain/dashboard/Chart";
-import Calendar from "../domain/dashboard/Calendar";
+import Calendar from "../domain/dashboard/calendar/Calendar";
 
 import { currentDate } from "../utils/date";
 
