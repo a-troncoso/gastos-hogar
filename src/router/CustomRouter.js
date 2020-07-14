@@ -20,7 +20,7 @@ const DashboardStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const CustomRouter = () => {
-  const summaryScreenOptions = {
+  const screenGlobalOption = {
     title: "",
     headerStyle: {
       height: 64
@@ -48,17 +48,17 @@ const CustomRouter = () => {
         <SummaryStack.Screen
           name="History"
           component={History}
-          options={{ ...summaryScreenOptions, title: "Historial" }}
+          options={{ ...screenGlobalOption, title: "Historial" }}
         />
         <SummaryStack.Screen
           name="Purchases"
           component={Purchases}
-          options={{ ...summaryScreenOptions, title: "Compras este Mes" }}
+          options={{ ...screenGlobalOption, title: "Compras este Mes" }}
         />
         <SummaryStack.Screen
           name="Purchase"
           component={Purchase}
-          options={{ ...summaryScreenOptions, title: "Detalle de la Compra" }}
+          options={{ ...screenGlobalOption, title: "Detalle de la Compra" }}
         />
       </SummaryStack.Navigator>
     );
@@ -70,15 +70,19 @@ const CustomRouter = () => {
         <CategoryManagementStack.Screen
           name="CategoriesAdminGate"
           component={CategoriesAdminGate}
-          options={{ ...summaryScreenOptions, title: "Administrar Categorías" }}
+          options={{ ...screenGlobalOption, title: "Administrar Categorías" }}
         />
         <CategoryManagementStack.Screen
           name="CategoryDetail"
           component={CategoryDetail}
+          options={{ ...screenGlobalOption, title: "Detalle de la categoría" }}
+
         />
         <CategoryManagementStack.Screen
           name="CategoryCreation"
           component={CategoryCreation}
+          options={{ ...screenGlobalOption, title: "Crear categoría" }}
+
         />
       </CategoryManagementStack.Navigator>
     );
@@ -90,7 +94,7 @@ const CustomRouter = () => {
         <DashboardStack.Screen
           name="DashbhoardGate"
           component={DashbhoardGate}
-          options={{ ...summaryScreenOptions, title: "Dashboard" }}
+          options={{ ...screenGlobalOption, title: "Dashboard" }}
         />
       </DashboardStack.Navigator>
     );
