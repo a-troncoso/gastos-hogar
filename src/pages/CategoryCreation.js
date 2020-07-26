@@ -26,6 +26,7 @@ const CategoryCreation = props => {
   const handlePressImageTouchable = () => {};
 
   const handlePressRemoveCategoryButton = async () => {
+    console.log("categoryNameValue", categoryNameValue);
     const addResult = await addCategory(categoryNameValue, "");
 
     if (addResult === "OK") navigation.navigate("CategoriesAdminGate");

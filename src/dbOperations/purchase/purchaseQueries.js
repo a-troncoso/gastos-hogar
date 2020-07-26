@@ -32,5 +32,65 @@ export const PURCHASE_QUERIES = {
     AND p.id=?;
   `,
   UPDATE_PURCHASE_AMOUNT: "UPDATE purchase SET amount=? WHERE id=?;",
-  UPDATE_PURCHASE_CATEGORY: "UPDATE purchase SET categoryId=? WHERE id=?;"
+  UPDATE_PURCHASE_CATEGORY: "UPDATE purchase SET categoryId=? WHERE id=?;",
+  TOTAL_AMOUNT_BY_DAY: `
+    SELECT SUM(p.amount) FROM purchase p
+    WHERE strftime('%d', p.date) = ?
+    AND strftime('%m', p.date) = ?
+    AND strftime('%Y', p.date) = ?
+    AND p.active = 1;
+  `,
+  TOTAL_AMOUNT_BY_MONTH: `
+    SELECT SUM(p.amount) FROM purchase p
+    WHERE strftime('%m', p.date) = '07'
+    AND strftime('%Y', p.date) = '2020'
+    AND p.active = 1;
+  `,
+  TOTAL_AMOUNT_BY_YEAR: `
+    SELECT SUM(p.amount) FROM purchase p
+    WHERE strftime('%Y', p.date) = ?
+    AND p.active = 1;
+  `,
+  TOTAL_AMOUNT_BY_DAY_PER_CATEGORY: `
+    SELECT c.name, SUM(p.amount) AS 'totalAmount'
+    FROM category c, purchase p
+    WHERE p.categoryId = c.id
+    AND strftime('%d', p.date) = ?
+    AND strftime('%m', p.date) = ?
+    AND strftime('%Y', p.date) = ?
+    AND p.active = 1
+    GROUP BY c.name;
+  `,
+  TOTAL_AMOUNT_BY_MONTH_PER_CATEGORY: `
+    SELECT c.name, SUM(p.amount) AS 'totalAmount'
+    FROM category c, purchase p 
+    WHERE p.categoryId = c.id
+    AND strftime('%m', p.date) = ?
+    AND strftime('%Y', p.date) = ?
+    AND p.active = 1
+    GROUP BY c.name;
+  `,
+  TOTAL_AMOUNT_BY_YEAR_PER_CATEGORY: `
+    SELECT c.name, SUM(p.amount) AS 'totalAmount'
+    FROM category c, purchase p 
+    WHERE p.categoryId = c.id
+    AND strftime('%Y', p.date) = ?
+    AND p.active = 1
+    GROUP BY c.name;
+  `,
+  TOTAL_AMOUNT_BY_MONTH_PER_DAY: `
+    SELECT datetime(strftime('%Y-%m-%d', p.date)) AS 'day', SUM(p.amount) AS 'totalAmount'
+    FROM purchase p 
+    WHERE strftime('%m', p.date) = ?
+    AND strftime('%Y', p.date) = ?
+    AND p.active = 1
+    GROUP BY strftime('%d', p.date);
+  `,
+  TOTAL_AMOUNT_BY_YEAR_PER_MONTH: `
+    SELECT datetime(strftime('%Y-%m-01', p.date)) AS 'month', SUM(p.amount) AS 'totalAmount'
+    FROM purchase p 
+    WHERE strftime('%Y', p.date) = '2020'
+    AND p.active = 1
+    GROUP BY strftime('%Y-%m', p.date);
+  `
 };

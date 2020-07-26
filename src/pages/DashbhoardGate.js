@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import DateNavigator from "../domain/shared/DateNavigator";
 import DateFilterSelector from "../domain/shared/DateFilterSelector";
 import Chart from "../domain/dashboard/Chart";
 import Calendar from "../domain/dashboard/calendar/Calendar";
 
-import { currentDate } from "../utils/date";
+import { fetchTotalAmountByDateCriteria } from "../dbOperations/purchase/purchaseBDTransactions";
+
+import { currentDate, formattedMonth } from "../utils/date";
+
+const dateTranslation = {
+  day: "día",
+  month: "mes",
+  year: "año"
+};
 
 const DashboardCard = props => {
   const { value, description } = props;
@@ -47,14 +56,30 @@ const DashbhoardGate = () => {
   const [viewMode, setViewMode] = useState("month");
   const [dateSelected, setDateSelected] = useState(currentDate);
 
-  const dateTranslation = {
-    day: "día",
-    month: "mes",
-    year: "año"
-  };
+  useFocusEffect(
+    useCallback(() => {
+      const date = {
+        day: dateSelected.getDate(),
+        month: formattedMonth(dateSelected.getMonth(), true),
+        year: dateSelected.getFullYear()
+      };
+      fetchTotalAmount({ mode: viewMode, date });
+    }, [])
+  );
 
   const handeChangleMode = mode => {
     setViewMode(mode);
+  };
+
+  const fetchTotalAmount = async dateOptions => {
+    try {
+      const totalAmount = await fetchTotalAmountByDateCriteria({
+        ...dateOptions
+      });
+      console.log("fetchTotalAmount", totalAmount);
+    } catch (err) {
+      console.log("[ERROR] fetchTotalAmount", err);
+    }
   };
 
   return (
@@ -70,7 +95,13 @@ const DashbhoardGate = () => {
           value={`$ 47.000`}
           description={`total ${dateTranslation[viewMode]}`}
         />
-        <Chart />
+        <Chart
+          data={[
+            { category: "comida", totalAmount: 2 },
+            { category: "aseo", totalAmount: 0.7 },
+            { category: "entretencion", totalAmount: 1.2 }
+          ]}
+        />
         <Calendar
           view={viewMode}
           month={dateSelected.getMonth()}

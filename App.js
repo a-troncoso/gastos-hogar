@@ -2,24 +2,36 @@ import React, { useEffect, useState } from "react";
 import {
   createInitialTables,
   insertBasicData,
-  dropTables
+  selectBasicData
 } from "./src/dbOperations/main";
 import CustomRouter from "./src/router/CustomRouter";
 import * as SQLite from "expo-sqlite";
 import * as FileSystem from "expo-file-system";
 
 const App = () => {
-  const [isBasicDataCreated, setIsBasicDataCreated] = useState(false);
+  const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false);
 
   useEffect(() => {
-    _createBasicData();
+    console.log(`${FileSystem.documentDirectory}/SQLite/db.GastosHogar_v003`);
+    _createInitialTables();
   }, []);
 
+  const _createInitialTables = async () => {
+    try {
+      const a = await createInitialTables({ withOverride: true });
+      console.log("all tables created", a);
+      const b = await insertBasicData();
+      console.log("basic data inserted", b);
+      const c = await selectBasicData();
+      console.log("selectBasicData", c);
+    } catch (err) {
+      console.log("[ERROR]", err);
+    }
+    setIsBasicTablesCreated(true);
+  };
+
   const _createBasicData = async () => {
-    // await dropTables();
-    // await createInitialTables();
     // await insertBasicData();
-    setIsBasicDataCreated(true);
   };
 
   const _importSQLBase = async () => {
@@ -43,7 +55,7 @@ const App = () => {
   //   }
   // };
 
-  return isBasicDataCreated && <CustomRouter />;
+  return isBasicTablesCreated && <CustomRouter />;
 };
 
 export default App;

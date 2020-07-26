@@ -142,3 +142,48 @@ export const patchPurchaseCategory = (purchaseId, categoryId) => {
     });
   });
 };
+
+export const fetchTotalAmountByDateCriteria = ({ ...dateOptions }) => {
+  const queryStatementByDateMode = {
+    day: "TOTAL_AMOUNT_BY_DAY",
+    month: "TOTAL_AMOUNT_BY_MONTH",
+    year: "TOTAL_AMOUNT_BY_YEAR"
+  };
+
+  const params = {
+    day: [
+      "" + dateOptions.date.day,
+      dateOptions.date.month,
+      "" + dateOptions.date.year
+    ],
+    month: [dateOptions.date.month, "" + dateOptions.date.year],
+    year: ["" + dateOptions.date.year]
+  };
+
+  // console.log("dateOptions", dateOptions);
+  // console.log("dateOptions.mode", dateOptions.mode);
+  // console.log(
+  //   "PURCHASE_QUERIES[queryStatementByDateMode[dateOptions.mode]]",
+  //   PURCHASE_QUERIES[queryStatementByDateMode[dateOptions.mode]]
+  // );
+  // console.log(
+  //   "queryStatementByDateMode[dateOptions.mode]",
+  //   queryStatementByDateMode[dateOptions.mode]
+  // );
+  // console.log("params[dateOptions.mode]", params[dateOptions.mode]);
+
+  return new Promise((resolve, reject) => {
+    DB.transaction(tx => {
+      tx.executeSql(
+        PURCHASE_QUERIES.TOTAL_AMOUNT_BY_MONTH,
+        [],
+        () => {
+          resolve("OK");
+        },
+        error => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
