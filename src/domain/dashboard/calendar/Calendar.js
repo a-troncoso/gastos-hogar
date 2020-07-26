@@ -13,7 +13,6 @@ const Calendar = props => {
         <MonthView month={month} year={year} relevantDays={relevantDays} />
       ),
       year: <YearView year={year} relevantMonths={relevantMonths} />
-      // year: <YearView year={year} />
     }[view];
   };
 

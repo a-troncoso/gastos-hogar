@@ -1,3 +1,4 @@
+import { start } from "./start";
 import React, { useEffect, useState } from "react";
 import {
   createInitialTables,
@@ -8,24 +9,25 @@ import CustomRouter from "./src/router/CustomRouter";
 import * as SQLite from "expo-sqlite";
 import * as FileSystem from "expo-file-system";
 
+import DB from "./src/utils/database";
+
+start();
+
 const App = () => {
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false);
 
   useEffect(() => {
-    console.log(`${FileSystem.documentDirectory}/SQLite/db.GastosHogar_v003`);
     _createInitialTables();
+
+    // _selectBasicData();
   }, []);
 
   const _createInitialTables = async () => {
     try {
-      const a = await createInitialTables({ withOverride: true });
-      console.log("all tables created", a);
-      const b = await insertBasicData();
-      console.log("basic data inserted", b);
-      const c = await selectBasicData();
-      console.log("selectBasicData", c);
+      await createInitialTables({ withOverride: false });
+      await insertBasicData();
     } catch (err) {
-      console.log("[ERROR]", err);
+      console.err(err);
     }
     setIsBasicTablesCreated(true);
   };
@@ -34,6 +36,15 @@ const App = () => {
     // await insertBasicData();
   };
 
+  const _selectBasicData = async () => {
+    
+    try {
+      const a = await selectBasicData('purchase');
+      console.h1(a);
+    } catch (err) {
+      console.err(err);
+    }
+  }
   const _importSQLBase = async () => {
     FileSystem.downloadAsync(
       Expo.Asset.fromModule(require("./assets/db/db.mp4")).uri,

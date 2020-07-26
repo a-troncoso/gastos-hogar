@@ -115,10 +115,10 @@ export const patchPurchaseAmount = (purchaseId, amount) => {
       tx.executeSql(
         PURCHASE_QUERIES.UPDATE_PURCHASE_AMOUNT,
         [parseInt(amount, 10), purchaseId],
-        () => {
-          resolve("OK");
+        (_, s) => {
+          resolve(s);
         },
-        error => {
+        (_, error) => {
           console.error("Error fetching UPDATE_PURCHASE_AMOUNT: ", error);
         }
       );
@@ -132,10 +132,10 @@ export const patchPurchaseCategory = (purchaseId, categoryId) => {
       tx.executeSql(
         PURCHASE_QUERIES.UPDATE_PURCHASE_CATEGORY,
         [categoryId, purchaseId],
-        () => {
-          resolve("OK");
+        (_, s) => {
+          resolve(s);
         },
-        error => {
+        (_, error) => {
           console.error("Error fetching UPDATE_PURCHASE_CATEGORY: ", error);
         }
       );
@@ -160,27 +160,92 @@ export const fetchTotalAmountByDateCriteria = ({ ...dateOptions }) => {
     year: ["" + dateOptions.date.year]
   };
 
-  // console.log("dateOptions", dateOptions);
-  // console.log("dateOptions.mode", dateOptions.mode);
-  // console.log(
-  //   "PURCHASE_QUERIES[queryStatementByDateMode[dateOptions.mode]]",
-  //   PURCHASE_QUERIES[queryStatementByDateMode[dateOptions.mode]]
-  // );
-  // console.log(
-  //   "queryStatementByDateMode[dateOptions.mode]",
-  //   queryStatementByDateMode[dateOptions.mode]
-  // );
-  // console.log("params[dateOptions.mode]", params[dateOptions.mode]);
+  return new Promise((resolve, reject) => {
+    DB.transaction(tx => {
+      tx.executeSql(
+        PURCHASE_QUERIES[queryStatementByDateMode[dateOptions.mode]],
+        params[dateOptions.mode],
+        (_, { rows }) => {
+          if (rows._array.length === 1) resolve(rows._array[0]);
+          else reject("Result has no 1 rows");
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+export const fetchTotalAmountByDateCriteriaPerCategory = ({
+  ...dateOptions
+}) => {
+  const queryStatementByDateMode = {
+    day: "TOTAL_AMOUNT_BY_DAY_PER_CATEGORY",
+    month: "TOTAL_AMOUNT_BY_MONTH_PER_CATEGORY",
+    year: "TOTAL_AMOUNT_BY_YEAR_PER_CATEGORY"
+  };
+
+  const params = {
+    day: [
+      "" + dateOptions.date.day,
+      dateOptions.date.month,
+      "" + dateOptions.date.year
+    ],
+    month: [dateOptions.date.month, "" + dateOptions.date.year],
+    year: ["" + dateOptions.date.year]
+  };
 
   return new Promise((resolve, reject) => {
     DB.transaction(tx => {
       tx.executeSql(
-        PURCHASE_QUERIES.TOTAL_AMOUNT_BY_MONTH,
-        [],
-        () => {
-          resolve("OK");
+        PURCHASE_QUERIES[queryStatementByDateMode[dateOptions.mode]],
+        params[dateOptions.mode],
+        (_, { rows }) => {
+          if (rows._array.length > 0) {
+            const parsed = rows._array.map(r => ({
+              category: r.name,
+              totalAmount: r.totalAmount
+            }));
+
+            resolve(parsed);
+          } else reject("Result has no rows");
         },
-        error => {
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+export const fetchAmountsByDateCriteria = ({ ...dateOptions }) => {
+  const queryStatementByDateMode = {
+    month: "TOTAL_AMOUNT_BY_MONTH_PER_DAY",
+    year: "TOTAL_AMOUNT_BY_YEAR_PER_MONTH"
+  };
+
+  const params = {
+    month: [dateOptions.date.month, "" + dateOptions.date.year],
+    year: ["" + dateOptions.date.year]
+  };
+
+  return new Promise((resolve, reject) => {
+    DB.transaction(tx => {
+      tx.executeSql(
+        PURCHASE_QUERIES[queryStatementByDateMode[dateOptions.mode]],
+        params[dateOptions.mode],
+        (_, { rows }) => {
+          if (rows._array.length > 0) {
+            // const parsed = rows._array.map(r => ({
+            //   category: r.name,
+            //   totalAmount: r.totalAmount
+            // }));
+
+            resolve(rows._array);
+          } else reject("Result has no rows");
+        },
+        (_, error) => {
           reject(error);
         }
       );

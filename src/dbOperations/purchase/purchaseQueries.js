@@ -34,20 +34,20 @@ export const PURCHASE_QUERIES = {
   UPDATE_PURCHASE_AMOUNT: "UPDATE purchase SET amount=? WHERE id=?;",
   UPDATE_PURCHASE_CATEGORY: "UPDATE purchase SET categoryId=? WHERE id=?;",
   TOTAL_AMOUNT_BY_DAY: `
-    SELECT SUM(p.amount) FROM purchase p
+    SELECT SUM(p.amount) AS 'totalAmount' FROM purchase p
     WHERE strftime('%d', p.date) = ?
     AND strftime('%m', p.date) = ?
     AND strftime('%Y', p.date) = ?
     AND p.active = 1;
   `,
   TOTAL_AMOUNT_BY_MONTH: `
-    SELECT SUM(p.amount) FROM purchase p
-    WHERE strftime('%m', p.date) = '07'
-    AND strftime('%Y', p.date) = '2020'
+    SELECT SUM(p.amount) AS 'totalAmount' FROM purchase p
+    WHERE strftime('%m', p.date) = ?
+    AND strftime('%Y', p.date) = ?
     AND p.active = 1;
   `,
   TOTAL_AMOUNT_BY_YEAR: `
-    SELECT SUM(p.amount) FROM purchase p
+    SELECT SUM(p.amount) AS 'totalAmount' FROM purchase p
     WHERE strftime('%Y', p.date) = ?
     AND p.active = 1;
   `,
@@ -55,6 +55,7 @@ export const PURCHASE_QUERIES = {
     SELECT c.name, SUM(p.amount) AS 'totalAmount'
     FROM category c, purchase p
     WHERE p.categoryId = c.id
+    AND c.active = 1
     AND strftime('%d', p.date) = ?
     AND strftime('%m', p.date) = ?
     AND strftime('%Y', p.date) = ?
@@ -65,6 +66,7 @@ export const PURCHASE_QUERIES = {
     SELECT c.name, SUM(p.amount) AS 'totalAmount'
     FROM category c, purchase p 
     WHERE p.categoryId = c.id
+    AND c.active = 1
     AND strftime('%m', p.date) = ?
     AND strftime('%Y', p.date) = ?
     AND p.active = 1
@@ -74,6 +76,7 @@ export const PURCHASE_QUERIES = {
     SELECT c.name, SUM(p.amount) AS 'totalAmount'
     FROM category c, purchase p 
     WHERE p.categoryId = c.id
+    AND c.active = 1
     AND strftime('%Y', p.date) = ?
     AND p.active = 1
     GROUP BY c.name;
@@ -89,7 +92,7 @@ export const PURCHASE_QUERIES = {
   TOTAL_AMOUNT_BY_YEAR_PER_MONTH: `
     SELECT datetime(strftime('%Y-%m-01', p.date)) AS 'month', SUM(p.amount) AS 'totalAmount'
     FROM purchase p 
-    WHERE strftime('%Y', p.date) = '2020'
+    WHERE strftime('%Y', p.date) = ?
     AND p.active = 1
     GROUP BY strftime('%Y-%m', p.date);
   `
