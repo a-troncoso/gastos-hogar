@@ -13,16 +13,10 @@ const Chart = props => {
   const [parsedData, setParsedData] = useState(
     data.map(d => ({ x: d.category, y: d.totalAmount }))
   );
-  const [showPie, setshowPie] = useState(true);
 
-  // useEffect(() => {
-  //   console.h1("cambio data!");
-  //   console.h2(data);
-  //   setshowPie(false);
-  //   setTimeout(() => {
-  //     setshowPie(true);
-  //   }, 3000);
-  // }, [data]);
+  useEffect(() => {
+    setParsedData(data.map(d => ({ x: d.category, y: d.totalAmount })));
+  }, [data]);
 
   return (
     <View style={styles.chart}>

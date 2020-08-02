@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  Alert
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import DateNavigator from "../domain/shared/DateNavigator";
 import DateFilterSelector from "../domain/shared/DateFilterSelector";
@@ -59,46 +66,73 @@ const dashboardCardStyles = StyleSheet.create({
   }
 });
 
+const throwErrorAlert = (action, message) => {
+  Alert.alert(`Ha ocurrido un error al ${action} :(`, message, [], {
+    cancelable: true
+  });
+};
+
 const DashbhoardGate = () => {
   const [viewMode, setViewMode] = useState("month");
   const [dateSelected, setDateSelected] = useState(currentDate);
+  // Almacena la fecha separada en mdía, mes, año como attrs. de objetos
+  const [formatedDateSelected, setFormatedDateSelected] = useState({
+    day: dateSelected.getDate(),
+    month: formattedMonth(dateSelected.getMonth(), true),
+    year: dateSelected.getFullYear()
+  });
   const [totalAmount, setTotalAmount] = useState(0);
   const [amountsPerCategory, setAmountsPerCategory] = useState([]);
   const [relevantByDateCriteria, setRelevantByDateCriteria] = useState([]);
+  const [isRequiredDataRequested, setIsRequiredDataRequested] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      const date = {
-        day: dateSelected.getDate(),
-        month: formattedMonth(dateSelected.getMonth(), true),
-        year: dateSelected.getFullYear()
-      };
-      fetchTotalAmount({ mode: viewMode, date });
-      fetchTotalAmountPerCategory({ mode: viewMode, date });
-      fetchAmounts({ mode: viewMode, date });
+      if (!isRequiredDataRequested) _fetchRequiredData();
     }, [])
   );
 
   useEffect(() => {
-    const date = {
+    const _formatedDateSelected = {
       day: dateSelected.getDate(),
       month: formattedMonth(dateSelected.getMonth(), true),
       year: dateSelected.getFullYear()
     };
+    setFormatedDateSelected(_formatedDateSelected);
+  }, [dateSelected]);
 
-    fetchTotalAmount({
+  useEffect(() => {
+    if (!isRequiredDataRequested) _fetchRequiredData();
+  }, [formatedDateSelected]);
+
+  useEffect(() => {
+    _fetchTotalAmount({
       mode: viewMode,
-      date
+      date: formatedDateSelected
     });
-    fetchTotalAmountPerCategory({ mode: viewMode, date });
-    fetchAmounts({ mode: viewMode, date });
+    _fetchTotalAmountPerCategory({
+      mode: viewMode,
+      date: formatedDateSelected
+    });
+    _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
   }, [viewMode]);
+
+  const _fetchRequiredData = async () => {
+    setIsRequiredDataRequested(true);
+    await _fetchTotalAmount({ mode: viewMode, date: formatedDateSelected });
+    await _fetchTotalAmountPerCategory({
+      mode: viewMode,
+      date: formatedDateSelected
+    });
+    await _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
+    setIsRequiredDataRequested(false);
+  };
 
   const handeChangleMode = mode => {
     setViewMode(mode);
   };
 
-  const fetchTotalAmount = async dateOptions => {
+  const _fetchTotalAmount = async dateOptions => {
     try {
       const totalAmountInfo = await fetchTotalAmountByDateCriteria({
         ...dateOptions
@@ -106,27 +140,26 @@ const DashbhoardGate = () => {
       setTotalAmount(totalAmountInfo.totalAmount);
     } catch (err) {
       console.err(err);
+      throwErrorAlert("calcular el monto total", JSON.stringify(err));
     }
   };
 
-  const fetchTotalAmountPerCategory = async dateOptions => {
+  const _fetchTotalAmountPerCategory = async dateOptions => {
     try {
-      const amountsByCategory = await fetchTotalAmountByDateCriteriaPerCategory(
+      const amountsPerCategory = await fetchTotalAmountByDateCriteriaPerCategory(
         {
           ...dateOptions
         }
       );
-      console.h1(amountsByCategory);
-      console.h1(amountsByCategory.length);
-      const processedList = amountsByCategory.filter(a => a.totalAmount > 0);
+      const processedList = amountsPerCategory.filter(a => a.totalAmount > 0);
       setAmountsPerCategory(processedList);
     } catch (err) {
       console.err(err);
+      throwErrorAlert("calcular montos por categoría", JSON.stringify(err));
     }
   };
 
-  const fetchAmounts = async dateOptions => {
-    console.h1(dateOptions);
+  const _fetchAmounts = async dateOptions => {
     try {
       const amounts = await fetchAmountsByDateCriteria({
         ...dateOptions
@@ -134,15 +167,14 @@ const DashbhoardGate = () => {
 
       const processedList = amounts.map(a => ({
         day: new Date(a.day).getDate(),
-        month: new Date(a.day).getMonth(),
-        totalAmount,
-        relevance: 5
+        month: new Date(a.month).getMonth(),
+        relevance: a.totalAmount
       }));
-      console.h1(amounts);
-      console.h2(processedList);
       setRelevantByDateCriteria(processedList);
     } catch (err) {
+      console.err(typeof err);
       console.err(err);
+      throwErrorAlert("calcular los montos", JSON.stringify(err));
     }
   };
 

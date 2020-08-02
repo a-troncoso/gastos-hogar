@@ -103,7 +103,7 @@ const CustomRouter = () => {
   const MainStackScreen = () => {
     return (
       // <Drawer.Navigator initialRouteName="PurchaseRegistry">
-      <Drawer.Navigator initialRouteName="Dashboard">
+      <Drawer.Navigator initialRouteName="PurchaseRegistry">
         <Drawer.Screen
           name="Dashboard"
           component={DashboardStackScreen}

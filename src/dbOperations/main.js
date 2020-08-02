@@ -1,5 +1,7 @@
 import DB from "../utils/database";
 import { MAIN_QUERIES } from "./mainQueries";
+import * as SQLite from "expo-sqlite";
+import * as FileSystem from "expo-file-system";
 
 const _createUserTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
@@ -117,7 +119,7 @@ export const createInitialTables = ({ ...opts }) => {
 
 export const insertBasicData = () => {
   const querysInsert = [
-    `INSERT INTO "user"("name", "image") VALUES ("teresa", "image_teresa");`
+    `INSERT INTO "user"("name", "image") VALUES ("alvaro", "");`
     // `INSERT INTO "category" ("name","image","active") VALUES ("comida","",1);`,
     // `INSERT INTO "category" ("name","image","active") VALUES ("salud","",1);`,
     // `INSERT INTO "category" ("name","image","active") VALUES ("aseo","",1);`,
@@ -144,6 +146,25 @@ export const selectBasicData = table => {
 
   return new Promise((resolve, reject) => {
     DB.transaction(tx => {
+      tx.executeSql(
+        querys[0],
+        [],
+        (_, s) => resolve(s),
+        (_, error) => reject({ ...error, desc: "selecting basic data" })
+      );
+    });
+  });
+};
+
+export const selectOldData = table => {
+  const OLD_DB = SQLite.openDatabase(
+    `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
+  );
+
+  const querys = [`SELECT * FROM ${table};`];
+
+  return new Promise((resolve, reject) => {
+    OLD_DB.transaction(tx => {
       tx.executeSql(
         querys[0],
         [],

@@ -202,14 +202,12 @@ export const fetchTotalAmountByDateCriteriaPerCategory = ({
         PURCHASE_QUERIES[queryStatementByDateMode[dateOptions.mode]],
         params[dateOptions.mode],
         (_, { rows }) => {
-          if (rows._array.length > 0) {
-            const parsed = rows._array.map(r => ({
-              category: r.name,
-              totalAmount: r.totalAmount
-            }));
+          const parsed = rows._array.map(r => ({
+            category: r.name,
+            totalAmount: r.totalAmount
+          }));
 
-            resolve(parsed);
-          } else reject("Result has no rows");
+          resolve(parsed);
         },
         (_, error) => {
           reject(error);
@@ -230,20 +228,18 @@ export const fetchAmountsByDateCriteria = ({ ...dateOptions }) => {
     year: ["" + dateOptions.date.year]
   };
 
+  if (dateOptions.mode === "day")
+    return new Promise(resolve => {
+      resolve([]);
+    });
+
   return new Promise((resolve, reject) => {
     DB.transaction(tx => {
       tx.executeSql(
         PURCHASE_QUERIES[queryStatementByDateMode[dateOptions.mode]],
         params[dateOptions.mode],
         (_, { rows }) => {
-          if (rows._array.length > 0) {
-            // const parsed = rows._array.map(r => ({
-            //   category: r.name,
-            //   totalAmount: r.totalAmount
-            // }));
-
-            resolve(rows._array);
-          } else reject("Result has no rows");
+          resolve(rows._array);
         },
         (_, error) => {
           reject(error);

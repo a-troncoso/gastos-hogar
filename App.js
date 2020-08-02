@@ -3,13 +3,12 @@ import React, { useEffect, useState } from "react";
 import {
   createInitialTables,
   insertBasicData,
-  selectBasicData
+  selectBasicData,
+  selectOldData
 } from "./src/dbOperations/main";
 import CustomRouter from "./src/router/CustomRouter";
 import * as SQLite from "expo-sqlite";
 import * as FileSystem from "expo-file-system";
-
-import DB from "./src/utils/database";
 
 start();
 
@@ -18,8 +17,6 @@ const App = () => {
 
   useEffect(() => {
     _createInitialTables();
-
-    // _selectBasicData();
   }, []);
 
   const _createInitialTables = async () => {
@@ -32,39 +29,50 @@ const App = () => {
     setIsBasicTablesCreated(true);
   };
 
-  const _createBasicData = async () => {
-    // await insertBasicData();
-  };
-
-  const _selectBasicData = async () => {
-    
+  const _selectOldData = async () => {
     try {
-      const a = await selectBasicData('purchase');
-      console.h1(a);
+      const oldData = await selectOldData("purchase");
+      console.h1("oldData", oldData);
+
+      FileSystem.writeAsStringAsync(
+        `${FileSystem.documentDirectory}/OLD_DATABASE.txt`,
+        JSON.stringify(oldData.rows)
+      );
     } catch (err) {
       console.err(err);
     }
-  }
+  };
+
+  const _selectBasicData = async () => {
+    try {
+      const data = await selectBasicData("purchase");
+      console.h1(data);
+
+      FileSystem.writeAsStringAsync(
+        `${FileSystem.documentDirectory}/OLD_DATABASE.txt`,
+        JSON.stringify(data.rows)
+      );
+    } catch (err) {
+      console.err(err);
+    }
+  };
+
   const _importSQLBase = async () => {
     FileSystem.downloadAsync(
       Expo.Asset.fromModule(require("./assets/db/db.mp4")).uri,
       `${FileSystem.documentDirectory}/SQLite/db.GastosHogar_v002`
     );
-
-    // FileSystem.readAsStringAsync(
-    //   `${FileSystem.documentDirectory}/SQLite/db.GastosHogar_v002`
-    // ).then(info => console.log("Info Database importada", info));
   };
 
-  // const _makeSQLiteDirAsync = async () => {
-  //   const dbTest = SQLite.openDatabase("dummy.db");
+  const _makeSQLiteDirAsync = async () => {
+    const dbTest = SQLite.openDatabase("dummy.db");
 
-  //   try {
-  //     await dbTest.transaction(tx => tx.executeSql(""));
-  //   } catch (e) {
-  //     console.log("error!", e);
-  //   }
-  // };
+    try {
+      await dbTest.transaction(tx => tx.executeSql(""));
+    } catch (e) {
+      console.log("error!", e);
+    }
+  };
 
   return isBasicTablesCreated && <CustomRouter />;
 };
