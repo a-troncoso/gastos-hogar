@@ -82,7 +82,7 @@ export const PURCHASE_QUERIES = {
     GROUP BY c.name;
   `,
   TOTAL_AMOUNT_BY_MONTH_PER_DAY: `
-    SELECT datetime(strftime('%Y-%m-%d', p.date)) AS 'day', SUM(p.amount) AS 'totalAmount'
+    SELECT strftime('%Y-%m-%dT%H:%M:%S', p.date) AS 'date', SUM(p.amount) AS 'totalAmount'
     FROM purchase p 
     WHERE strftime('%m', p.date) = ?
     AND strftime('%Y', p.date) = ?
@@ -90,7 +90,7 @@ export const PURCHASE_QUERIES = {
     GROUP BY strftime('%d', p.date);
   `,
   TOTAL_AMOUNT_BY_YEAR_PER_MONTH: `
-    SELECT datetime(strftime('%Y-%m-01', p.date)) AS 'month', SUM(p.amount) AS 'totalAmount'
+    SELECT strftime('%Y-%m-01T%H:%M:%S', p.date) AS 'date', SUM(p.amount) AS 'totalAmount'
     FROM purchase p 
     WHERE strftime('%Y', p.date) = ?
     AND p.active = 1

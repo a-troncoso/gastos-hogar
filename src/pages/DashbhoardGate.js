@@ -151,10 +151,10 @@ const DashbhoardGate = () => {
           ...dateOptions
         }
       );
+
       const processedList = amountsPerCategory.filter(a => a.totalAmount > 0);
       setAmountsPerCategory(processedList);
     } catch (err) {
-      console.err(err);
       throwErrorAlert("calcular montos por categoría", JSON.stringify(err));
     }
   };
@@ -165,15 +165,17 @@ const DashbhoardGate = () => {
         ...dateOptions
       });
 
-      const processedList = amounts.map(a => ({
-        day: new Date(a.day).getDate(),
-        month: new Date(a.month).getMonth(),
-        relevance: a.totalAmount
-      }));
+      const processedList = amounts.map(a => {
+        let date = new Date(a.date);
+
+        return {
+          day: new Date(date).getDate(),
+          month: new Date(date).getMonth(),
+          relevance: a.totalAmount
+        };
+      });
       setRelevantByDateCriteria(processedList);
     } catch (err) {
-      console.err(typeof err);
-      console.err(err);
       throwErrorAlert("calcular los montos", JSON.stringify(err));
     }
   };
