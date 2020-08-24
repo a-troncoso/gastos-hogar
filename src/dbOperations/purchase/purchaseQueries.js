@@ -1,6 +1,6 @@
 export const PURCHASE_QUERIES = {
   INSERT_PURCHASE:
-    "insert into purchase (categoryId, subcategoryId, amount, comment, date) values (?, '', 0, '', ?);",
+    "insert into purchase (categoryId, subcategoryId, amount, comment, date) values (?, ?, 0, '', ?);",
   INSERT_PURCHASE_IMAGE:
     "insert into purchase_image (purchaseId, image) values (?, ?);",
   SELECT_TOTAL_PURCHASES_BY_CATEGORY: `

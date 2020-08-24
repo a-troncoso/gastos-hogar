@@ -17,6 +17,8 @@ import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
 import { insertPurchase } from "../dbOperations/purchase/purchaseBDTransactions";
 
+import throwErrorAlert from '../utils/alerts/Alerts';
+
 import { Octicons } from "@expo/vector-icons";
 
 const PurchaseImage = props => {
@@ -94,7 +96,6 @@ const Scan = props => {
     if (!cameraRef) return;
 
     cameraRef.current.takePictureAsync().then(data => {
-      // setCameraMounted(false);
       setPictures([...pictures, data.uri]);
       _handlePictureSaved(data);
     });
@@ -114,9 +115,8 @@ const Scan = props => {
 
     try {
       await FileSystem.copyAsync({ from: pictureURI, to });
-      // _savePurchaseInDB(pictureURI);
     } catch (err) {
-      console.error("Error on copyAsync", err);
+      throwErrorAlert("copiar fotos", JSON.stringify(err));
     }
   };
 
@@ -129,21 +129,21 @@ const Scan = props => {
     try {
       await MediaLibrary.createAssetAsync(to);
     } catch (err) {
-      console.error("Error on createAssetAsync", err);
+      throwErrorAlert("guardar foto en el dispositivo", JSON.stringify(err));
     }
   };
-
-  // const _savePurchaseInDB = pictureURI => {
-  //   insertPurchase(pictureURI, route.params.categoryId);
-  // };
 
   const handleRemoveImage = imageURI => {
     const filteredPictures = pictures.filter(p => p !== imageURI);
     setPictures(filteredPictures);
   };
 
-  const handlePressSavePurchaseBtn = () => {
-    insertPurchase(pictures, route.params.categoryId);
+  const savePurchase = async () => {
+    try {
+      await insertPurchase(pictures, route.params.categoryId, 1);
+    } catch (err) {
+      throwErrorAlert("ingresar la compra", JSON.stringify(err));
+    }
     setCameraMounted(false);
   };
 
@@ -177,7 +177,7 @@ const Scan = props => {
                 {pictures.length > 0 && (
                   <TouchableOpacity
                     style={styles.scanSavePurchaseBtn}
-                    onPress={handlePressSavePurchaseBtn}
+                    onPress={savePurchase}
                   >
                     <MaterialIcons
                       name="navigate-next"

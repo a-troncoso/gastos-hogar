@@ -1,17 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  Alert
-} from "react-native";
+import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import DateNavigator from "../domain/shared/DateNavigator";
 import DateFilterSelector from "../domain/shared/DateFilterSelector";
 import Chart from "../domain/dashboard/Chart";
 import Calendar from "../domain/dashboard/calendar/Calendar";
+
+import throwErrorAlert from "../utils/alerts/Alerts";
 
 import {
   fetchTotalAmountByDateCriteria,
@@ -65,12 +60,6 @@ const dashboardCardStyles = StyleSheet.create({
     fontSize: 16
   }
 });
-
-const throwErrorAlert = (action, message) => {
-  Alert.alert(`Ha ocurrido un error al ${action} :(`, message, [], {
-    cancelable: true
-  });
-};
 
 const DashbhoardGate = () => {
   const [viewMode, setViewMode] = useState("month");

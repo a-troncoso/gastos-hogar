@@ -119,7 +119,8 @@ export const createInitialTables = ({ ...opts }) => {
 
 export const insertBasicData = () => {
   const querysInsert = [
-    `INSERT INTO "user"("name", "image") VALUES ("alvaro", "");`
+    `INSERT INTO "user"("name", "image") VALUES ("alvaro", "");`,
+    `INSERT INTO "subcategory"("name", "image") VALUES ("Sin subcategoría", "");`
     // `INSERT INTO "category" ("name","image","active") VALUES ("comida","",1);`,
     // `INSERT INTO "category" ("name","image","active") VALUES ("salud","",1);`,
     // `INSERT INTO "category" ("name","image","active") VALUES ("aseo","",1);`,

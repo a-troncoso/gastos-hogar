@@ -1,48 +1,41 @@
 import DB from "../../utils/database";
 import { PURCHASE_QUERIES } from "./purchaseQueries";
 
-export const insertPurchase = (pictures, categoryID) => {
+export const insertPurchase = (pictures, categoryID, subcategoryId) => {
   const currendDate = new Date();
 
-  DB.transaction(tx => {
-    tx.executeSql(
-      PURCHASE_QUERIES.INSERT_PURCHASE,
-      [categoryID, currendDate.toISOString()],
-      (_, result) => {
-        console.info("Purchase inserted in DataBase: ", result);
+  return new Promise((resolve, reject) => {
+    DB.transaction(tx => {
+      tx.executeSql(
+        PURCHASE_QUERIES.INSERT_PURCHASE,
+        [categoryID, subcategoryId, currendDate.toISOString()],
+        (_, result) => {
+          const purchaseId = result.insertId;
 
-        const purchaseId = result.insertId;
-
-        pictures.forEach(pictureURI => {
-          tx.executeSql(
-            PURCHASE_QUERIES.INSERT_PURCHASE_IMAGE,
-            [purchaseId, pictureURI],
-            (_, result) => {
-              console.info("Purchase Image inserted  ", result);
-            },
-            error => {
-              console.error(
-                "Error inserting Purchase Image in Database: ",
-                error
-              );
-            }
-          );
-          tx.executeSql(
-            "select * from purchase_image;",
-            [],
-            (_, result) => {
-              console.info("select * from purchase_image", result);
-            },
-            error => {
-              console.error("Error select * from purchase_image: ", error);
-            }
-          );
-        });
-      },
-      error => {
-        console.error("Error inserting Purchase in Database: ", error);
-      }
-    );
+          pictures.forEach(pictureURI => {
+            tx.executeSql(
+              PURCHASE_QUERIES.INSERT_PURCHASE_IMAGE,
+              [purchaseId, pictureURI],
+              (_, s) => {
+                resolve(s);
+              },
+              error => {
+                reject(error);
+                // TODO: This must be a rollback
+                console.error(
+                  "Error inserting Purchase Image in Database: ",
+                  error
+                );
+              }
+            );
+          });
+        },
+        error => {
+          reject(error);
+          // console.error("Error inserting Purchase in Database: ", error);
+        }
+      );
+    });
   });
 };
 
