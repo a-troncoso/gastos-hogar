@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { StyleSheet, View, SafeAreaView, ToastAndroid } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import CategoriesList from "../domain/category/CategoriesList";
+
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
 import { useRoute } from "@react-navigation/native";
@@ -17,11 +18,9 @@ const Toast = ({ visible, message }) => {
 };
 
 const Categories = props => {
-  const { navigation } = props;
+  const { navigation, route } = props;
   const [categories, setCategories] = useState([]);
   const [visibleToast, setVisibleToast] = useState(false);
-
-  const route = useRoute();
 
   useFocusEffect(
     useCallback(() => {

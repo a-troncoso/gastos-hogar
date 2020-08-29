@@ -11,7 +11,7 @@ export const fetchAllCategories = () => {
           resolve(result.rows._array);
         },
         err => {
-          console.log("error", err);
+          console.error("Error fetching fetchAllCategories: ", error);
         }
       );
     });

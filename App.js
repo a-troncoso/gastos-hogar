@@ -9,6 +9,7 @@ import {
 import CustomRouter from "./src/router/CustomRouter";
 import * as SQLite from "expo-sqlite";
 import * as FileSystem from "expo-file-system";
+import alerts from "./src/utils/alerts/Alerts";
 
 start();
 
@@ -70,7 +71,7 @@ const App = () => {
     try {
       await dbTest.transaction(tx => tx.executeSql(""));
     } catch (e) {
-      console.log("error!", e);
+      alerts.throwErrorAlert('crear _makeSQLiteDirAsync', JSON.stringify(e));
     }
   };
 
