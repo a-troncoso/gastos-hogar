@@ -1,18 +1,28 @@
 import React, { useState, useCallback } from "react";
-import { StyleSheet, View, SafeAreaView } from "react-native";
+import { StyleSheet, View, SafeAreaView, ToastAndroid } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import CategoriesList from "../domain/category/CategoriesList";
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
 import Constants from "expo-constants";
 
+const Toast = ({ visible, message }) => {
+  if (visible) {
+    ToastAndroid.show(message, ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50);
+    return null;
+  }
+  return null;
+};
+
 const Categories = props => {
-  const { navigation } = props;
+  const { navigation, route } = props;
   const [categories, setCategories] = useState([]);
+  const [visibleToast, setVisibleToast] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       _fetchCategories();
+      if (route.params.evt === "PURCHASE_SAVED") setVisibleToast(true);
     }, [])
   );
 
@@ -36,6 +46,7 @@ const Categories = props => {
             onPressCategory={handlePressCategory}
           />
         </SafeAreaView>
+        <Toast visible={visibleToast} message="Compra guardada" />
       </View>
     </View>
   );

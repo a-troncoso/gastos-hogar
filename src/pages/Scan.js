@@ -17,7 +17,7 @@ import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
 import { insertPurchase } from "../dbOperations/purchase/purchaseBDTransactions";
 
-import alerts from '../utils/alerts/Alerts';
+import alerts from "../utils/alerts/Alerts";
 
 import { Octicons } from "@expo/vector-icons";
 
@@ -64,6 +64,7 @@ const Scan = props => {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [cameraMounted, setCameraMounted] = useState(true);
   const [pictures, setPictures] = useState([]);
+  const [isPurchaseInserted, setIsPurchaseInserted] = useState(false);
   const cameraRef = useRef(null);
   const picturesRoll = useRef(null);
 
@@ -82,9 +83,14 @@ const Scan = props => {
     _requestCameraPermission();
   }, []);
 
+  // useEffect(() => {
+  //   if (!cameraMounted) navigation.navigate("Categories", { evt: 'PURCHASE_SAVED' });
+  // }, [cameraMounted]);
+
   useEffect(() => {
-    if (!cameraMounted) navigation.navigate("Categories");
-  }, [cameraMounted]);
+    if (cameraMounted)
+      navigation.navigate("Categories", { evt: "PURCHASE_SAVED" });
+  }, [isPurchaseInserted]);
 
   const _requestCameraPermission = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -129,7 +135,10 @@ const Scan = props => {
     try {
       await MediaLibrary.createAssetAsync(to);
     } catch (err) {
-      alerts.throwErrorAlert("guardar foto en el dispositivo", JSON.stringify(err));
+      alerts.throwErrorAlert(
+        "guardar foto en el dispositivo",
+        JSON.stringify(err)
+      );
     }
   };
 
@@ -140,11 +149,17 @@ const Scan = props => {
 
   const savePurchase = async () => {
     try {
-      await insertPurchase(pictures, route.params.categoryId, 1);
+      const insertResult = await insertPurchase(
+        pictures,
+        route.params.categoryId,
+        1
+      );
+      setCameraMounted(false);
+
+      if (insertResult) setIsPurchaseInserted(true);
     } catch (err) {
       alerts.throwErrorAlert("ingresar la compra", JSON.stringify(err));
     }
-    setCameraMounted(false);
   };
 
   return (
