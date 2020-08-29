@@ -7,13 +7,12 @@ import {
   TouchableOpacity,
   TextInput
 } from "react-native";
+import alerts from "../utils/alerts/Alerts";
 import {
   fetchCategoryById,
   patchCategoryName,
   removeCategory
 } from "../dbOperations/category/categoryBDTransactions";
-import { toCurrencyFormat } from "../utils/number";
-import { formatDate } from "../utils/date";
 
 const CategoryDetail = props => {
   const { route, navigation } = props;
@@ -55,10 +54,16 @@ const CategoryDetail = props => {
     }
   };
 
-  const handlePressRemoveCategoryButton = async () => {
-    const removeResult = await removeCategory(route.params.categoryId);
+  const handlePressRemoveCategory = async () => {
+    const _removeCategory = async () => {
+      const removeResult = await removeCategory(route.params.categoryId);
+      if (removeResult === "OK") navigation.navigate("CategoriesAdminGate");
+    };
 
-    if (removeResult === "OK") navigation.navigate("CategoriesAdminGate");
+    alerts.throwConfirmationAlert({
+      title: `¿Deseas eliminar la categoría ${categoryDetail.name}?`,
+      onPressPositive: () => _removeCategory()
+    });
   };
 
   return (
@@ -94,7 +99,7 @@ const CategoryDetail = props => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.removeCategoryButton}
-          onPress={handlePressRemoveCategoryButton}
+          onPress={handlePressRemoveCategory}
         >
           <Text>Eliminar</Text>
         </TouchableOpacity>

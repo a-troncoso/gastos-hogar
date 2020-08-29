@@ -6,7 +6,7 @@ import DateFilterSelector from "../domain/shared/DateFilterSelector";
 import Chart from "../domain/dashboard/Chart";
 import Calendar from "../domain/dashboard/calendar/Calendar";
 
-import throwErrorAlert from "../utils/alerts/Alerts";
+import alerts from "../utils/alerts/Alerts";
 
 import {
   fetchTotalAmountByDateCriteria,
@@ -129,7 +129,7 @@ const DashbhoardGate = () => {
       setTotalAmount(totalAmountInfo.totalAmount);
     } catch (err) {
       console.err(err);
-      throwErrorAlert("calcular el monto total", JSON.stringify(err));
+      alerts.throwErrorAlert("calcular el monto total", JSON.stringify(err));
     }
   };
 
@@ -144,7 +144,7 @@ const DashbhoardGate = () => {
       const processedList = amountsPerCategory.filter(a => a.totalAmount > 0);
       setAmountsPerCategory(processedList);
     } catch (err) {
-      throwErrorAlert("calcular montos por categoría", JSON.stringify(err));
+      alerts.throwErrorAlert("calcular montos por categoría", JSON.stringify(err));
     }
   };
 
@@ -165,7 +165,7 @@ const DashbhoardGate = () => {
       });
       setRelevantByDateCriteria(processedList);
     } catch (err) {
-      throwErrorAlert("calcular los montos", JSON.stringify(err));
+      alerts.throwErrorAlert("calcular los montos", JSON.stringify(err));
     }
   };
 
