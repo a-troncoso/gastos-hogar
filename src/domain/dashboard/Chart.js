@@ -3,7 +3,8 @@ import {
   VictoryBar,
   VictoryChart,
   VictoryTheme,
-  VictoryPie
+  VictoryPie,
+  VictoryLabel
 } from "victory-native";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
@@ -22,10 +23,17 @@ const Chart = props => {
     <View style={styles.chart}>
       <VictoryPie
         data={parsedData}
-        labelRadius={({ innerRadius }) => innerRadius + 4}
         innerRadius={40}
+        labelRadius={({ innerRadius }) => innerRadius + 105}
+        labelComponent={
+          <VictoryLabel
+            labelPlacement="parallel"
+            angle={-55}
+            textAnchor="middle"
+          />
+        }
         style={{
-          labels: { fill: "white", fontSize: 20, fontWeight: "bold" }
+          labels: { fill: "black", fontSize: 12 }
         }}
       />
     </View>
