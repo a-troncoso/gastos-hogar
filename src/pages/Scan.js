@@ -17,7 +17,7 @@ import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
 import { insertPurchase } from "../dbOperations/purchase/purchaseBDTransactions";
 
-import throwErrorAlert from '../utils/alerts/Alerts';
+import alerts from '../utils/alerts/Alerts';
 
 import { Octicons } from "@expo/vector-icons";
 
@@ -116,7 +116,7 @@ const Scan = props => {
     try {
       await FileSystem.copyAsync({ from: pictureURI, to });
     } catch (err) {
-      throwErrorAlert("copiar fotos", JSON.stringify(err));
+      alerts.throwErrorAlert("copiar fotos", JSON.stringify(err));
     }
   };
 
@@ -129,7 +129,7 @@ const Scan = props => {
     try {
       await MediaLibrary.createAssetAsync(to);
     } catch (err) {
-      throwErrorAlert("guardar foto en el dispositivo", JSON.stringify(err));
+      alerts.throwErrorAlert("guardar foto en el dispositivo", JSON.stringify(err));
     }
   };
 
@@ -142,7 +142,7 @@ const Scan = props => {
     try {
       await insertPurchase(pictures, route.params.categoryId, 1);
     } catch (err) {
-      throwErrorAlert("ingresar la compra", JSON.stringify(err));
+      alerts.throwErrorAlert("ingresar la compra", JSON.stringify(err));
     }
     setCameraMounted(false);
   };
