@@ -1,8 +1,10 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { StyleSheet, View, SafeAreaView, ToastAndroid } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import CategoriesList from "../domain/category/CategoriesList";
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
+
+import { useRoute } from "@react-navigation/native";
 
 import Constants from "expo-constants";
 
@@ -15,16 +17,26 @@ const Toast = ({ visible, message }) => {
 };
 
 const Categories = props => {
-  const { navigation, route } = props;
+  const { navigation } = props;
   const [categories, setCategories] = useState([]);
   const [visibleToast, setVisibleToast] = useState(false);
+
+  const route = useRoute();
 
   useFocusEffect(
     useCallback(() => {
       _fetchCategories();
-      if (route.params.evt === "PURCHASE_SAVED") setVisibleToast(true);
     }, [])
   );
+
+  useEffect(() => {
+    if (route.params && route.params.evt === "PURCHASE_SAVED") {
+      setVisibleToast(true);
+      navigation.setParams({ evt: "" });
+    }
+  }, [route.params]);
+
+  useEffect(() => setVisibleToast(false), [visibleToast]);
 
   const _fetchCategories = async () => {
     const categories = await fetchAllCategories();

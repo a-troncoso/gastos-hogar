@@ -71,6 +71,7 @@ const Scan = props => {
   useFocusEffect(
     useCallback(() => {
       setCameraMounted(true);
+      setIsPurchaseInserted(false);
       setPictures([]);
 
       return () => {
@@ -83,12 +84,8 @@ const Scan = props => {
     _requestCameraPermission();
   }, []);
 
-  // useEffect(() => {
-  //   if (!cameraMounted) navigation.navigate("Categories", { evt: 'PURCHASE_SAVED' });
-  // }, [cameraMounted]);
-
   useEffect(() => {
-    if (cameraMounted)
+    if (isPurchaseInserted)
       navigation.navigate("Categories", { evt: "PURCHASE_SAVED" });
   }, [isPurchaseInserted]);
 
@@ -154,9 +151,7 @@ const Scan = props => {
         route.params.categoryId,
         1
       );
-      setCameraMounted(false);
-
-      if (insertResult) setIsPurchaseInserted(true);
+      if (insertResult.rowsAffected) setIsPurchaseInserted(true);
     } catch (err) {
       alerts.throwErrorAlert("ingresar la compra", JSON.stringify(err));
     }
