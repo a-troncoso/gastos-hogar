@@ -7,18 +7,12 @@ import {
   TouchableOpacity,
   TextInput
 } from "react-native";
-import {
-  fetchCategoryById,
-  patchCategoryName,
-  addCategory
-} from "../dbOperations/category/categoryBDTransactions";
-import { toCurrencyFormat } from "../utils/number";
-import { formatDate } from "../utils/date";
+import { addCategory } from "../dbOperations/category/categoryBDTransactions";
 
 const CategoryCreation = props => {
-  const { route, navigation } = props;
+  const { navigation } = props;
 
-  const [categoryDetail, setCategoryDetail] = useState({});
+  const [categoryDetail] = useState({});
   const [categoryNameValue, setCategoryNameValue] = useState("");
 
   useEffect(() => {}, []);

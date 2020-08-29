@@ -6,4 +6,22 @@ const throwErrorAlert = (action, message) => {
   });
 };
 
-export default throwErrorAlert;
+const throwConfirmationAlert = params => {
+  const {
+    title,
+    message = "",
+    onPressPositive = () => {},
+    onPressNegative = () => {}
+  } = params;
+
+  Alert.alert(title, message, [
+    {
+      text: "No",
+      onPress: () => onPressNegative(),
+      style: "cancel"
+    },
+    { text: "Si", onPress: () => onPressPositive() }
+  ]);
+};
+
+export default { throwErrorAlert, throwConfirmationAlert };
