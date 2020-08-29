@@ -14,6 +14,3 @@ or
 
 To build Android apk:
 ```expo build:android```
-
-To build iOS apk:
-```expo build:ios```
