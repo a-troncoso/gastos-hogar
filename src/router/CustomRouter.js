@@ -1,9 +1,14 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { Button } from "react-native";
+import { NavigationContainer, DrawerActions } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem
+} from "@react-navigation/drawer";
 import PurchaseImagesModal from "../domain/purchase/PurchaseImagesModal";
-// import RegistryExpenseGate from "../pages/RegistryExpenseGate";
 import ExpenseCategoryGate from "../pages/RegistryExpenseGate";
 import History from "../pages/History";
 import Purchases from "../pages/Purchases";
@@ -21,7 +26,7 @@ const DashboardStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const CustomRouter = () => {
-  const screenGlobalOption = {
+  const screenGlobalOption = navigation => ({
     title: "",
     headerStyle: {
       height: 64
@@ -29,8 +34,15 @@ const CustomRouter = () => {
     headerTitleStyle: {
       fontSize: 20,
       textAlign: "center"
-    }
-  };
+    },
+    headerLeft: () => (
+      <Button
+        onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        title="Menu"
+        color="#000"
+      />
+    )
+  });
 
   const RegistryExpense = () => {
     return (
@@ -38,7 +50,10 @@ const CustomRouter = () => {
         <RegistryExpenseStack.Screen
           name="ExpenseCategoryGate"
           component={ExpenseCategoryGate}
-          options={{ ...screenGlobalOption, title: "Categoría del egreso" }}
+          options={({ navigation }) => ({
+            ...screenGlobalOption(navigation),
+            title: "Categoría del egreso"
+          })}
         />
       </RegistryExpenseStack.Navigator>
     );
@@ -100,18 +115,39 @@ const CustomRouter = () => {
     );
   };
 
+  function CustomDrawerContent(props) {
+    return (
+      <DrawerContentScrollView {...props}>
+        <DrawerItemList {...props} />
+        <DrawerItem
+          label="Close drawer"
+          onPress={() => props.navigation.closeDrawer()}
+        />
+        <DrawerItem
+          label="Toggle drawer"
+          onPress={() => props.navigation.toggleDrawer()}
+        />
+      </DrawerContentScrollView>
+    );
+  }
+
   const MainStackScreen = () => {
     return (
-      <Drawer.Navigator initialRouteName="PurchaseRegistry">
+      <Drawer.Navigator
+        initialRouteName="RegistryExpense"
+        drawerContent={props => <CustomDrawerContent {...props} />}
+      >
         <Drawer.Screen
           name="Dashboard"
           component={DashboardStackScreen}
           options={{ title: "Dashboard" }}
         />
         <Drawer.Screen
-          name="PurchaseRegistry"
+          name="RegistryExpense"
           component={RegistryExpense}
-          options={{ title: "Registrar Compra" }}
+          options={{
+            title: "Registrar Compra"
+          }}
         />
         <Drawer.Screen
           name="Summary"
