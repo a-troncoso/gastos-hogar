@@ -3,7 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import PurchaseImagesModal from "../domain/purchase/PurchaseImagesModal";
-import PurchaseRegistry from "../pages/PurchaseRegistry";
+// import RegistryExpenseGate from "../pages/RegistryExpenseGate";
+import ExpenseCategoryGate from "../pages/RegistryExpenseGate";
 import History from "../pages/History";
 import Purchases from "../pages/Purchases";
 import Purchase from "../pages/Purchase";
@@ -13,7 +14,7 @@ import CategoryDetail from "../pages/CategoryDetail";
 import CategoryCreation from "../pages/CategoryCreation";
 
 const RootStack = createStackNavigator();
-const PurchaseRegistryStack = createStackNavigator();
+const RegistryExpenseStack = createStackNavigator();
 const SummaryStack = createStackNavigator();
 const CategoryManagementStack = createStackNavigator();
 const DashboardStack = createStackNavigator();
@@ -31,14 +32,15 @@ const CustomRouter = () => {
     }
   };
 
-  const PurchaseRegistryStackScreen = () => {
+  const RegistryExpense = () => {
     return (
-      <PurchaseRegistryStack.Navigator headerMode="none">
-        <PurchaseRegistryStack.Screen
-          name="PurchaseRegistry"
-          component={PurchaseRegistry}
+      <RegistryExpenseStack.Navigator>
+        <RegistryExpenseStack.Screen
+          name="ExpenseCategoryGate"
+          component={ExpenseCategoryGate}
+          options={{ ...screenGlobalOption, title: "Categoría del egreso" }}
         />
-      </PurchaseRegistryStack.Navigator>
+      </RegistryExpenseStack.Navigator>
     );
   };
 
@@ -76,13 +78,11 @@ const CustomRouter = () => {
           name="CategoryDetail"
           component={CategoryDetail}
           options={{ ...screenGlobalOption, title: "Detalle de la categoría" }}
-
         />
         <CategoryManagementStack.Screen
           name="CategoryCreation"
           component={CategoryCreation}
           options={{ ...screenGlobalOption, title: "Crear categoría" }}
-
         />
       </CategoryManagementStack.Navigator>
     );
@@ -102,7 +102,6 @@ const CustomRouter = () => {
 
   const MainStackScreen = () => {
     return (
-      // <Drawer.Navigator initialRouteName="PurchaseRegistry">
       <Drawer.Navigator initialRouteName="PurchaseRegistry">
         <Drawer.Screen
           name="Dashboard"
@@ -111,7 +110,7 @@ const CustomRouter = () => {
         />
         <Drawer.Screen
           name="PurchaseRegistry"
-          component={PurchaseRegistryStackScreen}
+          component={RegistryExpense}
           options={{ title: "Registrar Compra" }}
         />
         <Drawer.Screen

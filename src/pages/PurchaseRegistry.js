@@ -1,16 +1,17 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
-import Categories from "./Categories";
+import ExpenseCategoryGate from "./RegistryExpenseGate";
 import Scan from "./Scan";
 const Tab = createBottomTabNavigator();
 
+// TODO: Canditate to deprecate
 const PurchaseRegistry = props => {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="Categories"
-        component={Categories}
+        name="ExpenseCategoryGate"
+        component={ExpenseCategoryGate}
         options={{
           tabBarLabel: "Categorías",
           tabBarIcon: ({ color, size }) => (

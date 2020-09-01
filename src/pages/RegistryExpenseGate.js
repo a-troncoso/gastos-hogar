@@ -5,8 +5,6 @@ import CategoriesList from "../domain/category/CategoriesList";
 
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
-import { useRoute } from "@react-navigation/native";
-
 import Constants from "expo-constants";
 
 const Toast = ({ visible, message }) => {
@@ -17,7 +15,7 @@ const Toast = ({ visible, message }) => {
   return null;
 };
 
-const Categories = props => {
+const RegistryExpenseGate = props => {
   const { navigation, route } = props;
   const [categories, setCategories] = useState([]);
   const [visibleToast, setVisibleToast] = useState(false);
@@ -79,4 +77,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Categories;
+export default RegistryExpenseGate;

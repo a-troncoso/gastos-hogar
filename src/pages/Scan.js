@@ -86,7 +86,7 @@ const Scan = props => {
 
   useEffect(() => {
     if (isPurchaseInserted)
-      navigation.navigate("Categories", { evt: "PURCHASE_SAVED" });
+      navigation.navigate("ExpenseCategoryGate", { evt: "PURCHASE_SAVED" });
   }, [isPurchaseInserted]);
 
   const _requestCameraPermission = async () => {
