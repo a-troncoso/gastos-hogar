@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, View } from "react-native";
+import { Button, View, TouchableOpacity, StyleSheet } from "react-native";
 import { NavigationContainer, DrawerActions } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
@@ -18,6 +18,8 @@ import DashbhoardGate from "../pages/DashbhoardGate";
 import CategoryDetail from "../pages/CategoryDetail";
 import CategoryCreation from "../pages/CategoryCreation";
 
+import { Feather } from "@expo/vector-icons";
+
 import color from "../utils//styles/color";
 
 const RootStack = createStackNavigator();
@@ -26,6 +28,26 @@ const SummaryStack = createStackNavigator();
 const CategoryManagementStack = createStackNavigator();
 const DashboardStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+
+const MenuButton = props => {
+  const { navigation } = props;
+
+  return (
+    <TouchableOpacity
+      onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+    >
+      <View style={menuButtonStyles.menuButtonIconView}>
+        <Feather name="menu" size={24} color={color.black} />
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const menuButtonStyles = StyleSheet.create({
+  menuButtonIconView: {
+    padding: 16
+  }
+});
 
 const CustomRouter = () => {
   const screenGlobalOption = navigation => ({
@@ -40,13 +62,7 @@ const CustomRouter = () => {
       fontSize: 20,
       textAlign: "center"
     },
-    headerLeft: () => (
-      <Button
-        onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-        title="Menu"
-        color="#000"
-      />
-    ),
+    headerLeft: () => <MenuButton navigation={navigation} />,
     headerRight: () => <View></View>
   });
 
@@ -140,7 +156,11 @@ const CustomRouter = () => {
           component={DashboardStackScreen}
           options={{ title: "Dashboard" }}
         />
-        <Drawer.Screen name="RegistryExpense" component={RegistryExpense} />
+        <Drawer.Screen
+          name="RegistryExpense"
+          component={RegistryExpense}
+          options={{ title: "Registrar egreso" }}
+        />
         <Drawer.Screen
           name="Summary"
           component={SummaryStackScreen}
