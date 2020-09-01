@@ -1,11 +1,14 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { StyleSheet, View, SafeAreaView, ToastAndroid } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import Constants from "expo-constants";
+
 import CategoriesList from "../domain/category/CategoriesList";
 
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
-import Constants from "expo-constants";
+import color from '../utils/styles/color'
+
 
 const Toast = ({ visible, message }) => {
   if (visible) {
@@ -65,7 +68,7 @@ const styles = StyleSheet.create({
   categories: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: color.blue["90"],
     alignSelf: "stretch",
     paddingTop: Constants.statusBarHeight
   },

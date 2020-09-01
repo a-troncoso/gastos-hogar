@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { toCurrencyFormat } from "../../utils/number";
 
+import color from '../../utils/styles/color'
+
 const Category = props => {
   const { name, extraInfo, onPress } = props;
 
@@ -27,9 +29,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignSelf: "stretch",
     alignItems: "center",
-    borderColor: "black",
+    borderColor: color.blue["60"],
     borderStyle: "solid",
-    borderWidth: 1
+    borderWidth: 1,
+    borderRadius: 16
   },
   categoryCategoryName: {
     fontSize: 24,
