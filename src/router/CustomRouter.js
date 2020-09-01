@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "react-native";
+import { Button, View } from "react-native";
 import { NavigationContainer, DrawerActions } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
@@ -29,7 +29,10 @@ const CustomRouter = () => {
   const screenGlobalOption = navigation => ({
     title: "",
     headerStyle: {
-      height: 64
+      height: 80,
+      backgroundColor: "#C6E4FF",
+      elevation: 0, // Android
+      shadowOpacity: 0 // iOS
     },
     headerTitleStyle: {
       fontSize: 20,
@@ -41,7 +44,8 @@ const CustomRouter = () => {
         title="Menu"
         color="#000"
       />
-    )
+    ),
+    headerRight: () => <View></View>
   });
 
   const RegistryExpense = () => {
@@ -115,40 +119,26 @@ const CustomRouter = () => {
     );
   };
 
-  function CustomDrawerContent(props) {
+  const DrawerContent = props => {
     return (
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
-        <DrawerItem
-          label="Close drawer"
-          onPress={() => props.navigation.closeDrawer()}
-        />
-        <DrawerItem
-          label="Toggle drawer"
-          onPress={() => props.navigation.toggleDrawer()}
-        />
       </DrawerContentScrollView>
     );
-  }
+  };
 
   const MainStackScreen = () => {
     return (
       <Drawer.Navigator
         initialRouteName="RegistryExpense"
-        drawerContent={props => <CustomDrawerContent {...props} />}
+        drawerContent={props => <DrawerContent {...props} />}
       >
         <Drawer.Screen
           name="Dashboard"
           component={DashboardStackScreen}
           options={{ title: "Dashboard" }}
         />
-        <Drawer.Screen
-          name="RegistryExpense"
-          component={RegistryExpense}
-          options={{
-            title: "Registrar Compra"
-          }}
-        />
+        <Drawer.Screen name="RegistryExpense" component={RegistryExpense} />
         <Drawer.Screen
           name="Summary"
           component={SummaryStackScreen}
