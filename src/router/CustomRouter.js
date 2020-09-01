@@ -18,6 +18,8 @@ import DashbhoardGate from "../pages/DashbhoardGate";
 import CategoryDetail from "../pages/CategoryDetail";
 import CategoryCreation from "../pages/CategoryCreation";
 
+import color from "../utils//styles/color";
+
 const RootStack = createStackNavigator();
 const RegistryExpenseStack = createStackNavigator();
 const SummaryStack = createStackNavigator();
@@ -30,7 +32,7 @@ const CustomRouter = () => {
     title: "",
     headerStyle: {
       height: 80,
-      backgroundColor: "#C6E4FF",
+      backgroundColor: color.blue["50"],
       elevation: 0, // Android
       shadowOpacity: 0 // iOS
     },
