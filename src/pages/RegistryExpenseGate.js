@@ -44,7 +44,7 @@ const RegistryExpenseGate = props => {
   };
 
   const handlePressCategory = id => {
-    navigation.navigate("Scan", {
+    navigation.navigate("ExpenseDetail", {
       categoryId: id
     });
   };

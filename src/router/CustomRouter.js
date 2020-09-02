@@ -10,6 +10,7 @@ import {
 } from "@react-navigation/drawer";
 import PurchaseImagesModal from "../domain/purchase/PurchaseImagesModal";
 import ExpenseCategoryGate from "../pages/RegistryExpenseGate";
+import ExpenseDetail from "../pages/ExpenseDetail";
 import History from "../pages/History";
 import Purchases from "../pages/Purchases";
 import Purchase from "../pages/Purchase";
@@ -75,6 +76,14 @@ const CustomRouter = () => {
           options={({ navigation }) => ({
             ...screenGlobalOption(navigation),
             title: "Categoría del egreso"
+          })}
+        />
+        <RegistryExpenseStack.Screen
+          name="ExpenseDetail"
+          component={ExpenseDetail}
+          options={({ navigation }) => ({
+            ...screenGlobalOption(navigation),
+            title: "Egreso"
           })}
         />
       </RegistryExpenseStack.Navigator>
