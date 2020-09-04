@@ -245,7 +245,6 @@ const styles = StyleSheet.create({
     position: "relative",
     flexDirection: "row",
     minHeight: 80,
-    marginTop: 8,
     backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center"

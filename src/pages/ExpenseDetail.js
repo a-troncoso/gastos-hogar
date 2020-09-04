@@ -1,10 +1,9 @@
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
-  SafeAreaView,
-  ToastAndroid,
-  Text
+  Text,
+  TouchableHighlight
 } from "react-native";
 import { Camera } from "expo-camera";
 import * as Permissions from "expo-permissions";
@@ -19,17 +18,27 @@ const Hero = props => {
 
 const styles = StyleSheet.create({
   hero: {
-    height: 80,
+    // borderColor: "red",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    height: 112,
     alignItems: "center",
     backgroundColor: color.blue["50"]
   }
 });
 
 const ExpenseImage = props => {
+  const { onPressCamera } = props;
+
   return (
     <View style={expenseImage.view}>
       <View style={expenseImage.expenseCameraView}>
-        <ExpenseCamera />
+        <TouchableHighlight
+          style={expenseImage.cameraTouchable}
+          onPress={() => onPressCamera()}
+        >
+          <ExpenseCamera />
+        </TouchableHighlight>
       </View>
       <View style={expenseImage.amountView}>
         <Text style={expenseImage.amount}>$ 0</Text>
@@ -40,28 +49,46 @@ const ExpenseImage = props => {
 
 const expenseImage = StyleSheet.create({
   view: {
-    width: 136,
-    height: 192,
-    flexDirection: "column",
-    borderRadius: 16,
-    backgroundColor: color.white
-  },
-  expenseCameraView: {
-    flex: 1
-    // borderColor: "red",
-    // borderWidth: 1,
-    // borderStyle: "solid"
-  },
-  amountView: {
-    paddingVertical: 4
     // borderColor: "blue",
     // borderWidth: 1,
-    // borderStyle: "solid"
+    // borderStyle: "solid",
+    width: 136,
+    height: 224,
+    flexDirection: "column",
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: color.white,
+    shadowColor: color.gray["50"],
+    shadowOffset: {
+      width: 0,
+      height: 6
+    },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+    elevation: 6
+  },
+  expenseCameraView: {
+    // borderColor: "red",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    flex: 1
+  },
+  amountView: {
+    // borderColor: "blue",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    paddingVertical: 4
   },
   amount: {
     color: "red",
     borderStyle: "solid",
     textAlign: "center"
+  },
+  cameraTouchable: {
+    // borderColor: "blue",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    flex: 1
   }
 });
 
@@ -110,16 +137,16 @@ const expenseCamera = StyleSheet.create({
   }
 });
 
-const KeyValue = () => {
+const Feature = () => {
   return (
-    <View style={keyValueStyles.view}>
+    <View style={featureStyles.view}>
       <Text>Fecha</Text>
       <Text>02/10/2020</Text>
     </View>
   );
 };
 
-const keyValueStyles = StyleSheet.create({
+const featureStyles = StyleSheet.create({
   view: {
     height: 56,
     flexDirection: "row",
@@ -131,19 +158,26 @@ const keyValueStyles = StyleSheet.create({
     borderRadius: 8,
     borderColor: color.blue["60"],
     borderStyle: "solid",
-    borderWidth: 1
+    borderWidth: 1,
+    backgroundColor: color.white
   }
 });
 
 const ExpenseDetail = props => {
-  const { mode } = props;
+  const { mode, navigation } = props;
 
   return (
     <View style={expenseDetail.view}>
-      <Hero central={<ExpenseImage />} />
+      <Hero
+        central={
+          <ExpenseImage onPressCamera={() => navigation.navigate("Scan")} />
+        }
+      />
       <View style={expenseDetail.features}>
-        <KeyValue />
-        <KeyValue />
+        <Feature />
+        <Feature />
+        <Feature />
+        <Feature />
       </View>
     </View>
   );
@@ -155,7 +189,8 @@ const expenseDetail = StyleSheet.create({
     backgroundColor: color.blue["90"]
   },
   features: {
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
+    paddingTop: 112 + 16
   }
 });
 

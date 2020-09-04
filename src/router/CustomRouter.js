@@ -11,6 +11,7 @@ import {
 import PurchaseImagesModal from "../domain/purchase/PurchaseImagesModal";
 import ExpenseCategoryGate from "../pages/RegistryExpenseGate";
 import ExpenseDetail from "../pages/ExpenseDetail";
+import ScanExpense from "../pages/Scan";
 import History from "../pages/History";
 import Purchases from "../pages/Purchases";
 import Purchase from "../pages/Purchase";
@@ -85,6 +86,11 @@ const CustomRouter = () => {
             ...screenGlobalOption(navigation),
             title: "Egreso"
           })}
+        />
+        <RegistryExpenseStack.Screen
+          name="Scan"
+          component={ScanExpense}
+          options={{ headerShown: false }}
         />
       </RegistryExpenseStack.Navigator>
     );
