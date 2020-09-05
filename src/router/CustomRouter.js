@@ -84,8 +84,9 @@ const CustomRouter = () => {
           component={ExpenseDetail}
           options={({ navigation }) => ({
             ...screenGlobalOption(navigation),
-            title: "Egreso"
+            title: "Registro de egreso"
           })}
+          initialParams={{ mode: "NEW_EXPENSE" }}
         />
         <RegistryExpenseStack.Screen
           name="Scan"

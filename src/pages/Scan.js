@@ -60,6 +60,7 @@ PurchaseImage.propTypes = {
 
 const Scan = props => {
   const { navigation, route } = props;
+  const { params } = route;
 
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [cameraMounted, setCameraMounted] = useState(true);
@@ -145,16 +146,14 @@ const Scan = props => {
   };
 
   const savePurchase = async () => {
-    try {
-      const insertResult = await insertPurchase(
-        pictures,
-        route.params.categoryId,
-        1
-      );
-      if (insertResult.rowsAffected) setIsPurchaseInserted(true);
-    } catch (err) {
-      alerts.throwErrorAlert("ingresar la compra", JSON.stringify(err));
-    }
+    // try {
+    //   const insertResult = await insertPurchase(pictures, params.categoryId, 1);
+    //   if (insertResult.rowsAffected) setIsPurchaseInserted(true);
+    // } catch (err) {
+    //   alerts.throwErrorAlert("ingresar la compra", JSON.stringify(err));
+    // }
+
+    navigation.navigate("ExpenseDetail", { mode: params.fromMode });
   };
 
   return (

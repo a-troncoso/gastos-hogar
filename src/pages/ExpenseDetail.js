@@ -3,7 +3,8 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableHighlight
+  TouchableHighlight,
+  TouchableOpacity
 } from "react-native";
 import { Camera } from "expo-camera";
 import * as Permissions from "expo-permissions";
@@ -77,12 +78,13 @@ const expenseImage = StyleSheet.create({
     // borderColor: "blue",
     // borderWidth: 1,
     // borderStyle: "solid",
-    paddingVertical: 4
+    paddingVertical: 8
   },
   amount: {
     color: "red",
     borderStyle: "solid",
-    textAlign: "center"
+    textAlign: "center",
+    fontWeight: "bold"
   },
   cameraTouchable: {
     // borderColor: "blue",
@@ -137,47 +139,119 @@ const expenseCamera = StyleSheet.create({
   }
 });
 
-const Feature = () => {
+const Feature = props => {
+  const { name, value, voidValue } = props;
+
   return (
     <View style={featureStyles.view}>
-      <Text>Fecha</Text>
-      <Text>02/10/2020</Text>
+      <Text style={featureStyles.featureName}>{name}</Text>
+      <Text
+        style={[
+          featureStyles.featureValue,
+          value ? featureStyles.existValue : featureStyles.notExistValue
+        ]}
+      >
+        {value || voidValue}
+      </Text>
     </View>
   );
 };
 
 const featureStyles = StyleSheet.create({
   view: {
-    height: 56,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
     marginBottom: 8,
-    paddingVertical: 8,
+    paddingVertical: 14,
     paddingHorizontal: 16,
     borderRadius: 8,
     borderColor: color.blue["60"],
     borderStyle: "solid",
     borderWidth: 1,
     backgroundColor: color.white
+  },
+  featureName: {
+    color: color.gray["110"],
+    fontWeight: "bold",
+    textTransform: "capitalize"
+  },
+  featureValue: {
+    fontWeight: "bold",
+    textTransform: "capitalize"
+  },
+  existValue: {
+    color: color.gray["140"]
+  },
+  notExistValue: {
+    color: color.gray["80"]
   }
 });
 
 const ExpenseDetail = props => {
-  const { mode, navigation } = props;
+  const { route, navigation } = props;
+  const { params } = route;
+
+  const expenseFeatures = {
+    images: { isListable: false },
+    amount: { isListable: false, value: null, name: "monto", voidValue: "" },
+    date: {
+      isListable: true,
+      value: "16/11/2020",
+      name: "fecha",
+      voidValue: "sin registrar"
+    },
+    category: {
+      isListable: true,
+      value: "alimentos",
+      name: "categoría",
+      voidValue: "sin categoría"
+    },
+    subcategory: {
+      isListable: true,
+      value: null,
+      name: "subcategoría",
+      voidValue: "sin subcategoría"
+    },
+    description: {
+      isListable: true,
+      value: null,
+      name: "descripción",
+      voidValue: "ninguna"
+    }
+  };
 
   return (
     <View style={expenseDetail.view}>
       <Hero
         central={
-          <ExpenseImage onPressCamera={() => navigation.navigate("Scan")} />
+          <ExpenseImage
+            onPressCamera={() =>
+              navigation.navigate("Scan", { fromMode: params.mode })
+            }
+          />
         }
       />
       <View style={expenseDetail.features}>
-        <Feature />
-        <Feature />
-        <Feature />
-        <Feature />
+        {Object.keys(expenseFeatures).map(
+          ef =>
+            expenseFeatures[ef].isListable && (
+              <Feature
+                name={expenseFeatures[ef].name}
+                value={expenseFeatures[ef].value}
+                voidValue={expenseFeatures[ef].voidValue}
+              />
+            )
+        )}
+      </View>
+      <View style={expenseDetail.fixedBottomArea}>
+        {params.mode === "NEW_EXPENSE" && (
+          <TouchableOpacity
+            style={expenseDetail.saveBtn}
+            onPress={() => console.log("guardar")}
+          >
+            <Text style={expenseDetail.saveBtnText}>GUARDAR</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -190,7 +264,30 @@ const expenseDetail = StyleSheet.create({
   },
   features: {
     paddingHorizontal: 16,
-    paddingTop: 112 + 16
+    paddingTop: 112 + 24
+  },
+  fixedBottomArea: {
+    // borderColor: "blue",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-end",
+    paddingHorizontal: 16,
+    paddingBottom: 16
+  },
+  saveBtn: {
+    // borderColor: "blue",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    alignItems: "center",
+    backgroundColor: color.blue["20"],
+    borderRadius: 8
+  },
+  saveBtnText: {
+    fontWeight: "bold"
   }
 });
 
