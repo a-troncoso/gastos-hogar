@@ -7,8 +7,7 @@ import CategoriesList from "../domain/category/CategoriesList";
 
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
-import color from '../utils/styles/color'
-
+import color from "../utils/styles/color";
 
 const Toast = ({ visible, message }) => {
   if (visible) {
@@ -50,7 +49,7 @@ const RegistryExpenseGate = props => {
   };
 
   return (
-    <View style={styles.categories}>
+    <View style={styles.mainView}>
       <View style={styles.categoriesListView}>
         <SafeAreaView>
           <CategoriesList
@@ -58,19 +57,18 @@ const RegistryExpenseGate = props => {
             onPressCategory={handlePressCategory}
           />
         </SafeAreaView>
-        <Toast visible={visibleToast} message="Compra guardada" />
+        <Toast visible={visibleToast} message="Egreso ingresado" />
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  categories: {
+  mainView: {
     flex: 1,
     justifyContent: "center",
     backgroundColor: color.blue["90"],
-    alignSelf: "stretch",
-    paddingTop: Constants.statusBarHeight
+    alignSelf: "stretch"
   },
   categoriesListView: {
     flex: 1,

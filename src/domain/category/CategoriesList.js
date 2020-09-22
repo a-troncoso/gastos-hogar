@@ -59,7 +59,8 @@ const CategoriesList = props => {
 
 const styles = StyleSheet.create({
   categoriesListViewCategory: {
-    marginBottom: 8
+    // marginBottom: 8,
+    paddingTop: 8
   },
   addCategoryButton: {
     height: 100,

@@ -15,11 +15,13 @@ import { Camera } from "expo-camera";
 import * as Permissions from "expo-permissions";
 import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
+import ImageEditor from "@react-native-community/image-editor";
+import { Octicons } from "@expo/vector-icons";
+
 import { insertPurchase } from "../dbOperations/purchase/purchaseBDTransactions";
 
 import alerts from "../utils/alerts/Alerts";
-
-import { Octicons } from "@expo/vector-icons";
+import color from "../utils/styles/color";
 
 const PurchaseImage = props => {
   const { uri, onRemoveImage } = props;
@@ -112,13 +114,14 @@ const Scan = props => {
   };
 
   const _savePictureInAppMemory = async pictureURI => {
-    const to = `${FileSystem.documentDirectory}/${pictureURI.substring(
+    const fileName = pictureURI.substring(
       pictureURI.lastIndexOf("/") + 1,
       pictureURI.length
-    )}`;
+    );
+    const pathToSave = `${FileSystem.documentDirectory}/${fileName}`;
 
     try {
-      await FileSystem.copyAsync({ from: pictureURI, to });
+      await FileSystem.copyAsync({ from: pictureURI, to: pathToSave });
     } catch (err) {
       alerts.throwErrorAlert("copiar fotos", JSON.stringify(err));
     }
@@ -131,12 +134,45 @@ const Scan = props => {
     )}`;
 
     try {
-      await MediaLibrary.createAssetAsync(to);
+      const result = await MediaLibrary.createAssetAsync(to);
+      console.log("result", result);
+      _crop(result.uri);
     } catch (err) {
       alerts.throwErrorAlert(
         "guardar foto en el dispositivo",
         JSON.stringify(err)
       );
+    }
+  };
+
+  // TODO: implementar este recorde cuando termine feature nuevo diseño
+  const _crop = async pictureTaked => {
+    const cropProps = {
+      offset: {
+        x: 0,
+        y: 0
+      },
+      size: {
+        width: 20,
+        height: 20
+      }
+    };
+
+    console.log("pictureTaked", pictureTaked);
+
+    try {
+      const croppedImageURI = await ImageEditor.cropImage(
+        pictureTaked.uri,
+        cropProps
+      );
+
+      if (croppedImageURI) {
+        console.log("croppedImageURI", _savePictureInAppMemory);
+        // _savePictureInAppMemory(_savePictureInAppMemory);
+      }
+    } catch (cropError) {
+      console.log("cropError", cropError);
+      // alerts.throwErrorAlert("copiar fotos", JSON.stringify(cropError));
     }
   };
 
@@ -146,13 +182,17 @@ const Scan = props => {
   };
 
   const savePurchase = async () => {
-    // try {
-    //   const insertResult = await insertPurchase(pictures, params.categoryId, 1);
-    //   if (insertResult.rowsAffected) setIsPurchaseInserted(true);
-    // } catch (err) {
-    //   alerts.throwErrorAlert("ingresar la compra", JSON.stringify(err));
-    // }
+    // TODO:  Aqui no se debe guardar la compra,
+    //        se debe pasar las fotos tomadas a la pantalla anterior
 
+    /*
+    try {
+      const insertResult = await insertPurchase(pictures, params.categoryId, 1);
+      if (insertResult.rowsAffected) setIsPurchaseInserted(true);
+    } catch (err) {
+      alerts.throwErrorAlert("ingresar la compra", JSON.stringify(err));
+    }
+    */
     navigation.navigate("ExpenseDetail", { mode: params.fromMode });
   };
 
@@ -191,7 +231,7 @@ const Scan = props => {
                     <MaterialIcons
                       name="navigate-next"
                       size={32}
-                      color="#0062ff"
+                      color={color.gray["140"]}
                     />
                   </TouchableOpacity>
                 )}
@@ -266,9 +306,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 100 / 2,
-    borderColor: "#0062ff",
-    borderStyle: "solid",
-    borderWidth: 3
+    backgroundColor: color.blue["20"]
   },
   purchaseImageView: {
     position: "relative",

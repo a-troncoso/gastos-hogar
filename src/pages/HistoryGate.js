@@ -1,14 +1,15 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { StyleSheet, View, SafeAreaView } from "react-native";
+import { StyleSheet, View, SafeAreaView, TouchableOpacity } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import CategoriesList from "../domain/category/CategoriesList";
+import Hero from "../domain/shared/Hero";
+import DateNavigatorActivator from "../domain/shared/DateNavigatorActivator";
+import Constants from "expo-constants";
 import { fetchTotalPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
 import { formattedMonth, currentDate } from "../utils/date";
-import DateNavigator from "../domain/shared/DateNavigator";
+import color from "../utils/styles/color";
 
-import Constants from "expo-constants";
-
-const History = props => {
+const HistoryGate = props => {
   const { navigation } = props;
 
   const [categories, setCategories] = useState([]);
@@ -38,11 +39,22 @@ const History = props => {
     });
   };
 
+  const handleTest = () => {
+    navigation.navigate("PurchaseImagesModal", {
+      images: []
+    });
+  };
+
   return (
-    <View style={styles.categories}>
-      <DateNavigator
-        date={dateSelected}
-        onChangeDate={date => setDateSelected(date)}
+    <View style={styles.mainView}>
+      <Hero
+        button={
+          <DateNavigatorActivator
+            mode="MONTH"
+            date={currentDate}
+            test={handleTest}
+          />
+        }
       />
       <View style={styles.categoriesListView}>
         <SafeAreaView>
@@ -57,21 +69,17 @@ const History = props => {
 };
 
 const styles = StyleSheet.create({
-  categories: {
+  mainView: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#fff",
-    alignSelf: "stretch",
-    paddingTop: Constants.statusBarHeight
+    backgroundColor: color.blue["90"]
   },
 
   categoriesListView: {
     flex: 1,
     justifyContent: "center",
     alignSelf: "stretch",
-    paddingHorizontal: 16,
-    backgroundColor: "#fff"
+    paddingHorizontal: 16
   }
 });
 
-export default History;
+export default HistoryGate;

@@ -4,29 +4,17 @@ import {
   View,
   Text,
   TouchableHighlight,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert,
+  Picker
 } from "react-native";
 import { Camera } from "expo-camera";
 import * as Permissions from "expo-permissions";
 
+import Hero from "../domain/shared/Hero";
+import CategorySelector from "../domain/category/CategroySelector";
+
 import color from "../utils/styles/color";
-
-const Hero = props => {
-  const { central } = props;
-
-  return <View style={styles.hero}>{central}</View>;
-};
-
-const styles = StyleSheet.create({
-  hero: {
-    // borderColor: "red",
-    // borderWidth: 1,
-    // borderStyle: "solid",
-    height: 112,
-    alignItems: "center",
-    backgroundColor: color.blue["50"]
-  }
-});
 
 const ExpenseImage = props => {
   const { onPressCamera } = props;
@@ -58,7 +46,7 @@ const expenseImage = StyleSheet.create({
     flexDirection: "column",
     borderRadius: 16,
     overflow: "hidden",
-    backgroundColor: color.white,
+    backgroundColor: color.gray["0"],
     shadowColor: color.gray["50"],
     shadowOffset: {
       width: 0,
@@ -101,11 +89,6 @@ const ExpenseCamera = () => {
 
   useEffect(() => {
     _requestCameraPermission();
-    setCameraMounted(true);
-
-    return () => {
-      setCameraMounted(false);
-    };
   }, []);
 
   const _requestCameraPermission = async () => {
@@ -140,20 +123,33 @@ const expenseCamera = StyleSheet.create({
 });
 
 const Feature = props => {
-  const { name, value, voidValue } = props;
+  const { name, value, voidValue, onPressFeature, editableElement } = props;
+
+  const [isVisibleEditableElement, setIsVisibleEditableElement] = useState(
+    false
+  );
+
+  const handlePressFeature = () => {
+    setIsVisibleEditableElement(!isVisibleEditableElement);
+    onPressFeature();
+  };
 
   return (
-    <View style={featureStyles.view}>
-      <Text style={featureStyles.featureName}>{name}</Text>
-      <Text
-        style={[
-          featureStyles.featureValue,
-          value ? featureStyles.existValue : featureStyles.notExistValue
-        ]}
-      >
-        {value || voidValue}
-      </Text>
-    </View>
+    <TouchableOpacity onPress={() => handlePressFeature()}>
+      <View style={featureStyles.view}>
+        <Text style={featureStyles.featureName}>{name}</Text>
+        <Text
+          style={[
+            featureStyles.featureValue,
+            value ? featureStyles.existValue : featureStyles.notExistValue
+          ]}
+        >
+          {value || voidValue}
+        </Text>
+      </View>
+      {/* {isVisibleEditableElement && editableElement} */}
+      {editableElement}
+    </TouchableOpacity>
   );
 };
 
@@ -168,14 +164,20 @@ const featureStyles = StyleSheet.create({
     borderColor: color.blue["60"],
     borderStyle: "solid",
     borderWidth: 1,
-    backgroundColor: color.white
+    backgroundColor: color.gray["0"]
   },
   featureName: {
+    // borderColor: "blue",
+    // borderWidth: 1,
+    // borderStyle: "solid",
     color: color.gray["110"],
     fontWeight: "bold",
     textTransform: "capitalize"
   },
   featureValue: {
+    // borderColor: "blue",
+    // borderWidth: 1,
+    // borderStyle: "solid",
     fontWeight: "bold",
     textTransform: "capitalize"
   },
@@ -191,6 +193,34 @@ const ExpenseDetail = props => {
   const { route, navigation } = props;
   const { params } = route;
 
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    // _fetchPurchase(route.params.purchaseId);
+    _fetchCategories();
+  }, []);
+
+  const _fetchCategories = async () => {
+    const categories = await fetchAllCategories();
+    setCategories(categories);
+  };
+
+  // const handlePressFeature = () => {
+  //   editaitableElemble.category.isVisible(!editableElement.category.isVisible);
+  // };
+  const [editableElements, setEditatableElements] = useState({
+    category: { isVisible: false }
+  });
+
+  const handleSelectCategory = category => {
+    console.log("category", category);
+
+    setEditatableElements({
+      ...editableElements,
+      category: { isVisible: false }
+    });
+  };
+
   const expenseFeatures = {
     images: { isListable: false },
     amount: { isListable: false, value: null, name: "monto", voidValue: "" },
@@ -198,30 +228,59 @@ const ExpenseDetail = props => {
       isListable: true,
       value: "16/11/2020",
       name: "fecha",
-      voidValue: "sin registrar"
+      voidValue: "sin registrar",
+      onPressFeature: () => console.log("Se presiona fecha "),
+      editableElement: <></>
     },
     category: {
       isListable: true,
       value: "alimentos",
       name: "categoría",
-      voidValue: "sin categoría"
+      voidValue: "sin categoría",
+      onPressFeature: () =>
+        setEditatableElements({
+          ...editableElements,
+          category: { isVisible: true }
+        }),
+      editableElement: (
+        <CategorySelector
+          isModalVisible={editableElements.category.isVisible}
+          onBackdropPress={() =>
+            setEditatableElements({
+              ...editableElements,
+              category: { isVisible: false }
+            })
+          }
+          onPressCategory={category => handleSelectCategory(category)}
+        />
+      )
     },
     subcategory: {
       isListable: true,
       value: null,
       name: "subcategoría",
-      voidValue: "sin subcategoría"
+      voidValue: "sin subcategoría",
+      onPressFeature: () => console.log("Se presiona subcategoría"),
+      editableElement: <></>
     },
     description: {
       isListable: true,
       value: null,
       name: "descripción",
-      voidValue: "ninguna"
+      voidValue: "ninguna",
+      onPressFeature: () => Alert.alert("Hpña"),
+      editableElement: <></>
     }
   };
 
   return (
-    <View style={expenseDetail.view}>
+    <View style={expenseDetail.mainView}>
+      {/* TODO: Este model se supone q debería mostrar */}
+      {/* <Modal isVisible={true}>
+        <View style={{ flex: 1, width: 100, height: 100 }}>
+          <Text>I am the modal content!</Text>
+        </View>
+      </Modal> */}
       <Hero
         central={
           <ExpenseImage
@@ -233,12 +292,15 @@ const ExpenseDetail = props => {
       />
       <View style={expenseDetail.features}>
         {Object.keys(expenseFeatures).map(
-          ef =>
+          (ef, idx) =>
             expenseFeatures[ef].isListable && (
               <Feature
+                key={idx}
                 name={expenseFeatures[ef].name}
                 value={expenseFeatures[ef].value}
                 voidValue={expenseFeatures[ef].voidValue}
+                editableElement={expenseFeatures[ef].editableElement}
+                onPressFeature={expenseFeatures[ef].onPressFeature}
               />
             )
         )}
@@ -258,7 +320,7 @@ const ExpenseDetail = props => {
 };
 
 const expenseDetail = StyleSheet.create({
-  view: {
+  mainView: {
     flex: 1,
     backgroundColor: color.blue["90"]
   },
@@ -288,6 +350,14 @@ const expenseDetail = StyleSheet.create({
   },
   saveBtnText: {
     fontWeight: "bold"
+  },
+  purchaseCategoryPicker: {
+    width: 200,
+    height: 44,
+    borderColor: "black",
+    borderWidth: 1,
+    borderStyle: "solid",
+    textAlign: "left"
   }
 });
 

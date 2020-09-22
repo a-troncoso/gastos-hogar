@@ -59,11 +59,13 @@ const styles = StyleSheet.create({
   purchaseImagesModal: {
     flex: 1,
     justifyContent: "space-between",
-    backgroundColor: "#fff"
+    // backgroundColor: "#fff"
+    backgroundColor: "rgba(0,0,0,0.5)"
   },
   purchaseImagesModalMainImage: {
     height: screenHeight * 0.8 - 16,
-    backgroundColor: "#E8E8E8"
+    // backgroundColor: "#E8E8E8",
+    backgroundColor: "rgba(0,0,0,0.5)"
   },
   purchaseImagesModalSecondaryImagesView: {
     height: screenHeight * 0.2 + 16,

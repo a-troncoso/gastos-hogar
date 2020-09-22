@@ -12,7 +12,7 @@ import PurchaseImagesModal from "../domain/purchase/PurchaseImagesModal";
 import ExpenseCategoryGate from "../pages/RegistryExpenseGate";
 import ExpenseDetail from "../pages/ExpenseDetail";
 import ScanExpense from "../pages/Scan";
-import History from "../pages/History";
+import HistoryGate from "../pages/HistoryGate";
 import Purchases from "../pages/Purchases";
 import Purchase from "../pages/Purchase";
 import CategoriesAdminGate from "../pages/CategoriesAdminGate";
@@ -101,9 +101,12 @@ const CustomRouter = () => {
     return (
       <SummaryStack.Navigator>
         <SummaryStack.Screen
-          name="History"
-          component={History}
-          options={{ ...screenGlobalOption, title: "Historial" }}
+          name="HistoryGate"
+          component={HistoryGate}
+          options={({ navigation }) => ({
+            ...screenGlobalOption(navigation),
+            title: "Historial"
+          })}
         />
         <SummaryStack.Screen
           name="Purchases"
@@ -202,7 +205,11 @@ const CustomRouter = () => {
         <RootStack.Screen
           name="PurchaseImagesModal"
           component={PurchaseImagesModal}
+          // mode='modal'
           options={{
+            // cardStyle: {
+            //   backgroundColor: "transparent"
+            // },
             title: "Fotos de la compra",
             headerStyle: {
               height: 60

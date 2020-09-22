@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { toCurrencyFormat } from "../../utils/number";
 
 import { FontAwesome } from "@expo/vector-icons";
-import { SimpleLineIcons } from '@expo/vector-icons'; 
+import { SimpleLineIcons } from "@expo/vector-icons";
 
 import color from "../../utils/styles/color";
 
@@ -13,7 +13,7 @@ const CategoryIcon = props => {
 
   return (
     <View style={categoryIconStyles.categoryIcon}>
-      <FontAwesome name={icon} size={36} color={color.white} />
+      <FontAwesome name={icon} size={36} color={color.gray["0"]} />
     </View>
   );
 };

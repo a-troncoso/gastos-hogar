@@ -68,14 +68,10 @@ const gray = {
   140: "#000000"
 };
 
-const white = "#ffffff";
-const black = "#000000";
-
 export default {
   blue,
   red,
   yellow,
   green,
-  gray,
-  white
+  gray
 };
