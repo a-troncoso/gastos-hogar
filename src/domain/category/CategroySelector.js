@@ -7,12 +7,13 @@ import {
   TouchableOpacity
 } from "react-native";
 import Modal from "react-native-modal";
+import renderSeparator from "../shared/Separator";
 import { fetchAllCategories } from "../../dbOperations/category/categoryBDTransactions";
 
 import color from "../../utils/styles/color";
 
 const CategorySelector = props => {
-  const { isModalVisible, onBackdropPress, onPressCategory } = props;
+  const { isModalVisible, onBackdropPress, onChange } = props;
 
   const [categories, setCategories] = useState([]);
 
@@ -28,7 +29,7 @@ const CategorySelector = props => {
   };
 
   const handlePressCategory = item => {
-    onPressCategory(item);
+    onChange(item);
   };
 
   return (
@@ -44,6 +45,7 @@ const CategorySelector = props => {
               data={categories}
               keyExtractor={item => item.id.toString()}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={renderSeparator}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.viewCategoryName}
@@ -85,9 +87,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 64,
     paddingHorizontal: 32,
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
-    borderStyle: "solid",
     justifyContent: "center",
     alignItems: "center"
   }

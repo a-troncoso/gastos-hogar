@@ -5,14 +5,16 @@ import {
   Text,
   TouchableHighlight,
   TouchableOpacity,
-  Alert,
-  Picker
+  Alert
 } from "react-native";
 import { Camera } from "expo-camera";
 import * as Permissions from "expo-permissions";
 
 import Hero from "../domain/shared/Hero";
-import CategorySelector from "../domain/category/CategroySelector";
+import Button from "../domain/shared/Button";
+import Feature from "../domain/feature/Feature";
+import CategoryFeature from "../domain/feature/CategoryFeature";
+import DateFeature from "../domain/feature/DateFeature";
 
 import color from "../utils/styles/color";
 
@@ -122,139 +124,17 @@ const expenseCamera = StyleSheet.create({
   }
 });
 
-const Feature = props => {
-  const { name, value, voidValue, onPressFeature, editableElement } = props;
-
-  const [isVisibleEditableElement, setIsVisibleEditableElement] = useState(
-    false
-  );
-
-  const handlePressFeature = () => {
-    setIsVisibleEditableElement(!isVisibleEditableElement);
-    onPressFeature();
-  };
-
-  return (
-    <TouchableOpacity onPress={() => handlePressFeature()}>
-      <View style={featureStyles.view}>
-        <Text style={featureStyles.featureName}>{name}</Text>
-        <Text
-          style={[
-            featureStyles.featureValue,
-            value ? featureStyles.existValue : featureStyles.notExistValue
-          ]}
-        >
-          {value || voidValue}
-        </Text>
-      </View>
-      {/* {isVisibleEditableElement && editableElement} */}
-      {editableElement}
-    </TouchableOpacity>
-  );
-};
-
-const featureStyles = StyleSheet.create({
-  view: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 8,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    borderColor: color.blue["60"],
-    borderStyle: "solid",
-    borderWidth: 1,
-    backgroundColor: color.gray["0"]
-  },
-  featureName: {
-    // borderColor: "blue",
-    // borderWidth: 1,
-    // borderStyle: "solid",
-    color: color.gray["110"],
-    fontWeight: "bold",
-    textTransform: "capitalize"
-  },
-  featureValue: {
-    // borderColor: "blue",
-    // borderWidth: 1,
-    // borderStyle: "solid",
-    fontWeight: "bold",
-    textTransform: "capitalize"
-  },
-  existValue: {
-    color: color.gray["140"]
-  },
-  notExistValue: {
-    color: color.gray["80"]
-  }
-});
-
 const ExpenseDetail = props => {
   const { route, navigation } = props;
   const { params } = route;
-
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    // _fetchPurchase(route.params.purchaseId);
-    _fetchCategories();
-  }, []);
-
-  const _fetchCategories = async () => {
-    const categories = await fetchAllCategories();
-    setCategories(categories);
-  };
-
-  // const handlePressFeature = () => {
-  //   editaitableElemble.category.isVisible(!editableElement.category.isVisible);
-  // };
-  const [editableElements, setEditatableElements] = useState({
-    category: { isVisible: false }
+  const [featureValue, setFeatureValue] = useState({
+    category: { id: 1, name: "alimento" },
+    date: { id: 1, value: "16/11/2020" }
   });
-
-  const handleSelectCategory = category => {
-    console.log("category", category);
-
-    setEditatableElements({
-      ...editableElements,
-      category: { isVisible: false }
-    });
-  };
 
   const expenseFeatures = {
     images: { isListable: false },
     amount: { isListable: false, value: null, name: "monto", voidValue: "" },
-    date: {
-      isListable: true,
-      value: "16/11/2020",
-      name: "fecha",
-      voidValue: "sin registrar",
-      onPressFeature: () => console.log("Se presiona fecha "),
-      editableElement: <></>
-    },
-    category: {
-      isListable: true,
-      value: "alimentos",
-      name: "categoría",
-      voidValue: "sin categoría",
-      onPressFeature: () =>
-        setEditatableElements({
-          ...editableElements,
-          category: { isVisible: true }
-        }),
-      editableElement: (
-        <CategorySelector
-          isModalVisible={editableElements.category.isVisible}
-          onBackdropPress={() =>
-            setEditatableElements({
-              ...editableElements,
-              category: { isVisible: false }
-            })
-          }
-          onPressCategory={category => handleSelectCategory(category)}
-        />
-      )
-    },
     subcategory: {
       isListable: true,
       value: null,
@@ -275,12 +155,6 @@ const ExpenseDetail = props => {
 
   return (
     <View style={expenseDetail.mainView}>
-      {/* TODO: Este model se supone q debería mostrar */}
-      {/* <Modal isVisible={true}>
-        <View style={{ flex: 1, width: 100, height: 100 }}>
-          <Text>I am the modal content!</Text>
-        </View>
-      </Modal> */}
       <Hero
         central={
           <ExpenseImage
@@ -291,6 +165,24 @@ const ExpenseDetail = props => {
         }
       />
       <View style={expenseDetail.features}>
+        <CategoryFeature
+          category={featureValue.category}
+          onChange={category =>
+            setFeatureValue({
+              ...featureValue,
+              category
+            })
+          }
+        />
+        <DateFeature
+          date={featureValue.date}
+          onChange={date =>
+            setFeatureValue({
+              ...featureValue,
+              date
+            })
+          }
+        />
         {Object.keys(expenseFeatures).map(
           (ef, idx) =>
             expenseFeatures[ef].isListable && (
@@ -307,12 +199,9 @@ const ExpenseDetail = props => {
       </View>
       <View style={expenseDetail.fixedBottomArea}>
         {params.mode === "NEW_EXPENSE" && (
-          <TouchableOpacity
-            style={expenseDetail.saveBtn}
-            onPress={() => console.log("guardar")}
-          >
+          <Button>
             <Text style={expenseDetail.saveBtnText}>GUARDAR</Text>
-          </TouchableOpacity>
+          </Button>
         )}
       </View>
     </View>
@@ -338,16 +227,16 @@ const expenseDetail = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16
   },
-  saveBtn: {
-    // borderColor: "blue",
-    // borderWidth: 1,
-    // borderStyle: "solid",
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    alignItems: "center",
-    backgroundColor: color.blue["20"],
-    borderRadius: 8
-  },
+  // saveBtn: {
+  //   // borderColor: "blue",
+  //   // borderWidth: 1,
+  //   // borderStyle: "solid",
+  //   paddingVertical: 16,
+  //   paddingHorizontal: 32,
+  //   alignItems: "center",
+  //   backgroundColor: color.blue["20"],
+  //   borderRadius: 8
+  // },
   saveBtnText: {
     fontWeight: "bold"
   },

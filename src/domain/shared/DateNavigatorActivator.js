@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import DatePicker from "./DatePicker";
+import DateSelector from "./DateSelector";
 import color from "../../utils/styles/color";
 
 const DateNavigatorActivator = props => {
@@ -50,7 +50,7 @@ const DateNavigatorActivator = props => {
 
   return (
     <>
-      {isDatePickerVisible && <DatePicker />}
+      {isDatePickerVisible && <DateSelector />}
       <View style={dateNavigatorActivatorStyles.mainView}>
         <TouchableOpacity
           style={dateNavigatorActivatorStyles.activator}
