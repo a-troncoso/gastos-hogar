@@ -1,18 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
 import color from "../../utils/styles/color";
 
 const Feature = props => {
-  const { name, value, voidValue, onPressFeature, editableElement } = props;
+  const {
+    name,
+    value,
+    voidValue,
+    onPressFeature,
+    editableElement,
+    isVisibleEditableElm
+  } = props;
 
-  const [isVisibleEditableElement, setIsVisibleEditableElement] = useState(
-    false
-  );
+  // const [isVisibleEditableElement, setIsVisibleEditableElement] = useState(
+  //   false
+  // );
+
+  useEffect(() => {
+    console.log("isVisibleEditableElm", isVisibleEditableElm);
+  }, [isVisibleEditableElm]);
 
   const handlePressFeature = () => {
-    setIsVisibleEditableElement(!isVisibleEditableElement);
+    // setIsVisibleEditableElement(!isVisibleEditableElement);
     onPressFeature();
+  };
+
+  const displayedValue = () => {
+    return value || voidValue;
   };
 
   return (
@@ -25,13 +41,28 @@ const Feature = props => {
             value ? featureStyles.existValue : featureStyles.notExistValue
           ]}
         >
-          {value || voidValue}
+          {!isVisibleEditableElm && displayedValue()}
         </Text>
+        {isVisibleEditableElm && editableElement}
       </View>
-      {/* {isVisibleEditableElement && editableElement} */}
-      {editableElement}
     </TouchableOpacity>
   );
+};
+
+Feature.defaultProps = {
+  value: "",
+  voidValue: "",
+  editableElement: <></>,
+  onPressFeature: () => null
+};
+
+Feature.propTypes = {
+  name: PropTypes.string.isRequired,
+  isVisibleEditableElm: PropTypes.bool.isRequired,
+  value: PropTypes.string,
+  voidValue: PropTypes.string,
+  editableElement: PropTypes.element,
+  onPressFeature: PropTypes.func
 };
 
 const featureStyles = StyleSheet.create({

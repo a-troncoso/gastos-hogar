@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import {
   StyleSheet,
   View,
@@ -8,27 +9,13 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import renderSeparator from "../shared/Separator";
-import { fetchAllCategories } from "../../dbOperations/category/categoryBDTransactions";
 
 import color from "../../utils/styles/color";
 
-const CategorySelector = props => {
-  const { isModalVisible, onBackdropPress, onChange } = props;
+const ModalSelector = props => {
+  const { items, isModalVisible, onBackdropPress, onChange } = props;
 
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {}, [isModalVisible]);
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    const categories = await fetchAllCategories();
-    setCategories(categories);
-  };
-
-  const handlePressCategory = item => {
+  const handlePressItem = item => {
     onChange(item);
   };
 
@@ -42,14 +29,14 @@ const CategorySelector = props => {
         <View style={styles.viewModal}>
           <View style={styles.viewList}>
             <FlatList
-              data={categories}
+              data={items}
               keyExtractor={item => item.id.toString()}
               showsVerticalScrollIndicator={false}
               ItemSeparatorComponent={renderSeparator}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.viewCategoryName}
-                  onPress={() => handlePressCategory(item)}
+                  onPress={() => handlePressItem(item)}
                 >
                   <Text>{item.name}</Text>
                 </TouchableOpacity>
@@ -60,6 +47,19 @@ const CategorySelector = props => {
       </Modal>
     </View>
   );
+};
+
+ModalSelector.defaultProps = {
+  isModalVisible: false,
+  onBackdropPress: () => null,
+  onChange: () => null
+};
+
+ModalSelector.propTypes = {
+  items: PropTypes.array.isRequired,
+  isModalVisible: PropTypes.bool,
+  onBackdropPress: PropTypes.func,
+  onChange: PropTypes.func
 };
 
 const styles = StyleSheet.create({
@@ -92,4 +92,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CategorySelector;
+export default ModalSelector;

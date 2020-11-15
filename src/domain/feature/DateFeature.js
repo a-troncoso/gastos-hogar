@@ -19,8 +19,7 @@ const DateFeature = props => {
   );
 
   const handleSelectDate = date => {
-    setIdEditatableElementVisible(false);
-
+    // setIdEditatableElementVisible(false);
     onChange(date);
   };
 
@@ -29,6 +28,7 @@ const DateFeature = props => {
       name="fecha"
       value={date.value}
       voidValue="sin registrar"
+      isVisibleEditableElm={isEditableElementVisible}
       editableElement={
         <DateSelector
           isModalVisible={isEditableElementVisible}

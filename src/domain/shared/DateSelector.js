@@ -1,67 +1,44 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   StyleSheet,
   View,
   FlatList,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import Modal from "react-native-modal";
+// import LinearGradient from "react-native-linear-gradient";
+import { LinearGradient } from "expo-linear-gradient";
 import Button from "../shared/Button";
+import DateRoller from "./DateRoller";
 import renderSeparator from "./Separator";
 import { fetchAllCategories } from "../../dbOperations/category/categoryBDTransactions";
 
 import color from "../../utils/styles/color";
 
-const DateSelector = props => {
+const DateSelector = (props) => {
   const { isModalVisible, onBackdropPress, onChange } = props;
 
-  const [days, setDays] = useState([]);
-  const [months, setMonths] = useState([]);
-  const [years, setYears] = useState([]);
-
-  useEffect(() => {}, [isModalVisible]);
+  const [selectedDate, setSelectedDate] = useState({
+    day: 0,
+    month: 0,
+    year: 0,
+  });
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    // console.log("selectedDate", selectedDate);
+  }, [selectedDate]);
 
-  const fetchCategories = async () => {
-    setDays(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]);
-    setMonths([
-      "ene",
-      "feb",
-      "mar",
-      "abr",
-      "may",
-      "jun",
-      "jul",
-      "ago",
-      "sep",
-      "oct",
-      "nov",
-      "dic"
-    ]);
-    setYears([
-      "2015",
-      "2015",
-      "2015",
-      "2015",
-      "2015",
-      "2015",
-      "2015",
-      "2016",
-      "2017",
-      "2018",
-      "2019",
-      "2020"
-    ]);
+  const handleChangeDate = (date) => {
+    setSelectedDate((prevState) => ({
+      ...prevState,
+      ...date,
+    }));
+    // console.log("handleChangeDate", date);
   };
 
   const handlePressOk = () => {
-    // console.log(setDays)
-    // console.log(setMonths)
-    // console.log(setYears)
+    onChange(selectedDate);
   };
 
   return (
@@ -72,41 +49,7 @@ const DateSelector = props => {
         onBackdropPress={onBackdropPress}
       >
         <View style={styles.viewModal}>
-          <View style={styles.viewLists}>
-            <FlatList
-              data={days}
-              keyExtractor={item => item.toString()}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={renderSeparator}
-              renderItem={({ item }) => (
-                <View style={styles.viewItem}>
-                  <Text>{item}</Text>
-                </View>
-              )}
-            ></FlatList>
-            <FlatList
-              data={months}
-              keyExtractor={item => item.toString()}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={renderSeparator}
-              renderItem={({ item }) => (
-                <View style={styles.viewItem}>
-                  <Text>{item}</Text>
-                </View>
-              )}
-            ></FlatList>
-            <FlatList
-              data={years}
-              keyExtractor={item => item.toString()}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={renderSeparator}
-              renderItem={({ item }) => (
-                <View style={styles.viewItem}>
-                  <Text>{item}</Text>
-                </View>
-              )}
-            ></FlatList>
-          </View>
+          <DateRoller selectedDate={selectedDate} onChange={handleChangeDate} />
 
           <View style={styles.modalViewFooter}>
             <Button onPress={handlePressOk}>
@@ -123,7 +66,7 @@ const styles = StyleSheet.create({
   modal: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   viewModal: {
     flexDirection: "column",
@@ -132,29 +75,15 @@ const styles = StyleSheet.create({
     width: 300,
     height: 250,
     padding: 16,
-    backgroundColor: color.blue["90"]
-  },
-  viewLists: {
-    flex: 1,
-    flexDirection: "row"
-  },
-  viewItem: {
-    // borderWidth: 1,
-    // borderStyle: "solid",
-    // borderColor: "blue",
-
-    flex: 1,
-    height: 48,
-    paddingHorizontal: 32,
-    justifyContent: "center",
-    alignItems: "center"
+    backgroundColor: color.blue["90"],
   },
   modalViewFooter: {
-    marginTop: 16
+    marginTop: 16,
+    flexDirection: "row",
   },
   saveBtnText: {
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
 });
 
 export default DateSelector;

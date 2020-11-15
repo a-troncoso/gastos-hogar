@@ -8,7 +8,7 @@ const blue = {
   60: "#D9EDFF",
   70: "#E7F3FF",
   80: "#EFF8FF",
-  90: "#F4FAFF"
+  90: "#F4FAFF",
 };
 
 const red = {
@@ -21,7 +21,7 @@ const red = {
   60: "",
   70: "",
   80: "",
-  90: ""
+  90: "",
 };
 
 const yellow = {
@@ -34,7 +34,7 @@ const yellow = {
   60: "",
   70: "",
   80: "",
-  90: ""
+  90: "",
 };
 
 const green = {
@@ -47,7 +47,7 @@ const green = {
   60: "",
   70: "",
   80: "",
-  90: ""
+  90: "",
 };
 
 const gray = {
@@ -65,7 +65,18 @@ const gray = {
   110: "#5D5D64",
   120: "#403F44",
   130: "#201F22",
-  140: "#000000"
+  140: "#000000",
+};
+
+const blueTransparent = {
+  90: {
+    90: `${blue["90"]}E6`,
+    30: `${blue["90"]}4D`,
+  },
+};
+
+const transparent = {
+  blue: blueTransparent,
 };
 
 export default {
@@ -73,5 +84,6 @@ export default {
   red,
   yellow,
   green,
-  gray
+  gray,
+  transparent,
 };

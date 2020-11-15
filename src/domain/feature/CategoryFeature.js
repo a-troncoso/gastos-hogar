@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from "react";
-// import {
-//   StyleSheet,
-//   View,
-//   Text,
-//   TouchableHighlight,
-//   TouchableOpacity,
-//   Alert,
-//   Picker
-// } from "react-native";
 import Feature from "./Feature";
-import CategorySelector from "../category/CategroySelector";
+import ModalSelector from "../category/ModalSelector";
+import { fetchAllCategories } from "../../dbOperations/category/categoryBDTransactions";
+
 
 const CategoryFeature = props => {
   const { category, onChange } = props;
 
+  const [categories, setCategories] = useState([]);
   const [editableElements, setEditatableElements] = useState({
     category: { isVisible: false }
   });
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    const categories = await fetchAllCategories();
+    setCategories(categories);
+  };
 
   const handleSelectCategory = category => {
     setEditatableElements({
@@ -33,7 +36,8 @@ const CategoryFeature = props => {
       value={category.name}
       voidValue="sin categoría"
       editableElement={
-        <CategorySelector
+        <ModalSelector
+          items={categories}
           isModalVisible={editableElements.category.isVisible}
           onBackdropPress={() =>
             setEditatableElements({
@@ -44,6 +48,7 @@ const CategoryFeature = props => {
           onChange={category => handleSelectCategory(category)}
         />
       }
+      isVisibleEditableElm={editableElements.category.isVisible}
       onPressFeature={() =>
         setEditatableElements({
           ...editableElements,

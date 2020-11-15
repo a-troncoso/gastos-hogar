@@ -15,6 +15,8 @@ import Button from "../domain/shared/Button";
 import Feature from "../domain/feature/Feature";
 import CategoryFeature from "../domain/feature/CategoryFeature";
 import DateFeature from "../domain/feature/DateFeature";
+import SubcategoryFeature from "../domain/feature/SubcategoryFeature";
+import DescriptionFeature from "../domain/feature/DescriptionFeature";
 
 import color from "../utils/styles/color";
 
@@ -127,30 +129,18 @@ const expenseCamera = StyleSheet.create({
 const ExpenseDetail = props => {
   const { route, navigation } = props;
   const { params } = route;
+  // const [viewHeight, setViewHeight] = useState(null)
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false)
   const [featureValue, setFeatureValue] = useState({
     category: { id: 1, name: "alimento" },
-    date: { id: 1, value: "16/11/2020" }
+    date: { id: 2, value: "16/11/2020" },
+    subcategory: { id: 3, name: "" },
+    description: { id: 4, value: "" }
   });
 
   const expenseFeatures = {
     images: { isListable: false },
-    amount: { isListable: false, value: null, name: "monto", voidValue: "" },
-    subcategory: {
-      isListable: true,
-      value: null,
-      name: "subcategoría",
-      voidValue: "sin subcategoría",
-      onPressFeature: () => console.log("Se presiona subcategoría"),
-      editableElement: <></>
-    },
-    description: {
-      isListable: true,
-      value: null,
-      name: "descripción",
-      voidValue: "ninguna",
-      onPressFeature: () => Alert.alert("Hpña"),
-      editableElement: <></>
-    }
+    amount: { isListable: false, value: null, name: "monto", voidValue: "" }
   };
 
   return (
@@ -183,19 +173,24 @@ const ExpenseDetail = props => {
             })
           }
         />
-        {Object.keys(expenseFeatures).map(
-          (ef, idx) =>
-            expenseFeatures[ef].isListable && (
-              <Feature
-                key={idx}
-                name={expenseFeatures[ef].name}
-                value={expenseFeatures[ef].value}
-                voidValue={expenseFeatures[ef].voidValue}
-                editableElement={expenseFeatures[ef].editableElement}
-                onPressFeature={expenseFeatures[ef].onPressFeature}
-              />
-            )
-        )}
+        <SubcategoryFeature
+          subcategory={featureValue.subcategory}
+          onChange={subcategory =>
+            setFeatureValue({
+              ...featureValue,
+              subcategory
+            })
+          }
+        />
+        <DescriptionFeature
+          description={featureValue.description}
+          onChange={description =>
+            setFeatureValue({
+              ...featureValue,
+              description
+            })
+          }
+        />
       </View>
       <View style={expenseDetail.fixedBottomArea}>
         {params.mode === "NEW_EXPENSE" && (
