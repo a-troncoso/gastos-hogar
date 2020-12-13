@@ -8,7 +8,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import Modal from "react-native-modal";
-import renderSeparator from "../shared/Separator";
+import renderSeparator from "../../components/atoms/Separator";
 
 import color from "../../utils/styles/color";
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { monthName } from "../../utils/date";
+import { monthName } from "../../../utils/date";
 import { AntDesign } from "@expo/vector-icons";
 
 const DateLabel = props => {

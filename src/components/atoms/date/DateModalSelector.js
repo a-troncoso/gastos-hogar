@@ -7,16 +7,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Modal from "react-native-modal";
-// import LinearGradient from "react-native-linear-gradient";
 import { LinearGradient } from "expo-linear-gradient";
-import Button from "../shared/Button";
-import DateRoller from "./DateRoller";
-import renderSeparator from "./Separator";
-import { fetchAllCategories } from "../../dbOperations/category/categoryBDTransactions";
+import Button from "../Button";
+import DateRoller from "../../molecules/date/DateRoller";
+import { fetchAllCategories } from "../../../dbOperations/category/categoryBDTransactions";
 
-import color from "../../utils/styles/color";
+import color from "../../../utils/styles/color";
 
-const DateSelector = (props) => {
+const DateModalSelector = (props) => {
   const { isModalVisible, onBackdropPress, onChange } = props;
 
   const [selectedDate, setSelectedDate] = useState({
@@ -86,4 +84,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DateSelector;
+export default DateModalSelector;

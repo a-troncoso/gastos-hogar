@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { TextInput, StyleSheet, KeyboardAvoidingView } from "react-native"
-import Feature from "../feature/Feature"
+import Feature from "../../atoms/Feature"
 import { useHeaderHeight } from "@react-navigation/stack"
 
-import color from "../../utils/styles/color"
+import color from "../../../utils/styles/color"
 
 const DescriptionFeature = props => {
   const { description, onChange } = props

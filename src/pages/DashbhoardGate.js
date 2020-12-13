@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import DateNavigator from "../domain/shared/DateNavigator";
-import DateFilterSelector from "../domain/shared/DateFilterSelector";
+import DateNavigator from "../components/molecules/date/DateNavigator";
+import DateFilterSelector from "../components/atoms/DateFilterSelector";
 import Chart from "../domain/dashboard/Chart";
 import Calendar from "../domain/dashboard/calendar/Calendar";
 

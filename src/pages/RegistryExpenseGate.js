@@ -1,52 +1,51 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { StyleSheet, View, SafeAreaView, ToastAndroid } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import Constants from "expo-constants";
+import React, { useState, useCallback, useEffect } from "react"
+import { StyleSheet, View, SafeAreaView, ToastAndroid } from "react-native"
+import { useFocusEffect } from "@react-navigation/native"
 
-import CategoriesList from "../domain/category/CategoriesList";
+import CategoriesList from "../components/molecules/category/CategoriesList"
 
-import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
+import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions"
 
-import color from "../utils/styles/color";
+import color from "../utils/styles/color"
 
 const Toast = ({ visible, message }) => {
   if (visible) {
-    ToastAndroid.show(message, ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50);
-    return null;
+    ToastAndroid.show(message, ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50)
+    return null
   }
-  return null;
-};
+  return null
+}
 
 const RegistryExpenseGate = props => {
-  const { navigation, route } = props;
-  const [categories, setCategories] = useState([]);
-  const [visibleToast, setVisibleToast] = useState(false);
+  const { navigation, route } = props
+  const [categories, setCategories] = useState([])
+  const [visibleToast, setVisibleToast] = useState(false)
 
   useFocusEffect(
     useCallback(() => {
-      _fetchCategories();
+      _fetchCategories()
     }, [])
-  );
+  )
 
   useEffect(() => {
     if (route.params && route.params.evt === "PURCHASE_SAVED") {
-      setVisibleToast(true);
-      navigation.setParams({ evt: "" });
+      setVisibleToast(true)
+      navigation.setParams({ evt: "" })
     }
-  }, [route.params]);
+  }, [route.params])
 
-  useEffect(() => setVisibleToast(false), [visibleToast]);
+  useEffect(() => setVisibleToast(false), [visibleToast])
 
   const _fetchCategories = async () => {
-    const categories = await fetchAllCategories();
-    setCategories(categories);
-  };
+    const categories = await fetchAllCategories()
+    setCategories(categories)
+  }
 
   const handlePressCategory = id => {
     navigation.navigate("ExpenseDetail", {
       categoryId: id
-    });
-  };
+    })
+  }
 
   return (
     <View style={styles.mainView}>
@@ -60,8 +59,8 @@ const RegistryExpenseGate = props => {
         <Toast visible={visibleToast} message="Egreso ingresado" />
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   mainView: {
@@ -76,6 +75,6 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     paddingHorizontal: 16
   }
-});
+})
 
-export default RegistryExpenseGate;
+export default RegistryExpenseGate

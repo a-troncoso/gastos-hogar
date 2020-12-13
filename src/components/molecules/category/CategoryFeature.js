@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Feature from "../feature/Feature";
-import ModalSelector from "./ModalSelector";
-import { fetchAllCategories } from "../../dbOperations/category/categoryBDTransactions";
+import Feature from "../../atoms/Feature";
+import CategoryModalSelector from "../../atoms/ModalSelector";
+import { fetchAllCategories } from "../../../dbOperations/category/categoryBDTransactions";
 
 
 const CategoryFeature = props => {
@@ -36,7 +36,7 @@ const CategoryFeature = props => {
       value={category.name}
       voidValue="sin categoría"
       editableElement={
-        <ModalSelector
+        <CategoryModalSelector
           items={categories}
           isModalVisible={editableElements.category.isVisible}
           onBackdropPress={() =>

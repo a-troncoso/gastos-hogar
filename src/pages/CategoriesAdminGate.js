@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet, View, SafeAreaView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import CategoriesList from "../domain/category/CategoriesList";
+import CategoriesList from "../components/molecules/category/CategoriesList";
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
 const CategoriesAdminGate = props => {

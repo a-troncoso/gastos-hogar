@@ -8,8 +8,8 @@ import React, { useState, useEffect } from "react";
 //   Alert,
 //   Picker
 // } from "react-native";
-import Feature from "../feature/Feature";
-import DateSelector from "../../domain/shared/DateSelector";
+import Feature from "../../atoms/Feature";
+import DateSelector from "../../atoms/date/DateModalSelector";
 
 const DateFeature = props => {
   const { date, onChange } = props;

@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, View, FlatList, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import InfiniteScroll from "./InfiniteScroll";
+import InfiniteScroll from "../../atoms/InfiniteScroll";
 import shortid from "shortid";
 
-import { daysInMonth, monthNames, availableYears } from "../../utils/date";
+import { daysInMonth, monthNames, availableYears } from "../../../utils/date";
 
-import color from "../../utils/styles/color";
+import color from "../../../utils/styles/color";
 
 const topLinearGradientColors = [
   color.blue["90"],

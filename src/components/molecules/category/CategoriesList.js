@@ -7,7 +7,7 @@ import {
   View,
   TouchableOpacity
 } from "react-native";
-import Category from "../shared/Category";
+import Category from "../../atoms/category/CategoryItem";
 
 const AddCategoryButton = props => {
   const { onPress } = props;

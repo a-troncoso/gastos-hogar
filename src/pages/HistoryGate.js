@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { StyleSheet, View, SafeAreaView, TouchableOpacity } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import CategoriesList from "../domain/category/CategoriesList";
-import Hero from "../domain/shared/Hero";
-import DateNavigatorActivator from "../domain/shared/DateNavigatorActivator";
+import CategoriesList from "../components/molecules/category/CategoriesList";
+import Hero from "../components/atoms/Hero";
+import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator";
 import Constants from "expo-constants";
 import { fetchTotalPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
 import { formattedMonth, currentDate } from "../utils/date";

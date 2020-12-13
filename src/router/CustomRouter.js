@@ -15,10 +15,9 @@ import {
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem
+  DrawerItemList
 } from "@react-navigation/drawer"
-import PurchaseImagesModal from "../domain/purchase/PurchaseImagesModal"
+import PurchaseImagesModal from "../components/templates/image/PurchaseImagesModal"
 import ExpenseCategoryGate from "../pages/RegistryExpenseGate"
 import ExpenseDetail from "../pages/ExpenseDetail"
 import ScanExpense from "../pages/Scan"

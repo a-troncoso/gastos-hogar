@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { toCurrencyFormat } from "../../utils/number";
+import { toCurrencyFormat } from "../../../utils/number";
 
 import { FontAwesome } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
 
-import color from "../../utils/styles/color";
+import color from "../../../utils/styles/color";
 
 const CategoryIcon = props => {
   const { icon } = props;
@@ -30,7 +30,7 @@ const categoryIconStyles = StyleSheet.create({
   }
 });
 
-const Category = props => {
+const CategoryItem = props => {
   const { name, extraInfo, onPress } = props;
 
   return (
@@ -82,15 +82,15 @@ const styles = StyleSheet.create({
   }
 });
 
-Category.defaultProps = {
+CategoryItem.defaultProps = {
   extraInfo: {},
   onPress: () => {}
 };
 
-Category.propTypes = {
+CategoryItem.propTypes = {
   name: PropTypes.string.isRequired,
   extraInfo: PropTypes.object,
   onPress: PropTypes.func
 };
 
-export default Category;
+export default CategoryItem;

@@ -1,34 +1,34 @@
-import React, { useState, useEffect } from "react";
-import Feature from "../feature/Feature";
-import ModalSelector from "../category/ModalSelector";
-import { fetchAllSubcategories } from "../../dbOperations/subcategory/subcategoryBDTransactions";
+import React, { useState, useEffect } from "react"
+import Feature from "../../atoms/Feature"
+import ModalSelector from "../../atoms/ModalSelector"
+import { fetchAllSubcategories } from "../../../dbOperations/subcategory/subcategoryBDTransactions"
 
 const SubcategoryFeature = props => {
-  const { subcategory, onChange } = props;
+  const { subcategory, onChange } = props
 
-  const [subcategories, setSubcategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([])
   const [editableElements, setEditatableElements] = useState({
     subcategory: { isVisible: false }
-  });
+  })
 
   useEffect(() => {
-    fetchSubcategories();
-  }, []);
+    fetchSubcategories()
+  }, [])
 
   const fetchSubcategories = async () => {
     // FIXME: se car al obtener ls subcategories
     // const subcategories = await fetchAllSubcategories();
     // setSubcategories(subcategories);
-  };
+  }
 
   const handleSelectSubcategory = subcategory => {
     setEditatableElements({
       ...editableElements,
       subcategory: { isVisible: false }
-    });
+    })
 
-    onChange(subcategory);
-  };
+    onChange(subcategory)
+  }
 
   return (
     <Feature
@@ -60,7 +60,7 @@ const SubcategoryFeature = props => {
         })
       }
     />
-  );
-};
+  )
+}
 
-export default SubcategoryFeature;
+export default SubcategoryFeature
