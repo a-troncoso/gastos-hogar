@@ -1,22 +1,22 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { toCurrencyFormat } from "../../../utils/number";
+import React, { useState, useEffect } from "react"
+import PropTypes from "prop-types"
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
+import { toCurrencyFormat } from "../../../utils/number"
 
-import { FontAwesome } from "@expo/vector-icons";
-import { SimpleLineIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons"
+import { SimpleLineIcons } from "@expo/vector-icons"
 
-import color from "../../../utils/styles/color";
+import color from "../../../utils/styles/color"
 
 const CategoryIcon = props => {
-  const { icon } = props;
+  const { icon } = props
 
   return (
     <View style={categoryIconStyles.categoryIcon}>
       <FontAwesome name={icon} size={36} color={color.gray["0"]} />
     </View>
-  );
-};
+  )
+}
 
 const categoryIconStyles = StyleSheet.create({
   categoryIcon: {
@@ -28,27 +28,91 @@ const categoryIconStyles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: color.blue["0"]
   }
-});
+})
+
+const Termometer = ({ maxValue, value }) => {
+  const termConfig = {
+    0: {
+      color: "green"
+    },
+    40: {
+      color: "yellow"
+    },
+    80: {
+      color: "red"
+    }
+  }
+
+  const getTermStyles = () => {
+    const temperature = (value * 100) / maxValue
+    let color
+
+    for (let i = 0; i < Object.keys(termConfig).length - 1; i++) {
+      if (
+        parseInt(Object.keys(termConfig)[i], 10) > temperature &&
+        temperature <= parseInt(Object.keys(termConfig)[i + 1], 10)
+      ) {
+        // TODO: Calcular el color del termometro
+        color = termConfig[i].color
+      }
+    }
+
+    console.log({ temperature, color })
+  }
+
+  useEffect(() => {
+    getTermStyles()
+  }, [])
+
+  return (
+    <View style={termometerStyles.termometer}>
+      <View
+      // style={[
+      //   termometerStyles.temperature,
+      //   { width: `${temperature}%`, backgroundColor: "" }
+      // ]}
+      ></View>
+    </View>
+  )
+}
+
+const termometerStyles = StyleSheet.create({
+  termometer: {
+    height: 8,
+    width: "100%",
+    borderColor: "black",
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderRadius: 8
+  },
+  temperature: {
+    height: "100%"
+  }
+})
 
 const CategoryItem = props => {
-  const { name, extraInfo, onPress } = props;
+  const { name, extraInfo, onPress } = props
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.category}>
       <CategoryIcon icon="shopping-cart" />
-      <View style={styles.categoryTextView}>
-        <Text style={styles.categoryCategoryName}>{name}</Text>
-      </View>
-      <SimpleLineIcons name="arrow-right" size={24} color="black" />
-      {Object.keys(extraInfo).length > 0 && (
-        <View style={styles.categoryExtraInfo}>
-          <Text>Total este mes</Text>
-          <Text>{toCurrencyFormat(extraInfo.amount)}</Text>
+      <View style={styles.rightSection}>
+        <View style={styles.name}>
+          <Text style={styles.categoryCategoryName}>{name}</Text>
+          {Object.keys(extraInfo).length > 0 && (
+            <View style={{ marginTop: 8 }}>
+              <Termometer
+                maxValue={extraInfo.maximumStop}
+                value={extraInfo.currentAmount}
+              />
+            </View>
+          )}
         </View>
-      )}
+        <SimpleLineIcons name="arrow-right" size={24} color="black" />
+      </View>
     </TouchableOpacity>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   category: {
@@ -66,9 +130,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textTransform: "capitalize"
   },
-  categoryTextView: {
-    flex: 1,
-    padding: 16
+  name: {
+    // borderColor: "black",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    marginRight: 12,
+    flex: 1
   },
   categoryExtraInfo: {
     flex: 1,
@@ -79,18 +146,29 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 16,
     backgroundColor: "#E8E8E8"
+  },
+  rightSection: {
+    // borderColor: "red",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+
+    flex: 1,
+    marginLeft: 12,
+    flexDirection: "row",
+    alignItems: "center"
+    // justifyContent: "space-between"
   }
-});
+})
 
 CategoryItem.defaultProps = {
   extraInfo: {},
   onPress: () => {}
-};
+}
 
 CategoryItem.propTypes = {
   name: PropTypes.string.isRequired,
   extraInfo: PropTypes.object,
   onPress: PropTypes.func
-};
+}
 
-export default CategoryItem;
+export default CategoryItem

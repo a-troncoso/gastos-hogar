@@ -14,7 +14,7 @@ const Hero = props => {
         button ? styles.withButton : {}
       ]}
     >
-      <View style={styles.centralView}></View>
+      <View style={styles.superiorPart}></View>
       {central}
       {button}
     </View>
@@ -26,10 +26,9 @@ const styles = StyleSheet.create({
     // borderColor: "red",
     // borderWidth: 1,
     // borderStyle: "solid",
-    flex: 1,
     alignItems: "center"
   },
-  centralView: {
+  superiorPart: {
     // borderColor: "green",
     // borderWidth: 1,
     // borderStyle: "solid",
@@ -43,7 +42,7 @@ const styles = StyleSheet.create({
     // height: 112
   },
   withButton: {
-    height: 64
+    // height: 64
   }
 })
 
