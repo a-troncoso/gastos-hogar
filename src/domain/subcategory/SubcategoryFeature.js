@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Feature from "./Feature";
+import Feature from "../feature/Feature";
 import ModalSelector from "../category/ModalSelector";
 import { fetchAllSubcategories } from "../../dbOperations/subcategory/subcategoryBDTransactions";
 

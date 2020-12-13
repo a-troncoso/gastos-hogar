@@ -1,6 +1,6 @@
 import { start } from "./start"
 import React, { useEffect, useState } from "react"
-import { View, StyleSheet, Dimensions, Keyboard } from "react-native"
+import { View, StyleSheet, Text } from "react-native"
 import { AppContext } from "./src/state/appContext"
 import {
   createInitialTables,
@@ -14,41 +14,15 @@ import * as FileSystem from "expo-file-system"
 import alerts from "./src/utils/alerts/Alerts"
 import { useApp } from "./src/hooks/appHook"
 
-const window = Dimensions.get("window")
-const screen = Dimensions.get("screen")
-
 start()
 
 const App = () => {
   const app = useApp()
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false)
-  const [heigthWithKeyboard, setHeigthWithKeyboard] = useState(false)
-  const [isAppWithKeyboard, setIsAppWithKeyboard] = useState(false)
 
   useEffect(() => {
     _createInitialTables()
   }, [])
-
-  useEffect(() => {
-    Keyboard.addListener("keyboardDidShow", _keyboardDidShow)
-
-    return () => {
-      Keyboard.removeListener("keyboardDidShow", _keyboardDidShow)
-    }
-  }, [])
-
-  const _keyboardDidShow = e => {
-    setIsAppWithKeyboard(true)
-    const { height, screenX, screenY, width } = e.endCoordinates
-    const window = Dimensions.get("window")
-    const screen = Dimensions.get("screen")
-    console.log("window height", window)
-    console.log("screen height", screen)
-    console.log("Keyboard height", height)
-    console.log("height + window.height", height + window.height)
-
-    setHeigthWithKeyboard(height + window.height)
-  }
 
   const _createInitialTables = async () => {
     try {
@@ -116,6 +90,10 @@ const App = () => {
         <CustomRouter />
       </AppContext.Provider>
     )
+
+    // <View style={{flex: 1}}>
+    //   <Text>HOLA</Text>
+    // </View>
   )
 }
 

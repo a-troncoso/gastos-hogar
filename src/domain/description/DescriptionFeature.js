@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react"
-import { TextInput, Keyboard } from "react-native"
-import Feature from "./Feature"
-import ModalSelector from "../category/ModalSelector"
+import { TextInput, StyleSheet, KeyboardAvoidingView } from "react-native"
+import Feature from "../feature/Feature"
+import { useHeaderHeight } from "@react-navigation/stack"
+
+import color from "../../utils/styles/color"
 
 const DescriptionFeature = props => {
   const { description, onChange } = props
@@ -10,19 +12,7 @@ const DescriptionFeature = props => {
   const [editableElements, setEditatableElements] = useState({
     description: { isVisible: false }
   })
-
-  // useEffect(() => {
-  //   Keyboard.addListener("keyboardDidShow", _keyboardDidShow)
-
-  //   return () => {
-  //     Keyboard.removeListener("keyboardDidShow", _keyboardDidShow)
-  //   }
-  // }, [])
-
-  // const _keyboardDidShow = e => {
-  //   const { height, screenX, screenY, width } = e.endCoordinates
-  //   console.log(height)
-  // }
+  const headerHeight = useHeaderHeight()
 
   const handleChangeDescription = desc => {
     console.log(desc)
@@ -47,7 +37,7 @@ const DescriptionFeature = props => {
       isVisibleEditableElm={editableElements.description.isVisible}
       editableElement={
         <TextInput
-          style={{ backgroundColor: "red" }}
+          style={styles.descTextInput}
           value={description.value}
           autoFocus
           onChangeText={handleChangeDescription}
@@ -64,5 +54,13 @@ const DescriptionFeature = props => {
     />
   )
 }
+
+const styles = StyleSheet.create({
+  descTextInput: {
+    height: 20,
+    fontSize: 14,
+    textAlign: "right"
+  }
+})
 
 export default DescriptionFeature

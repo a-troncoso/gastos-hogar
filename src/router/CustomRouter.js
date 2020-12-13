@@ -1,7 +1,17 @@
 import React from "react"
-import { Button, View, TouchableOpacity, StyleSheet } from "react-native"
+import {
+  Button,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView
+} from "react-native"
 import { NavigationContainer, DrawerActions } from "@react-navigation/native"
-import { createStackNavigator } from "@react-navigation/stack"
+import {
+  createStackNavigator,
+  HeaderHeightContext,
+  useHeaderHeight
+} from "@react-navigation/stack"
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -52,6 +62,8 @@ const menuButtonStyles = StyleSheet.create({
 })
 
 const CustomRouter = () => {
+  // const headerHeight = useHeaderHeight()
+
   const screenGlobalOption = navigation => ({
     title: "",
     headerStyle: {
@@ -226,6 +238,19 @@ const CustomRouter = () => {
 
   return (
     <NavigationContainer>
+      {/* <KeyboardAvoidingView
+        {...(Platform.OS === "ios" ? { behavior: "padding" } : {})}
+        // you might need sometimes👇
+        contentContainerStyle={{ flex: 1 }}
+        // chances are you might be using react-navigation
+        // if so 👇
+        keyboardVerticalOffset={64}
+        // keyboardVerticalOffset={headerHeight + 64}
+        // You can import Header Component from react-navigation and it has height attached to it
+        // 64 is some extra padding, I feel good, feel free to tweak it
+      >
+        <RootStackScreen />
+      </KeyboardAvoidingView> */}
       <RootStackScreen />
     </NavigationContainer>
   )
