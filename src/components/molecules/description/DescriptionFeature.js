@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from "react"
-import { TextInput, StyleSheet, KeyboardAvoidingView } from "react-native"
+import React, { useState } from "react"
+import { TextInput, StyleSheet } from "react-native"
 import Feature from "../../atoms/Feature"
-import { useHeaderHeight } from "@react-navigation/stack"
-
-import color from "../../../utils/styles/color"
 
 const DescriptionFeature = props => {
   const { description, onChange } = props
@@ -12,12 +9,9 @@ const DescriptionFeature = props => {
   const [editableElements, setEditatableElements] = useState({
     description: { isVisible: false }
   })
-  const headerHeight = useHeaderHeight()
 
-  const handleChangeDescription = desc => {
-    console.log(desc)
-    // FIXME: Setear correctamente el string que se debe formar
-    setDescription(`${_description}${desc}`)
+  const handleChangeDescription = descriptionText => {
+    setDescription(descriptionText)
   }
 
   const handleBlurInput = () => {
@@ -29,6 +23,13 @@ const DescriptionFeature = props => {
     onChange({ id: null, value: _description })
   }
 
+  const handlePressFeature = () => {
+    setEditatableElements({
+      ...editableElements,
+      description: { isVisible: true }
+    })
+  }
+
   return (
     <Feature
       name="descripción"
@@ -38,18 +39,13 @@ const DescriptionFeature = props => {
       editableElement={
         <TextInput
           style={styles.descTextInput}
-          value={description.value}
-          autoFocus
+          value={_description}
           onChangeText={handleChangeDescription}
           onBlur={handleBlurInput}
+          autoFocus
         />
       }
-      onPressFeature={() =>
-        setEditatableElements({
-          ...editableElements,
-          description: { isVisible: true }
-        })
-      }
+      onPressFeature={handlePressFeature}
       isVisibleEditableElm={editableElements.description.isVisible}
     />
   )
@@ -59,6 +55,7 @@ const styles = StyleSheet.create({
   descTextInput: {
     height: 20,
     fontSize: 14,
+    fontWeight: "bold",
     textAlign: "right"
   }
 })

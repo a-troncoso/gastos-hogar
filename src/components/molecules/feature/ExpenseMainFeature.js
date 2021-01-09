@@ -1,6 +1,6 @@
 import React from "react"
 import { StyleSheet, View, TouchableHighlight } from "react-native"
-import EditableAmount from "../../atoms/amount/EditableAmount"
+import EditableAmount from "../../atoms/EditableAmount"
 import ExpenseCamera from '../../atoms/Camera'
 
 import color from "../../../utils/styles/color"

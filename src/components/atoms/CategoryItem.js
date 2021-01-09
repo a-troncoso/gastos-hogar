@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
-import { toCurrencyFormat } from "../../../utils/number"
+import { toCurrencyFormat } from "../../utils/number"
 
 import { FontAwesome } from "@expo/vector-icons"
 import { SimpleLineIcons } from "@expo/vector-icons"
 
-import color from "../../../utils/styles/color"
+import color from "../../utils/styles/color"
 
 const CategoryIcon = props => {
   const { icon } = props

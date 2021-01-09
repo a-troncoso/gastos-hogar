@@ -97,7 +97,6 @@ const ExpenseDetail = props => {
                   })
                 }
               />
-
               <DescriptionFeature
                 description={featureValue.description}
                 onChange={description =>

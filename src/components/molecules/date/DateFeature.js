@@ -9,7 +9,7 @@ import React, { useState, useEffect } from "react";
 //   Picker
 // } from "react-native";
 import Feature from "../../atoms/Feature";
-import DateSelector from "../../atoms/date/DateModalSelector";
+import DateSelector from "../../atoms/DateModalSelector";
 
 const DateFeature = props => {
   const { date, onChange } = props;

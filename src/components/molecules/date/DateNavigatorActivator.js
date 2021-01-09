@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import DateSelector from "../../atoms/date/DateModalSelector";
+import DateSelector from "../../atoms/DateModalSelector";
 import color from "../../../utils/styles/color";
 
 const DateNavigatorActivator = props => {

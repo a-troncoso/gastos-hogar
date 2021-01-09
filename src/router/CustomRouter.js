@@ -1,16 +1,12 @@
 import React from "react"
 import {
-  Button,
   View,
   TouchableOpacity,
-  StyleSheet,
-  KeyboardAvoidingView
+  StyleSheet
 } from "react-native"
 import { NavigationContainer, DrawerActions } from "@react-navigation/native"
 import {
-  createStackNavigator,
-  HeaderHeightContext,
-  useHeaderHeight
+  createStackNavigator
 } from "@react-navigation/stack"
 import {
   createDrawerNavigator,
@@ -31,7 +27,7 @@ import CategoryCreation from "../pages/CategoryCreation"
 
 import { Feather } from "@expo/vector-icons"
 
-import color from "../utils//styles/color"
+import color from "../utils/styles/color"
 
 const RootStack = createStackNavigator()
 const RegistryExpenseStack = createStackNavigator()
@@ -61,7 +57,6 @@ const menuButtonStyles = StyleSheet.create({
 })
 
 const CustomRouter = () => {
-  // const headerHeight = useHeaderHeight()
 
   const screenGlobalOption = navigation => ({
     title: "",
@@ -216,11 +211,7 @@ const CustomRouter = () => {
         <RootStack.Screen
           name="PurchaseImagesModal"
           component={PurchaseImagesModal}
-          // mode='modal'
           options={{
-            // cardStyle: {
-            //   backgroundColor: "transparent"
-            // },
             title: "Fotos de la compra",
             headerStyle: {
               height: 60
@@ -237,19 +228,6 @@ const CustomRouter = () => {
 
   return (
     <NavigationContainer>
-      {/* <KeyboardAvoidingView
-        {...(Platform.OS === "ios" ? { behavior: "padding" } : {})}
-        // you might need sometimes👇
-        contentContainerStyle={{ flex: 1 }}
-        // chances are you might be using react-navigation
-        // if so 👇
-        keyboardVerticalOffset={64}
-        // keyboardVerticalOffset={headerHeight + 64}
-        // You can import Header Component from react-navigation and it has height attached to it
-        // 64 is some extra padding, I feel good, feel free to tweak it
-      >
-        <RootStackScreen />
-      </KeyboardAvoidingView> */}
       <RootStackScreen />
     </NavigationContainer>
   )
