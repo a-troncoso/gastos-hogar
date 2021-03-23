@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
-import DateSelector from "../../atoms/DateModalSelector";
-import color from "../../../utils/styles/color";
+import React, { useState } from "react"
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native"
+import DateSelector from "../../atoms/DateModalSelector"
+import color from "../../../utils/styles/color"
+import { monthName } from "../../../utils/date"
 
 const DateNavigatorActivator = props => {
-  const { mode, date, test } = props;
+  const { mode, date, test } = props
 
-  const [isDatePickerVisible, setIsDatePickerVisible] = useState();
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState()
 
   const DayText = () => {
     return (
@@ -17,36 +18,37 @@ const DateNavigatorActivator = props => {
           <Text>2020</Text>
         </View>
       </>
-    );
-  };
+    )
+  }
 
-  const MonthText = () => {
+  const MonthText = ({ date }) => {
     return (
       <>
-        <Text>Septiembre</Text>
-        <Text>2020</Text>
+        <Text style={{ textTransform: "capitalize" }}>
+          {monthName(date.getMonth())}
+        </Text>
       </>
-    );
-  };
+    )
+  }
 
   const YearText = () => {
     return (
       <>
         <Text>2020</Text>
       </>
-    );
-  };
+    )
+  }
 
-  const modes = {
-    DAY: <DayText />,
-    MONTH: <MonthText />,
-    YEAR: <YearText />
-  };
+  const modes = date => ({
+    DAY: <DayText date={date} />,
+    MONTH: <MonthText date={date} />,
+    YEAR: <YearText date={date} />
+  })
 
   const handleOpenDatePicker = () => {
-    setIsDatePickerVisible(true);
-    test();
-  };
+    setIsDatePickerVisible(true)
+    test()
+  }
 
   return (
     <>
@@ -56,12 +58,12 @@ const DateNavigatorActivator = props => {
           style={dateNavigatorActivatorStyles.activator}
           onPress={handleOpenDatePicker}
         >
-          {modes[mode]}
+          {modes(date)[mode]}
         </TouchableOpacity>
       </View>
     </>
-  );
-};
+  )
+}
 
 const dateNavigatorActivatorStyles = StyleSheet.create({
   mainView: {},
@@ -73,6 +75,6 @@ const dateNavigatorActivatorStyles = StyleSheet.create({
     backgroundColor: color.blue["30"],
     borderRadius: 8
   }
-});
+})
 
-export default DateNavigatorActivator;
+export default DateNavigatorActivator

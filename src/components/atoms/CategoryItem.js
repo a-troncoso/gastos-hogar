@@ -43,7 +43,7 @@ const Termometer = ({ maxValue, value }) => {
     }
   }
 
-  const getTermStyles = () => {
+  const getTermometerStyles = () => {
     const temperature = (value * 100) / maxValue
     let color
 
@@ -53,7 +53,7 @@ const Termometer = ({ maxValue, value }) => {
         temperature <= parseInt(Object.keys(termConfig)[i + 1], 10)
       ) {
         // TODO: Calcular el color del termometro
-        color = termConfig[i].color
+        // color = termConfig[i].color
       }
     }
 
@@ -61,7 +61,7 @@ const Termometer = ({ maxValue, value }) => {
   }
 
   useEffect(() => {
-    getTermStyles()
+    getTermometerStyles()
   }, [])
 
   return (

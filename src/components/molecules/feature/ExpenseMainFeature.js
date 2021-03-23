@@ -1,10 +1,9 @@
 import React from "react"
 import { StyleSheet, View, TouchableHighlight } from "react-native"
 import EditableAmount from "../../atoms/EditableAmount"
-import ExpenseCamera from '../../atoms/Camera'
+import ExpenseCamera from "../../atoms/Camera"
 
 import color from "../../../utils/styles/color"
-
 
 const ExpenseMainFeature = props => {
   const { amount, onPressCamera, onChange, onBlurEditableAmount } = props
@@ -14,7 +13,7 @@ const ExpenseMainFeature = props => {
   }
 
   const handleBlurEditableAmount = () => {
-    onBlurEditableAmount()
+    if (onBlurEditableAmount) onBlurEditableAmount()
   }
 
   return (
@@ -28,8 +27,8 @@ const ExpenseMainFeature = props => {
         </TouchableHighlight>
       </View>
       <EditableAmount
-        amount={amount.value}
-        editedAmount={amount.newValue}
+        amount={amount}
+        editedAmount={amount}
         onChange={handleChangeEditableAmount}
         onBlur={handleBlurEditableAmount}
       />

@@ -3,7 +3,7 @@ export const MAIN_QUERIES = {
     CREATE TABLE IF NOT EXISTS "user" (
       "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
       "name"	TEXT DEFAULT "",
-      "image"	TEXT DEFAULT "",
+      "imagePath"	TEXT DEFAULT "",
       "active"	INTEGER DEFAULT 1
     );
   `,
@@ -12,44 +12,46 @@ export const MAIN_QUERIES = {
     CREATE TABLE IF NOT EXISTS "user" (
       "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
       "name"	TEXT DEFAULT "",
-      "image"	TEXT DEFAULT "",
+      "imagePath"	TEXT DEFAULT "",
       "active"	INTEGER DEFAULT 1
     );
   `,
-  CREATE_TABLE_PURCHASE: `
-    CREATE TABLE IF NOT EXISTS "purchase" (
+  CREATE_TABLE_EXPENSE: `
+    CREATE TABLE IF NOT EXISTS "expense" (
       "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
       "categoryId"	INTEGER,
       "subcategoryId"	INTEGER,
       "amount"	INTEGER,
-      "comment"	TEXT DEFAULT "",
-      "date"	TEXT,
-      "active"	INTEGER DEFAULT 1,
-      FOREIGN KEY("categoryId") REFERENCES "category"("id")
-    );
-  `,
-  OVERRIDE_TABLE_PURCHASE: `
-    DROP TABLE IF EXISTS "purchase";
-    CREATE TABLE IF NOT EXISTS "purchase" (
-      "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-      "image"	TEXT DEFAULT "",
-      "categoryId"	INTEGER UNIQUE,
-      "subcategoryId"	INTEGER UNIQUE,
-      "amount"	INTEGER,
-      "comment"	TEXT DEFAULT "",
+      "description"	TEXT DEFAULT "",
       "date"	TEXT,
       "userId"	INTEGER,
       "active"	INTEGER DEFAULT 1,
-      FOREIGN KEY("userId") REFERENCES "user"("id"),
       FOREIGN KEY("categoryId") REFERENCES "category"("id"),
-      FOREIGN KEY("subcategoryId") REFERENCES "subcategory"("id")
+      FOREIGN KEY("subcategoryId") REFERENCES "subcategory"("id"),
+      FOREIGN KEY("userId") REFERENCES "user"("id")
+    );
+  `,
+  OVERRIDE_TABLE_EXPENSE: `
+    DROP TABLE IF EXISTS "expense";
+    CREATE TABLE IF NOT EXISTS "expense" (
+      "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+      "categoryId"	INTEGER UNIQUE,
+      "subcategoryId"	INTEGER UNIQUE,
+      "amount"	INTEGER,
+      "description"	TEXT DEFAULT "",
+      "date"	TEXT,
+      "userId"	INTEGER,
+      "active"	INTEGER DEFAULT 1,
+      FOREIGN KEY("categoryId") REFERENCES "category"("id"),
+      FOREIGN KEY("subcategoryId") REFERENCES "subcategory"("id"),
+      FOREIGN KEY("userId") REFERENCES "user"("id")
     );
   `,
   CREATE_TABLE_CATEGORY: `
     CREATE TABLE IF NOT EXISTS "category" (
       "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
       "name"	TEXT NOT NULL,
-      "image"	TEXT DEFAULT "",
+      "imagePath"	TEXT DEFAULT "",
       "active"	INTEGER DEFAULT 1
     );
   `,
@@ -58,7 +60,7 @@ export const MAIN_QUERIES = {
     CREATE TABLE IF NOT EXISTS "category" (
       "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
       "name"	TEXT NOT NULL,
-      "image"	TEXT DEFAULT "",
+      "imagePath"	TEXT DEFAULT "",
       "active"	INTEGER DEFAULT 1
     );
   `,
@@ -66,7 +68,7 @@ export const MAIN_QUERIES = {
     CREATE TABLE IF NOT EXISTS "subcategory" (
       "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
       "name"	TEXT NOT NULL,
-      "image"	TEXT DEFAULT "",
+      "imagePath"	TEXT DEFAULT "",
       "active"	INTEGER DEFAULT 1
     );
   `,
@@ -75,7 +77,7 @@ export const MAIN_QUERIES = {
     CREATE TABLE IF NOT EXISTS "subcategory" (
       "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
       "name"	TEXT NOT NULL,
-      "image"	TEXT DEFAULT "",
+      "imagePath"	TEXT DEFAULT "",
       "active"	INTEGER DEFAULT 1,
       "categoryId"	INTEGER
     );
@@ -83,8 +85,8 @@ export const MAIN_QUERIES = {
   CREATE_TABLE_PURCHASE_IMAGE: `
     CREATE TABLE IF NOT EXISTS "purchase_image" (
       "id"	INTEGER,
-      "image"	TEXT NOT NULL,
       "purchaseId"	INTEGER,
+      "imagePath"	TEXT NOT NULL,
       "active"	INTEGER NOT NULL DEFAULT 1,
       FOREIGN KEY("purchaseId") REFERENCES "purchase"("id"),
       PRIMARY KEY("id")
@@ -94,11 +96,11 @@ export const MAIN_QUERIES = {
     DROP TABLE IF EXISTS "purchase_image";
     CREATE TABLE IF NOT EXISTS "purchase_image" (
       "id"	INTEGER,
-      "image"	TEXT NOT NULL,
       "purchaseId"	INTEGER,
+      "imagePath"	TEXT NOT NULL,
       "active"	INTEGER NOT NULL DEFAULT 1,
       FOREIGN KEY("purchaseId") REFERENCES "purchase"("id"),
       PRIMARY KEY("id")
     );
-  `,
-};
+  `
+}

@@ -4,7 +4,7 @@ import ModalSelector from "../../atoms/ModalSelector"
 import { fetchAllSubcategories } from "../../../dbOperations/subcategory/subcategoryBDTransactions"
 
 const SubcategoryFeature = props => {
-  const { subcategory, onChange } = props
+  const { subcategoryName, onChange } = props
 
   const [subcategories, setSubcategories] = useState([])
   const [editableElements, setEditatableElements] = useState({
@@ -33,15 +33,12 @@ const SubcategoryFeature = props => {
   return (
     <Feature
       name="subcategoría"
-      value={subcategory.name}
+      value={subcategoryName}
       voidValue="sin subcategoría"
       isVisibleEditableElm={editableElements.subcategory.isVisible}
       editableElement={
         <ModalSelector
-          items={[
-            { id: 1, name: "sub1" },
-            { id: 2, name: "sub2" }
-          ]}
+          items={[]}
           // items={subcategories}
           isModalVisible={editableElements.subcategory.isVisible}
           onBackdropPress={() =>

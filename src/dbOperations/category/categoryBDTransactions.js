@@ -11,7 +11,7 @@ export const fetchAllCategories = () => {
           resolve(result.rows._array);
         },
         err => {
-          console.error("Error fetching fetchAllCategories: ", error);
+          console.error("Error fetching fetchAllCategories: ", err);
         }
       );
     });
@@ -69,12 +69,12 @@ export const removeCategory = categoryId => {
   });
 };
 
-export const addCategory = (name, imageURI) => {
+export const addCategory = (name, imagePath) => {
   return new Promise(resolve => {
     DB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.ADD_CATEGORY,
-        [name, imageURI],
+        [name, imagePath],
         () => {
           resolve("OK");
         },

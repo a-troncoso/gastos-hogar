@@ -14,10 +14,6 @@ const Feature = props => {
     isVisibleEditableElm
   } = props
 
-  useEffect(() => {
-    console.log("isVisibleEditableElm", isVisibleEditableElm)
-  }, [isVisibleEditableElm])
-
   const handlePressFeature = () => {
     onPressFeature()
   }

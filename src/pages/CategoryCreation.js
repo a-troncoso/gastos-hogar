@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"
 import {
   StyleSheet,
   View,
@@ -6,24 +6,24 @@ import {
   Image,
   TouchableOpacity,
   TextInput
-} from "react-native";
-import { addCategory } from "../dbOperations/category/categoryBDTransactions";
+} from "react-native"
+import { addCategory } from "../dbOperations/category/categoryBDTransactions"
 
 const CategoryCreation = props => {
-  const { navigation } = props;
+  const { navigation } = props
 
-  const [categoryDetail] = useState({});
-  const [categoryNameValue, setCategoryNameValue] = useState("");
+  const [categoryDetail] = useState({})
+  const [categoryNameValue, setCategoryNameValue] = useState("")
 
-  useEffect(() => {}, []);
+  useEffect(() => {}, [])
 
-  const handlePressImageTouchable = () => {};
+  const handlePressImageTouchable = () => {}
 
   const handlePressRemoveCategoryButton = async () => {
-    const addResult = await addCategory(categoryNameValue, "");
+    const addResult = await addCategory(categoryNameValue, "")
 
-    if (addResult === "OK") navigation.navigate("CategoriesAdminGate");
-  };
+    if (addResult === "OK") navigation.navigate("CategoriesAdminGate")
+  }
 
   return (
     <View style={styles.categoryDetail}>
@@ -54,8 +54,8 @@ const CategoryCreation = props => {
         </TouchableOpacity>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   categoryDetail: {
@@ -110,6 +110,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#E3E3E3"
   },
   border: { borderColor: "red", borderStyle: "solid", borderWidth: 1 }
-});
+})
 
-export default CategoryCreation;
+export default CategoryCreation

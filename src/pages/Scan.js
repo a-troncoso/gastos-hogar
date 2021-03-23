@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect, useRef, useCallback } from "react"
+import PropTypes from "prop-types"
 import {
   StyleSheet,
   Text,
@@ -8,30 +8,28 @@ import {
   TouchableWithoutFeedback,
   FlatList,
   Image
-} from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { useFocusEffect } from "@react-navigation/native";
-import { Camera } from "expo-camera";
-import * as Permissions from "expo-permissions";
-import * as FileSystem from "expo-file-system";
-import * as MediaLibrary from "expo-media-library";
-import ImageEditor from "@react-native-community/image-editor";
-import { Octicons } from "@expo/vector-icons";
+} from "react-native"
+import { MaterialIcons } from "@expo/vector-icons"
+import { useFocusEffect } from "@react-navigation/native"
+import { Camera } from "expo-camera"
+import * as Permissions from "expo-permissions"
+import * as FileSystem from "expo-file-system"
+import * as MediaLibrary from "expo-media-library"
+import ImageEditor from "@react-native-community/image-editor"
+import { Octicons } from "@expo/vector-icons"
 
-import { insertPurchase } from "../dbOperations/purchase/purchaseBDTransactions";
-
-import alerts from "../utils/alerts/Alerts";
-import color from "../utils/styles/color";
+import alerts from "../utils/alerts/Alerts"
+import color from "../utils/styles/color"
 
 const PurchaseImage = props => {
-  const { uri, onRemoveImage } = props;
+  const { uri, onRemoveImage } = props
 
-  const [isRemoveIconVisible, setIsRemoveIconVisible] = useState(false);
+  const [isRemoveIconVisible, setIsRemoveIconVisible] = useState(false)
 
   const handlePressImage = () => {
-    if (isRemoveIconVisible) onRemoveImage({ uri });
-    else setIsRemoveIconVisible(true);
-  };
+    if (isRemoveIconVisible) onRemoveImage({ uri })
+    else setIsRemoveIconVisible(true)
+  }
 
   return (
     <TouchableWithoutFeedback onPress={handlePressImage}>
@@ -49,101 +47,101 @@ const PurchaseImage = props => {
         )}
       </View>
     </TouchableWithoutFeedback>
-  );
-};
+  )
+}
 
 PurchaseImage.defaultProps = {
   onRemoveImage: () => {}
-};
+}
 
 PurchaseImage.propTypes = {
   onRemoveImage: PropTypes.func
-};
+}
 
 const Scan = props => {
-  const { navigation, route } = props;
-  const { params } = route;
+  const { navigation, route } = props
+  const { params: routeParams } = route
 
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [cameraMounted, setCameraMounted] = useState(true);
-  const [pictures, setPictures] = useState([]);
-  const [isPurchaseInserted, setIsPurchaseInserted] = useState(false);
-  const cameraRef = useRef(null);
-  const picturesRoll = useRef(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState(null)
+  const [cameraMounted, setCameraMounted] = useState(true)
+  const [pictures, setPictures] = useState([])
+  const [isPurchaseInserted, setIsPurchaseInserted] = useState(false)
+  const cameraRef = useRef(null)
+  const picturesRoll = useRef(null)
 
   useFocusEffect(
     useCallback(() => {
-      setCameraMounted(true);
-      setIsPurchaseInserted(false);
-      setPictures([]);
+      setCameraMounted(true)
+      setIsPurchaseInserted(false)
+      setPictures([])
 
       return () => {
-        setCameraMounted(false);
-      };
+        setCameraMounted(false)
+      }
     }, [])
-  );
+  )
 
   useEffect(() => {
-    _requestCameraPermission();
-  }, []);
+    _requestCameraPermission()
+  }, [])
 
   useEffect(() => {
     if (isPurchaseInserted)
-      navigation.navigate("ExpenseCategoryGate", { evt: "PURCHASE_SAVED" });
-  }, [isPurchaseInserted]);
+      navigation.navigate("ExpenseCategoryGate", { evt: "PURCHASE_SAVED" })
+  }, [isPurchaseInserted])
 
   const _requestCameraPermission = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    setHasCameraPermission(status === "granted");
-    await Permissions.askAsync(Permissions.CAMERA_ROLL);
-  };
+    const { status } = await Permissions.askAsync(Permissions.CAMERA)
+    setHasCameraPermission(status === "granted")
+    await Permissions.askAsync(Permissions.CAMERA_ROLL)
+  }
 
   const handlePressTakePicture = () => {
-    if (!cameraRef) return;
+    if (!cameraRef) return
 
     cameraRef.current.takePictureAsync().then(data => {
-      setPictures([...pictures, data.uri]);
-      _handlePictureSaved(data);
-    });
-  };
+      setPictures([...pictures, data.uri])
+      _handlePictureSaved(data)
+    })
+  }
 
   const _handlePictureSaved = e => {
-    const { uri } = e;
-    _savePictureInAppMemory(uri);
-    _savePictureInAppInternalStorage(uri);
-  };
+    const { uri } = e
+    _savePictureInAppMemory(uri)
+    _savePictureInAppInternalStorage(uri)
+  }
 
   const _savePictureInAppMemory = async pictureURI => {
     const fileName = pictureURI.substring(
       pictureURI.lastIndexOf("/") + 1,
       pictureURI.length
-    );
-    const pathToSave = `${FileSystem.documentDirectory}/${fileName}`;
+    )
+    const pathToSave = `${FileSystem.documentDirectory}/${fileName}`
 
     try {
-      await FileSystem.copyAsync({ from: pictureURI, to: pathToSave });
+      await FileSystem.copyAsync({ from: pictureURI, to: pathToSave })
     } catch (err) {
-      alerts.throwErrorAlert("copiar fotos", JSON.stringify(err));
+      alerts.throwErrorAlert("copiar fotos", JSON.stringify(err))
     }
-  };
+  }
 
   const _savePictureInAppInternalStorage = async pictureURI => {
     const to = `${FileSystem.documentDirectory}/${pictureURI.substring(
       pictureURI.lastIndexOf("/") + 1,
       pictureURI.length
-    )}`;
+    )}`
 
     try {
-      const result = await MediaLibrary.createAssetAsync(to);
-      console.log("result", result);
-      _crop(result.uri);
+      const result = await MediaLibrary.createAssetAsync(to)
+      console.log("result", result)
+      _crop(result.uri)
     } catch (err) {
       alerts.throwErrorAlert(
         "guardar foto en el dispositivo",
         JSON.stringify(err)
-      );
+      )
     }
-  };
+  }
 
   // TODO: implementar este recorde cuando termine feature nuevo diseño
   const _crop = async pictureTaked => {
@@ -156,45 +154,39 @@ const Scan = props => {
         width: 20,
         height: 20
       }
-    };
+    }
 
-    console.log("pictureTaked", pictureTaked);
+    console.log("pictureTaked", pictureTaked)
 
     try {
       const croppedImageURI = await ImageEditor.cropImage(
         pictureTaked.uri,
         cropProps
-      );
+      )
 
       if (croppedImageURI) {
-        console.log("croppedImageURI", _savePictureInAppMemory);
+        console.log("croppedImageURI", _savePictureInAppMemory)
         // _savePictureInAppMemory(_savePictureInAppMemory);
       }
     } catch (cropError) {
-      console.log("cropError", cropError);
+      console.log("cropError", cropError)
       // alerts.throwErrorAlert("copiar fotos", JSON.stringify(cropError));
     }
-  };
+  }
 
   const handleRemoveImage = imageURI => {
-    const filteredPictures = pictures.filter(p => p !== imageURI);
-    setPictures(filteredPictures);
-  };
+    const filteredPictures = pictures.filter(p => p !== imageURI)
+    setPictures(filteredPictures)
+  }
 
-  const savePurchase = async () => {
-    // TODO:  Aqui no se debe guardar la compra,
-    //        se debe pasar las fotos tomadas a la pantalla anterior
-
-    /*
-    try {
-      const insertResult = await insertPurchase(pictures, params.categoryId, 1);
-      if (insertResult.rowsAffected) setIsPurchaseInserted(true);
-    } catch (err) {
-      alerts.throwErrorAlert("ingresar la compra", JSON.stringify(err));
-    }
-    */
-    navigation.navigate("ExpenseDetail", { mode: params.fromMode });
-  };
+  const handlePressNavigateNext = async () => {
+    navigation.push("ExpenseDetail", {
+      fromScreen: 'Scan',
+      mode: routeParams.fromMode,
+      categoryId: routeParams.categoryId,
+      pictures
+    })
+  }
 
   return (
     <View style={styles.scan}>
@@ -226,7 +218,7 @@ const Scan = props => {
                 {pictures.length > 0 && (
                   <TouchableOpacity
                     style={styles.scanSavePurchaseBtn}
-                    onPress={savePurchase}
+                    onPress={handlePressNavigateNext}
                   >
                     <MaterialIcons
                       name="navigate-next"
@@ -247,8 +239,8 @@ const Scan = props => {
         </View>
       )}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   scan: {
@@ -330,6 +322,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   }
-});
+})
 
-export default Scan;
+export default Scan

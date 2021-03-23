@@ -6,7 +6,8 @@ import {
   createInitialTables,
   insertBasicData,
   selectBasicData,
-  selectOldData
+  selectOldData,
+  describeTable
 } from "./src/dbOperations/main"
 import CustomRouter from "./src/router/CustomRouter"
 import * as SQLite from "expo-sqlite"
@@ -21,12 +22,16 @@ const App = () => {
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false)
 
   useEffect(() => {
-    _createInitialTables()
+    _createInitialTables({ overrideTables: false })
+    // _describeTable({ table: "category" })
+    _selectBasicData({ table: "expense", createOutputFile: false })
+    // _selectBasicData({ table: "category", createOutputFile: false })
+    // _selectBasicData({ table: "subcategory", createOutputFile: false })
   }, [])
 
-  const _createInitialTables = async () => {
+  const _createInitialTables = async ({ overrideTables }) => {
     try {
-      await createInitialTables({ withOverride: false })
+      await createInitialTables({ overrideTable: overrideTables })
       await insertBasicData()
     } catch (err) {
       console.err(err)
@@ -36,7 +41,7 @@ const App = () => {
 
   const _selectOldData = async () => {
     try {
-      const oldData = await selectOldData("purchase")
+      const oldData = await selectOldData("expense")
       console.h1("oldData", oldData)
 
       FileSystem.writeAsStringAsync(
@@ -48,15 +53,27 @@ const App = () => {
     }
   }
 
-  const _selectBasicData = async () => {
+  const _selectBasicData = async ({ table, createOutputFile }) => {
     try {
-      const data = await selectBasicData("purchase")
+      const data = await selectBasicData(table)
+      console.h1(table)
       console.h1(data)
 
-      FileSystem.writeAsStringAsync(
-        `${FileSystem.documentDirectory}/OLD_DATABASE.txt`,
-        JSON.stringify(data.rows)
-      )
+      if (createOutputFile)
+        FileSystem.writeAsStringAsync(
+          `${FileSystem.documentDirectory}/OLD_DATABASE.txt`,
+          JSON.stringify(data.rows)
+        )
+    } catch (err) {
+      console.err(err)
+    }
+  }
+
+  const _describeTable = async ({ table }) => {
+    try {
+      const data = await describeTable(table)
+      console.h1(table)
+      console.h1(data)
     } catch (err) {
       console.err(err)
     }
@@ -79,26 +96,13 @@ const App = () => {
     }
   }
 
-  const appViewStyle = isAppWithKeyboard => {
-    // if (isAppWithKeyboard) return { height: heigthWithKeyboard }
-    return {}
-  }
-
   return (
     isBasicTablesCreated && (
       <AppContext.Provider value={app}>
         <CustomRouter />
       </AppContext.Provider>
     )
-
-    // <View style={{flex: 1}}>
-    //   <Text>HOLA</Text>
-    // </View>
   )
 }
-
-const styles = StyleSheet.create({
-  appView: {}
-})
 
 export default App

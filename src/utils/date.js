@@ -10,84 +10,102 @@ const monthNamesList = [
   "septiembre",
   "octubre",
   "noviembre",
-  "diciembre",
-];
+  "diciembre"
+]
 
-const formattedMonthName = (format) => {
-  let exit = [];
+const formattedMonthName = (monthNumber, format) => {
+  let exit = []
   switch (format) {
     case "short":
-      exit = monthNamesList.map((m) => m.substring(0, 3));
-      break;
+      exit = monthNamesList[monthNumber].substring(0, 3)
+      break
     default:
-      exit = monthNamesList;
-      break;
+      exit = monthNamesList[monthNumber]
+      break
   }
-  return exit;
-};
+  return exit
+}
 
-export const monthNames = () => (format) => {
-  let exit = null;
-  if (format) exit = formattedMonthName(format);
+const formattedMonthNames = format => {
+  let exit = []
+  switch (format) {
+    case "short":
+      exit = monthNamesList.map((m, i) => formattedMonthName(i, "short"))
+      break
+    default:
+      exit = monthNamesList
+      break
+  }
+  return exit
+}
+
+export const monthNames = () => format => {
+  let exit = null
+  if (format) exit = formattedMonthNames(format)
   // TODO: In this case, doesn't found
-  else exit = monthNamesList;
+  else exit = monthNamesList
 
-  return exit;
-};
+  return exit
+}
 
 export const daysInMonth = () => {
-  let exit = [];
-  let initialDay = 1;
+  let exit = []
+  let initialDay = 1
   while (initialDay <= 31) {
-    exit.push(initialDay);
-    initialDay = initialDay + 1;
+    exit.push(initialDay)
+    initialDay = initialDay + 1
   }
 
-  return exit;
-};
+  return exit
+}
 
 export const availableYears = () => {
-  let exit = [];
-  let initialYear = 2015;
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
+  let exit = []
+  let initialYear = 2015
+  const currentDate = new Date()
+  const currentYear = currentDate.getFullYear()
   while (initialYear <= currentYear) {
-    exit.push(initialYear);
-    initialYear = initialYear + 1;
+    exit.push(initialYear)
+    initialYear = initialYear + 1
   }
 
-  return exit;
-};
+  return exit
+}
 
-export const formatDate = (_date) => {
-  const date = new Date(_date);
-  const year = date.getFullYear();
-  let month = date.getMonth() + 1;
-  let dt = date.getDate();
+export const formatDate = (_date, ...rest) => {
+  const date = new Date(_date)
+  const restParams = rest[0]
+  let day = date.getDate()
+  const month = date.getMonth()
+  const year = date.getFullYear()
+  let formattedMonth =
+    restParams && restParams.withMonthName
+      ? formattedMonthName(month, "short")
+      : month + 1
 
-  if (dt < 10) dt = "0" + dt;
+  if (day < 10) day = "0" + day
+  if (typeof formattedMonth == "number" && formattedMonth < 10)
+    formattedMonth = "0" + formattedMonth
 
-  if (month < 10) month = "0" + month;
+  return `${day}-${formattedMonth}-${year}`
+}
 
-  return `${dt}-${month}-${year}`;
-};
-
-export const currentDate = () => new Date();
+export const currentDate = () => new Date()
 
 export const currentMonth = (inTwoDigits = false) => {
-  const currentDate = new Date();
+  const currentDate = new Date()
 
   return inTwoDigits
     ? `0${currentDate.getMonth() + 1}`.slice(-2)
-    : currentDate.getMonth();
-};
+    : currentDate.getMonth()
+}
 
-export const formattedMonth = (monthNumber, inTwoDigits = false) => {
-  return inTwoDigits ? `0${monthNumber + 1}`.slice(-2) : monthNumber;
-};
+export const formattedMonthNumber = (monthNumber, { inTwoDigits = false }) => {
+  return inTwoDigits ? `0${monthNumber}`.slice(-2) : monthNumber
+}
 
-export const monthName = (monthNumber) => {
-  const monthNames = monthNamesList;
+export const monthName = monthNumber => {
+  const monthNames = monthNamesList
 
-  return monthNames[monthNumber];
-};
+  return monthNames[monthNumber]
+}

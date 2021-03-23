@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react"
 import { StyleSheet, View, SafeAreaView, ToastAndroid } from "react-native"
-import { useFocusEffect } from "@react-navigation/native"
+import { useFocusEffect, useRoute, useNavigation} from "@react-navigation/native"
 
 import CategoriesList from "../components/molecules/category/CategoriesList"
 
@@ -17,7 +17,8 @@ const Toast = ({ visible, message }) => {
 }
 
 const RegistryExpenseGate = props => {
-  const { navigation, route } = props
+  const route = useRoute()
+  const navigation = useNavigation()
   const [categories, setCategories] = useState([])
   const [visibleToast, setVisibleToast] = useState(false)
 

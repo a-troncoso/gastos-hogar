@@ -3,5 +3,5 @@ export const DESCRIPTION_QUERIES = {
     "select c.id, c.name, c.image from category c where c.id=?;",
   UPDATE_DESCRIPTION: "UPDATE category SET name=? WHERE id=?;",
   REMOVE_DESCRIPTION: "UPDATE category SET active=0 WHERE id=?;",
-  ADD_DESCRIPTION: `INSERT INTO "category" ("name","image","active") VALUES (?,?,1);`
+  ADD_DESCRIPTION: `INSERT INTO "category" ("name","imagePath","active") VALUES (?,?,1);`
 };

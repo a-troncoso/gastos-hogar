@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react"
+import PropTypes from "prop-types"
 import {
   StyleSheet,
   View,
   FlatList,
   Text,
   TouchableOpacity
-} from "react-native";
-import Modal from "react-native-modal";
-import renderSeparator from "../../components/atoms/Separator";
+} from "react-native"
+import Modal from "react-native-modal"
+import renderSeparator from "../../components/atoms/Separator"
 
-import color from "../../utils/styles/color";
+import color from "../../utils/styles/color"
 
 const ModalSelector = props => {
-  const { items, isModalVisible, onBackdropPress, onChange } = props;
+  const { items, isModalVisible, onBackdropPress, onChange } = props
 
   const handlePressItem = item => {
-    onChange(item);
-  };
+    onChange(item)
+  }
 
   return (
     <View>
@@ -28,39 +28,45 @@ const ModalSelector = props => {
       >
         <View style={styles.viewModal}>
           <View style={styles.viewList}>
-            <FlatList
-              data={items}
-              keyExtractor={item => item.id.toString()}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={renderSeparator}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.viewCategoryName}
-                  onPress={() => handlePressItem(item)}
-                >
-                  <Text>{item.name}</Text>
-                </TouchableOpacity>
-              )}
-            ></FlatList>
+            {items.length > 0 ? (
+              <FlatList
+                data={items}
+                keyExtractor={item => item.id.toString()}
+                showsVerticalScrollIndicator={false}
+                ItemSeparatorComponent={renderSeparator}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.viewCategoryName}
+                    onPress={() => handlePressItem(item)}
+                  >
+                    <Text>{item.name}</Text>
+                  </TouchableOpacity>
+                )}
+              ></FlatList>
+            ) : (
+              <Text style={styles.placeholder}>
+                No hay elementos que mostrar 🤷🏻‍♂️
+              </Text>
+            )}
           </View>
         </View>
       </Modal>
     </View>
-  );
-};
+  )
+}
 
 ModalSelector.defaultProps = {
   isModalVisible: false,
   onBackdropPress: () => null,
   onChange: () => null
-};
+}
 
 ModalSelector.propTypes = {
   items: PropTypes.array.isRequired,
   isModalVisible: PropTypes.bool,
   onBackdropPress: PropTypes.func,
   onChange: PropTypes.func
-};
+}
 
 const styles = StyleSheet.create({
   modal: {
@@ -81,7 +87,9 @@ const styles = StyleSheet.create({
     // borderStyle: "solid",
     // borderColor: "blue",
     flex: 1,
-    width: "100%"
+    width: "100%",
+    justifyContent: "center",
+
   },
   viewCategoryName: {
     flex: 1,
@@ -89,7 +97,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     justifyContent: "center",
     alignItems: "center"
+  },
+  placeholder: {
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    // borderColor: "blue",
+    textAlign: "center"
   }
-});
+})
 
-export default ModalSelector;
+export default ModalSelector

@@ -5,7 +5,7 @@ import CategoriesList from "../components/molecules/category/CategoriesList"
 import Hero from "../components/atoms/Hero"
 import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator"
 import Constants from "expo-constants"
-import { fetchTotalPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
+import { fetchTotalExpensesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
 import { formattedMonth, currentDate } from "../utils/date"
 import color from "../utils/styles/color"
 
@@ -64,24 +64,29 @@ const HistoryGate = props => {
   const { navigation } = props
 
   const [categories, setCategories] = useState([])
-  const [dateSelected, setDateSelected] = useState(currentDate)
+  const [dateSelected, setDateSelected] = useState(currentDate())
 
   useFocusEffect(
     useCallback(() => {
-      fetchTotalPurchases(formattedMonth(dateSelected.getMonth(), true))
+      fetchTotalPurchases(dateSelected)
     }, [])
   )
 
   useEffect(() => {
-    fetchTotalPurchases(formattedMonth(dateSelected.getMonth(), true))
+    fetchTotalPurchases(dateSelected)
   }, [dateSelected])
 
-  const fetchTotalPurchases = async month => {
+  const fetchTotalPurchases = async date => {
+    console.log("date", date)
     try {
-      const categories = await fetchTotalPurchasesByCategory(month)
+      const categories = await fetchTotalExpensesByCategory({
+        date,
+        mode: "month"
+      })
 
-      // setCategories(categories)
-      setCategories(mock)
+      console.log("categories", categories)
+
+      setCategories(categories)
     } catch (err) {}
   }
 
@@ -92,9 +97,9 @@ const HistoryGate = props => {
   }
 
   const handleTest = () => {
-    navigation.navigate("PurchaseImagesModal", {
-      images: []
-    })
+    // navigation.navigate("PurchaseImagesModal", {
+    //   images: []
+    // })
   }
 
   return (
@@ -103,7 +108,7 @@ const HistoryGate = props => {
         button={
           <DateNavigatorActivator
             mode="MONTH"
-            date={currentDate}
+            date={dateSelected}
             test={handleTest}
           />
         }

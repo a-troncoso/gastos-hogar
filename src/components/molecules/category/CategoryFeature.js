@@ -5,7 +5,7 @@ import { fetchAllCategories } from "../../../dbOperations/category/categoryBDTra
 
 
 const CategoryFeature = props => {
-  const { category, onChange } = props;
+  const { categoryName, onChange } = props;
 
   const [categories, setCategories] = useState([]);
   const [editableElements, setEditatableElements] = useState({
@@ -27,13 +27,14 @@ const CategoryFeature = props => {
       category: { isVisible: false }
     });
 
+    console.log('category', category);
     onChange(category);
   };
 
   return (
     <Feature
       name="categoría"
-      value={category.name}
+      value={categoryName}
       voidValue="sin categoría"
       editableElement={
         <CategoryModalSelector

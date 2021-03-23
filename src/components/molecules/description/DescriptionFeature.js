@@ -1,11 +1,11 @@
-import React, { useState } from "react"
-import { TextInput, StyleSheet } from "react-native"
+import React, { useState, useEffect } from "react"
+import { TextInput, StyleSheet, Keyboard } from "react-native"
 import Feature from "../../atoms/Feature"
 
 const DescriptionFeature = props => {
-  const { description, onChange } = props
+  const { description, onChange, onChageKeyboardVisibility } = props
 
-  const [_description, setDescription] = useState(description.value)
+  const [_description, setDescription] = useState(description)
   const [editableElements, setEditatableElements] = useState({
     description: { isVisible: false }
   })
@@ -30,6 +30,25 @@ const DescriptionFeature = props => {
     })
   }
 
+  const _keyboardDidShow = () => {
+    onChageKeyboardVisibility({ isKeyboardVisible: true })
+  }
+
+  const _keyboardDidHide = () => {
+    onChageKeyboardVisibility({ isKeyboardVisible: false })
+  }
+
+  useEffect(() => {
+    Keyboard.addListener("keyboardDidShow", _keyboardDidShow)
+    Keyboard.addListener("keyboardDidHide", _keyboardDidHide)
+
+    // cleanup function
+    return () => {
+      Keyboard.removeListener("keyboardDidShow", _keyboardDidShow)
+      Keyboard.removeListener("keyboardDidHide", _keyboardDidHide)
+    }
+  }, [])
+
   return (
     <Feature
       name="descripción"
@@ -42,6 +61,7 @@ const DescriptionFeature = props => {
           value={_description}
           onChangeText={handleChangeDescription}
           onBlur={handleBlurInput}
+          onSubmitEditing={Keyboard.dismiss}
           autoFocus
         />
       }

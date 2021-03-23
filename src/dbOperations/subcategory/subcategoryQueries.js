@@ -5,5 +5,5 @@ export const SUBCATEGORY_QUERIES = {
   UPDATE_SUBCATEGORY: "UPDATE subcategory SET name=? WHERE id=?;",
   REMOVE_SUBCATEGORY: "UPDATE subcategory SET active=0 WHERE id=?;",
   ADD_SUBCATEGORY:
-    `INSERT INTO "subcategory" ("name","image","active") VALUES (?,?,1);`
+    `INSERT INTO "subcategory" ("name","imagePath","active") VALUES (?,?,1);`
 };

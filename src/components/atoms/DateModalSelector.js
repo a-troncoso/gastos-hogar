@@ -1,43 +1,39 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react"
 import {
   StyleSheet,
   View,
   FlatList,
   Text,
-  TouchableOpacity,
-} from "react-native";
-import Modal from "react-native-modal";
-import { LinearGradient } from "expo-linear-gradient";
-import Button from "./Button";
-import DateRoller from "../molecules/date/DateRoller";
-import { fetchAllCategories } from "../../dbOperations/category/categoryBDTransactions";
+  TouchableOpacity
+} from "react-native"
+import Modal from "react-native-modal"
+import { LinearGradient } from "expo-linear-gradient"
+import Button from "./Button"
+import DateRoller from "../molecules/date/DateRoller"
+import { fetchAllCategories } from "../../dbOperations/category/categoryBDTransactions"
 
-import color from "../../utils/styles/color";
+import color from "../../utils/styles/color"
 
-const DateModalSelector = (props) => {
-  const { isModalVisible, onBackdropPress, onChange } = props;
+const DateModalSelector = props => {
+  const { date, isModalVisible, onBackdropPress, onChange } = props
 
-  const [selectedDate, setSelectedDate] = useState({
-    day: 0,
-    month: 0,
-    year: 0,
-  });
+  const [selectedDate, setSelectedDate] = useState(date)
 
   useEffect(() => {
     // console.log("selectedDate", selectedDate);
-  }, [selectedDate]);
+  }, [selectedDate])
 
-  const handleChangeDate = (date) => {
-    setSelectedDate((prevState) => ({
+  const handleChangeDate = date => {
+    setSelectedDate(prevState => ({
       ...prevState,
-      ...date,
-    }));
+      ...date
+    }))
     // console.log("handleChangeDate", date);
-  };
+  }
 
   const handlePressOk = () => {
-    onChange(selectedDate);
-  };
+    onChange(selectedDate)
+  }
 
   return (
     <View>
@@ -48,7 +44,6 @@ const DateModalSelector = (props) => {
       >
         <View style={styles.viewModal}>
           <DateRoller selectedDate={selectedDate} onChange={handleChangeDate} />
-
           <View style={styles.modalViewFooter}>
             <Button onPress={handlePressOk}>
               <Text style={styles.saveBtnText}>OK</Text>
@@ -57,14 +52,14 @@ const DateModalSelector = (props) => {
         </View>
       </Modal>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   modal: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   viewModal: {
     flexDirection: "column",
@@ -73,15 +68,15 @@ const styles = StyleSheet.create({
     width: 300,
     height: 250,
     padding: 16,
-    backgroundColor: color.blue["90"],
+    backgroundColor: color.blue["90"]
   },
   modalViewFooter: {
     marginTop: 16,
-    flexDirection: "row",
+    flexDirection: "row"
   },
   saveBtnText: {
-    fontWeight: "bold",
-  },
-});
+    fontWeight: "bold"
+  }
+})
 
-export default DateModalSelector;
+export default DateModalSelector

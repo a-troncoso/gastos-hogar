@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"
 // import {
 //   StyleSheet,
 //   View,
@@ -8,29 +8,32 @@ import React, { useState, useEffect } from "react";
 //   Alert,
 //   Picker
 // } from "react-native";
-import Feature from "../../atoms/Feature";
-import DateSelector from "../../atoms/DateModalSelector";
+import Feature from "../../atoms/Feature"
+import DateModalSelector from "../../atoms/DateModalSelector"
+
+import { formatDate } from "../../../utils/date"
 
 const DateFeature = props => {
-  const { date, onChange } = props;
+  const { date, onChange } = props
 
   const [isEditableElementVisible, setIdEditatableElementVisible] = useState(
     false
-  );
+  )
 
   const handleSelectDate = date => {
     // setIdEditatableElementVisible(false);
-    onChange(date);
-  };
+    onChange(date)
+  }
 
   return (
     <Feature
       name="fecha"
-      value={date.value}
+      value={formatDate(date, { withMonthName: true })}
       voidValue="sin registrar"
       isVisibleEditableElm={isEditableElementVisible}
       editableElement={
-        <DateSelector
+        <DateModalSelector
+          date={date}
           isModalVisible={isEditableElementVisible}
           onBackdropPress={() => setIdEditatableElementVisible(false)}
           onChange={date => handleSelectDate(date)}
@@ -38,7 +41,7 @@ const DateFeature = props => {
       }
       onPressFeature={() => setIdEditatableElementVisible(true)}
     />
-  );
-};
+  )
+}
 
-export default DateFeature;
+export default DateFeature
