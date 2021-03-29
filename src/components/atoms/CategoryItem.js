@@ -5,6 +5,7 @@ import { toCurrencyFormat } from "../../utils/number"
 
 import { FontAwesome } from "@expo/vector-icons"
 import { SimpleLineIcons } from "@expo/vector-icons"
+import Termometer from "./Termometer/Termometer"
 
 import color from "../../utils/styles/color"
 
@@ -27,66 +28,6 @@ const categoryIconStyles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 16,
     backgroundColor: color.blue["0"]
-  }
-})
-
-const Termometer = ({ maxValue, value }) => {
-  const termConfig = {
-    0: {
-      color: "green"
-    },
-    40: {
-      color: "yellow"
-    },
-    80: {
-      color: "red"
-    }
-  }
-
-  const getTermometerStyles = () => {
-    const temperature = (value * 100) / maxValue
-    let color
-
-    for (let i = 0; i < Object.keys(termConfig).length - 1; i++) {
-      if (
-        parseInt(Object.keys(termConfig)[i], 10) > temperature &&
-        temperature <= parseInt(Object.keys(termConfig)[i + 1], 10)
-      ) {
-        // TODO: Calcular el color del termometro
-        // color = termConfig[i].color
-      }
-    }
-
-    console.log({ temperature, color })
-  }
-
-  useEffect(() => {
-    getTermometerStyles()
-  }, [])
-
-  return (
-    <View style={termometerStyles.termometer}>
-      <View
-      // style={[
-      //   termometerStyles.temperature,
-      //   { width: `${temperature}%`, backgroundColor: "" }
-      // ]}
-      ></View>
-    </View>
-  )
-}
-
-const termometerStyles = StyleSheet.create({
-  termometer: {
-    height: 8,
-    width: "100%",
-    borderColor: "black",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderRadius: 8
-  },
-  temperature: {
-    height: "100%"
   }
 })
 
@@ -151,7 +92,6 @@ const styles = StyleSheet.create({
     // borderColor: "red",
     // borderWidth: 1,
     // borderStyle: "solid",
-
     flex: 1,
     marginLeft: 12,
     flexDirection: "row",

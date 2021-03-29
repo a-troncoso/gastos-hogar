@@ -52,6 +52,7 @@ export const MAIN_QUERIES = {
       "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
       "name"	TEXT NOT NULL,
       "imagePath"	TEXT DEFAULT "",
+      "maxAmountPerMonth" INTEGER DEFAULT 0,
       "active"	INTEGER DEFAULT 1
     );
   `,
@@ -61,6 +62,7 @@ export const MAIN_QUERIES = {
       "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
       "name"	TEXT NOT NULL,
       "imagePath"	TEXT DEFAULT "",
+      "maxAmountPerMonth" INTEGER DEFAULT 0,
       "active"	INTEGER DEFAULT 1
     );
   `,
@@ -83,23 +85,23 @@ export const MAIN_QUERIES = {
     );
   `,
   CREATE_TABLE_PURCHASE_IMAGE: `
-    CREATE TABLE IF NOT EXISTS "purchase_image" (
+    CREATE TABLE IF NOT EXISTS "expense_image" (
       "id"	INTEGER,
-      "purchaseId"	INTEGER,
+      "expenseId"	INTEGER,
       "imagePath"	TEXT NOT NULL,
       "active"	INTEGER NOT NULL DEFAULT 1,
-      FOREIGN KEY("purchaseId") REFERENCES "purchase"("id"),
+      FOREIGN KEY("expenseId") REFERENCES "expense"("id"),
       PRIMARY KEY("id")
     );
   `,
   OVERRIDE_TABLE_PURCHASE_IMAGE: `
-    DROP TABLE IF EXISTS "purchase_image";
-    CREATE TABLE IF NOT EXISTS "purchase_image" (
+    DROP TABLE IF EXISTS "expense_image";
+    CREATE TABLE IF NOT EXISTS "expense_image" (
       "id"	INTEGER,
-      "purchaseId"	INTEGER,
+      "expenseId"	INTEGER,
       "imagePath"	TEXT NOT NULL,
       "active"	INTEGER NOT NULL DEFAULT 1,
-      FOREIGN KEY("purchaseId") REFERENCES "purchase"("id"),
+      FOREIGN KEY("expenseId") REFERENCES "expense"("id"),
       PRIMARY KEY("id")
     );
   `

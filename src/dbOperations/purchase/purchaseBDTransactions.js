@@ -65,7 +65,6 @@ export const fetchTotalExpensesByCategory = ({ date, mode }) => {
           })
         ],
         (_, { rows }) => {
-          console.log("rows", rows)
           resolve(
             rows._array.map(r => {
               return {
@@ -73,7 +72,7 @@ export const fetchTotalExpensesByCategory = ({ date, mode }) => {
                 name: r.name,
                 extraInfo: {
                   currentAmount: r.amount,
-                  maximumStop: 100
+                  maximumStop: r.maxAmountPerMonth
                 }
               }
             })
@@ -88,17 +87,28 @@ export const fetchTotalExpensesByCategory = ({ date, mode }) => {
   })
 }
 
-export const fetchPurchasesByCategory = (month, categoryId) => {
+export const fetchPurchasesByCategory = ({ date, mode, categoryId }) => {
+  const filterDateByMode = date => ({
+    day: date.getFullYear(),
+    month: date.getMonth() + 1,
+    year: date.getFullYear()
+  })
+
   return new Promise(resolve => {
     DB.transaction(tx => {
       tx.executeSql(
-        EXPENSE_QUERIES.SELECT_PURCHASES_BY_CATEGORY,
-        [month, categoryId],
+        EXPENSE_QUERIES.SELECT_EXPENSES_BY_CATEGORY,
+        [
+          formattedMonthNumber(filterDateByMode(date)[mode], {
+            inTwoDigits: true
+          }),
+          categoryId
+        ],
         (_, { rows }) => {
           resolve(rows._array)
         },
         error => {
-          console.error("Error fetching SELECT_PURCHASES_BY_CATEGORY: ", error)
+          console.error("Error fetching SELECT_EXPENSES_BY_CATEGORY: ", error)
         }
       )
     })

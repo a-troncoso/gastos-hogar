@@ -24,7 +24,7 @@ const App = () => {
   useEffect(() => {
     _createInitialTables({ overrideTables: false })
     // _describeTable({ table: "category" })
-    _selectBasicData({ table: "expense", createOutputFile: false })
+    // _selectBasicData({ table: "expense", createOutputFile: false })
     // _selectBasicData({ table: "category", createOutputFile: false })
     // _selectBasicData({ table: "subcategory", createOutputFile: false })
   }, [])

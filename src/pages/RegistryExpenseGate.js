@@ -1,6 +1,10 @@
 import React, { useState, useCallback, useEffect } from "react"
 import { StyleSheet, View, SafeAreaView, ToastAndroid } from "react-native"
-import { useFocusEffect, useRoute, useNavigation} from "@react-navigation/native"
+import {
+  useFocusEffect,
+  useRoute,
+  useNavigation
+} from "@react-navigation/native"
 
 import CategoriesList from "../components/molecules/category/CategoriesList"
 
@@ -44,7 +48,8 @@ const RegistryExpenseGate = props => {
 
   const handlePressCategory = id => {
     navigation.navigate("ExpenseDetail", {
-      categoryId: id
+      categoryId: id,
+      mode: "NEW_EXPENSE"
     })
   }
 
@@ -66,14 +71,10 @@ const RegistryExpenseGate = props => {
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: color.blue["90"],
-    alignSelf: "stretch"
+    backgroundColor: color.blue["90"]
   },
   categoriesListView: {
     flex: 1,
-    justifyContent: "center",
-    alignSelf: "stretch",
     paddingHorizontal: 16
   }
 })

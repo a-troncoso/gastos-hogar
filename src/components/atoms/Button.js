@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react"
 import {
   StyleSheet,
   View,
@@ -6,19 +6,22 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Alert
-} from "react-native";
+} from "react-native"
 
-import color from "../../utils/styles/color";
+import color from "../../utils/styles/color"
 
 const Button = props => {
-  const { children, onPress } = props;
+  const { children, type, onPress } = props
 
   return (
-    <TouchableOpacity style={styles.saveBtn} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.saveBtn, { ...styles[type] }]}
+      onPress={onPress}
+    >
       {children}
     </TouchableOpacity>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   saveBtn: {
@@ -30,7 +33,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: color.blue["20"],
     borderRadius: 8
+  },
+  danger: {
+    backgroundColor: color.red[20]
   }
-});
+})
 
-export default Button;
+export default Button

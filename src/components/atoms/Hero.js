@@ -4,14 +4,15 @@ import { StyleSheet, View } from "react-native"
 import color from "../../utils/styles/color"
 
 const Hero = props => {
-  const { central, button } = props
+  const { childStyles, central, button } = props
 
   return (
     <View
       style={[
         styles.hero,
         central ? styles.withCentral : {},
-        button ? styles.withButton : {}
+        button ? styles.withButton : {},
+        { ...childStyles }
       ]}
     >
       <View style={styles.superiorPart}></View>

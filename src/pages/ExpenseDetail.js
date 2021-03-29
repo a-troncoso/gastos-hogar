@@ -14,6 +14,11 @@ import {
   useNavigation,
   useRoute
 } from "@react-navigation/native"
+import {
+  fetchPurchaseById,
+  patchPurchaseAmount,
+  patchPurchaseCategory
+} from "../dbOperations/purchase/purchaseBDTransactions"
 import Hero from "../components/atoms/Hero"
 import Button from "../components/atoms/Button"
 import CategoryFeature from "../components/molecules/category/CategoryFeature"
@@ -22,7 +27,8 @@ import SubcategoryFeature from "../components/molecules/subcategory/SubcategoryF
 import DescriptionFeature from "../components/molecules/description/DescriptionFeature"
 import ExpenseMainFeature from "../components/molecules/feature/ExpenseMainFeature"
 
-// import { formatDate } from "../utils/date"
+import { toCurrencyFormat } from "../utils/number"
+
 import color from "../utils/styles/color"
 
 import {
@@ -88,9 +94,15 @@ const ExpenseDetail = props => {
     saveFeatureIntoUI("category", categoryDetail.name)
   }
 
-  const fetchExpenseDetail = expenseId => {
-    // const data = await fetchExpense()
-    // setFeatureDataUI()
+  const fetchExpenseDetail = async expenseId => {
+    const purchase = await fetchPurchaseById(expenseId)
+
+    // setPurchase({
+    //   ...purchase,
+    //   amount: toCurrencyFormat(purchase.amount),
+    //   subcategory: purchase.subcategory || "-"
+    // });
+    // saveFeatureIntoUI()
   }
 
   const saveExpense = async () => {
@@ -112,6 +124,10 @@ const ExpenseDetail = props => {
 
   const handlePressSaveButton = () => {
     saveExpense()
+  }
+
+  const handlePressDeleteButton = () => {
+    // deleteExpense()
   }
 
   const handlePressCamera = () => {
@@ -194,11 +210,19 @@ const ExpenseDetail = props => {
             </View>
             {isFixedBottomAreaVisible && expenseDetailMode === "NEW_EXPENSE" && (
               <View style={styles.fixedBottomArea}>
-                <Button onPress={handlePressSaveButton} style={styles.button}>
-                  <Text style={styles.saveBtnText}>GUARDAR</Text>
+                <Button onPress={handlePressSaveButton}>
+                  <Text style={styles.mainBtnText}>GUARDAR</Text>
                 </Button>
               </View>
             )}
+            {isFixedBottomAreaVisible &&
+              expenseDetailMode === "EXISTING_EXPENSE" && (
+                <View style={styles.fixedBottomArea}>
+                  <Button onPress={handlePressDeleteButton} type="danger">
+                    <Text style={styles.mainBtnText}>ELIMINAR</Text>
+                  </Button>
+                </View>
+              )}
           </SafeAreaView>
         </KeyboardAvoidingView>
       </ScrollView>
@@ -211,7 +235,6 @@ const styles = StyleSheet.create({
     // borderColor: "black",
     // borderWidth: 1,
     // borderStyle: "solid",
-
     flex: 1,
     backgroundColor: color.blue["90"]
   },
@@ -236,7 +259,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16
   },
-  saveBtnText: {
+  mainBtnText: {
     fontWeight: "bold"
   },
   purchaseCategoryPicker: {

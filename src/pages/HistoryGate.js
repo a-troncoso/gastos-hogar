@@ -77,7 +77,6 @@ const HistoryGate = props => {
   }, [dateSelected])
 
   const fetchTotalPurchases = async date => {
-    console.log("date", date)
     try {
       const categories = await fetchTotalExpensesByCategory({
         date,
@@ -91,8 +90,10 @@ const HistoryGate = props => {
   }
 
   const handlePressCategory = id => {
-    navigation.navigate("Purchases", {
-      categoryId: id
+    navigation.navigate("Expenses", {
+      categoryId: id,
+      date: dateSelected,
+      mode: "month"
     })
   }
 
@@ -105,13 +106,7 @@ const HistoryGate = props => {
   return (
     <View style={styles.mainView}>
       <Hero
-        button={
-          <DateNavigatorActivator
-            mode="MONTH"
-            date={dateSelected}
-            test={handleTest}
-          />
-        }
+        button={<DateNavigatorActivator mode="MONTH" date={dateSelected} />}
       />
       <View style={styles.categoriesListView}>
         <SafeAreaView>

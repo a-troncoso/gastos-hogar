@@ -18,7 +18,7 @@ import ExpenseCategoryGate from "../pages/RegistryExpenseGate"
 import ExpenseDetail from "../pages/ExpenseDetail"
 import ScanExpense from "../pages/Scan"
 import HistoryGate from "../pages/HistoryGate"
-import Purchases from "../pages/Purchases"
+import Expenses from "../pages/Purchases"
 import Purchase from "../pages/Purchase"
 import CategoriesAdminGate from "../pages/CategoriesAdminGate"
 import DashbhoardGate from "../pages/DashbhoardGate"
@@ -115,14 +115,21 @@ const CustomRouter = () => {
           })}
         />
         <SummaryStack.Screen
-          name="Purchases"
-          component={Purchases}
-          options={{ ...screenGlobalOption, title: "Compras este Mes" }}
+          name="Expenses"
+          component={Expenses}
+          options={({ navigation }) => ({
+            ...screenGlobalOption(navigation),
+            title: "Compras este Mes"
+          })}
         />
         <SummaryStack.Screen
           name="Purchase"
           component={Purchase}
-          options={{ ...screenGlobalOption, title: "Detalle de la Compra" }}
+          options={({ navigation }) => ({
+            ...screenGlobalOption(navigation),
+            title: "Detalle de la Compra"
+          })}
+          
         />
       </SummaryStack.Navigator>
     )

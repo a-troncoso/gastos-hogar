@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react"
 import {
   StyleSheet,
   View,
@@ -7,14 +7,18 @@ import {
   Text,
   TouchableOpacity,
   Image
-} from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
-import { toCurrencyFormat } from "../utils/number";
-import { formatDate, currentMonth } from "../utils/date";
+} from "react-native"
+import { useFocusEffect } from "@react-navigation/native"
+import Hero from "../components/atoms/Hero"
+import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator"
+
+import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
+import { toCurrencyFormat } from "../utils/number"
+import { formatDate, currentMonth } from "../utils/date"
+import color from "../utils/styles/color"
 
 const Purchase = props => {
-  const { image, date, amount, onPress } = props;
+  const { image, date, amount, subcategory, onPress } = props
 
   return (
     <TouchableOpacity style={styles.purchase} onPress={onPress}>
@@ -26,20 +30,22 @@ const Purchase = props => {
           <Text style={styles.purchaseDate}>{formatDate(date)}</Text>
         </View>
         <View style={styles.purchaseExtraInfo}>
-          <Text>Total compra</Text>
-          <Text>{toCurrencyFormat(amount)}</Text>
+          <Text style={styles.purchaseSubcategory}>
+            {subcategory || "Sin subcategoría"}
+          </Text>
+          <Text style={styles.purchaseAmount}>{toCurrencyFormat(amount)}</Text>
         </View>
       </View>
     </TouchableOpacity>
-  );
-};
+  )
+}
 
 const PurchasesList = props => {
-  const { purchases, onPressPurchase } = props;
+  const { purchases, onPressPurchase } = props
 
   const handlePressPurchase = id => {
-    onPressPurchase(id);
-  };
+    onPressPurchase(id)
+  }
 
   return (
     <FlatList
@@ -58,33 +64,53 @@ const PurchasesList = props => {
         </View>
       )}
     ></FlatList>
-  );
-};
+  )
+}
 
-const Purchases = props => {
-  const { navigation, route } = props;
+const Expenses = props => {
+  const { navigation, route } = props
+  const categoryId = route.params.categoryId
+  const date = route.params.date
+  const mode = route.params.mode
 
-  const [purchases, setPurchases] = useState([]);
+  const filterDateByMode = date => ({
+    day: date.getFullYear(),
+    month: date.getMonth() + 1,
+    year: date.getFullYear()
+  })
+
+  const [purchases, setPurchases] = useState([])
+  const [dateSelected, setDateSelected] = useState(date)
 
   useFocusEffect(
     useCallback(() => {
-      fetchPurchases(currentMonth(true), route.params.categoryId);
+      fetchPurchases(date, mode, categoryId)
     }, [])
-  );
+  )
 
-  const fetchPurchases = async (month, categoryId) => {
-    const purchases = await fetchPurchasesByCategory(month, categoryId);
-    setPurchases(purchases);
-  };
+  const fetchPurchases = async (date, mode, categoryId) => {
+    const purchases = await fetchPurchasesByCategory({ date, mode, categoryId })
+    setPurchases(purchases)
+  }
 
   const handlePressPurchase = id => {
-    navigation.navigate("Purchase", {
-      purchaseId: id
-    });
-  };
+    navigation.navigate("ExpenseDetail", {
+      expenseId: id,
+      mode: "EXISTING_EXPENSE"
+    })
+  }
 
   return (
     <View style={styles.purchases}>
+      <Hero
+        childStyles={styles.hero}
+        button={
+          <DateNavigatorActivator
+            mode={mode.toUpperCase()}
+            date={dateSelected}
+          />
+        }
+      />
       <View style={styles.purchasesListView}>
         <SafeAreaView>
           <PurchasesList
@@ -94,69 +120,86 @@ const Purchases = props => {
         </SafeAreaView>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   purchases: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#fff"
+    backgroundColor: color.blue["90"]
+  },
+  hero: {
+    marginBottom: 8
   },
   purchasesListView: {
     flex: 1,
-    justifyContent: "center",
-    alignSelf: "stretch",
     paddingHorizontal: 16
   },
   purchase: {
-    height: 72,
+    height: 82,
     flex: 1,
-    justifyContent: "space-between",
     flexDirection: "row",
-    alignItems: "center",
-    borderColor: "black",
-    borderStyle: "solid",
-    borderWidth: 1
+    alignItems: "center"
+    // borderColor: "black",
+    // borderStyle: "solid",
+    // borderWidth: 1
   },
   purchaseImageView: {
-    width: 72,
-    height: 72,
+    width: 82,
+    height: "100%",
+    marginRight: 8,
     borderColor: "black",
     borderStyle: "solid",
-    borderRightWidth: 1,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    backgroundColor: "#E8E8E8"
+    borderWidth: 1,
+    borderRadius: 16,
+    backgroundColor: color.gray[0],
+    backgroundColor: color.gray[0],
+    borderColor: color.blue[60],
+    borderStyle: "solid"
   },
   purchaseImage: {
     width: "100%",
     height: "100%"
   },
   purchaseInfoView: {
+    justifyContent: "space-between",
+    height: "100%",
     flex: 1,
-    justifyContent: "space-between"
+    padding: 12,
+    borderColor: "black",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderRadius: 16,
+    backgroundColor: color.gray[0],
+    borderColor: color.blue[60],
+    borderStyle: "solid",
+    borderWidth: 1
   },
   purchaseDateView: {
-    padding: 8,
+    // padding: 8,
     justifyContent: "center"
   },
   purchaseDate: {
-    fontSize: 16
+    fontSize: 16,
+    fontWeight: "bold"
   },
   purchaseExtraInfo: {
-    flex: 1,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
     alignSelf: "stretch",
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#E8E8E8"
+    alignItems: "center"
   },
   purchasesListViewPurchase: {
     marginBottom: 8
+  },
+  purchaseSubcategory: {
+    fontWeight: "bold",
+    color: color.yellow[0]
+  },
+  purchaseAmount: {
+    fontWeight: "bold",
+    color: color.red[0]
   }
-});
+})
 
-export default Purchases;
+export default Expenses

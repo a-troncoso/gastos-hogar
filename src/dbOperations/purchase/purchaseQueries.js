@@ -3,38 +3,48 @@ export const EXPENSE_QUERIES = {
     "insert into expense (categoryId, subcategoryId, amount, description, date, userId) values (?, ?, ?, ?, ?, ?);",
 
   INSERT_EXPENSE_IMAGE:
-    "insert into purchase_image (purchaseId, imagePath) values (?, ?);",
+    "insert into expense_image (expenseId, imagePath) values (?, ?);",
 
   SELECT_TOTAL_EXPENSES_BY_CATEGORY: `
-    SELECT c.id, c.name, SUM(e.amount) AS amount
+    SELECT c.id, c.name, c.imagePath, c.maxAmountPerMonth, SUM(e.amount) AS amount
     FROM category c, expense e
     WHERE c.id=e.categoryId
     AND strftime('%m', e.date) = ?
     AND c.active = 1
     GROUP BY c.id, c.name;
   `,
-
+  //TODO: Arreglar esto, no estamos recogiendo la imagen de compra
+  // ( SELECT imagePath FROM expense_image WHERE expenseId=e.id LIMIT 1 ) image,
+  // FROM expense e, category c, expense_image p_i
+  // AND e.id = p_i.expenseId
   SELECT_EXPENSES_BY_CATEGORY: `
-    SELECT p.id,(
-      SELECT image FROM purchase_image WHERE purchaseId=p.id LIMIT 1
-    ) image,
-    p.date, p.amount
-    FROM purchase p, category c, purchase_image p_i
-    WHERE p.categoryId=c.id
-    AND p.id = p_i.purchaseId
-    AND strftime('%m', p.date) = ?
+    SELECT
+    e.id,
+    e.date,
+    e.amount
+    FROM expense e, category c
+    WHERE e.categoryId=c.id
+    AND strftime('%m', e.date) = ?
     AND c.active = 1
     AND c.id=?
-    GROUP BY p.id;
+    GROUP BY e.id;
   `,
 
-  SELECT_PURCHASE_IMAGE: "SELECT purchaseId, image FROM purchase_image",
+  SELECT_PURCHASE_IMAGE: "SELECT expenseId, image FROM expense_image",
 
+  //TODO: Arreglar esto, no estamos recogiendo la imagen de compra
+
+  // SELECT p.id, p_i.image, p.date, p.amount, p.categoryId, p.subcategoryId
+  //   FROM expense p, expense_image p_i
+  //   WHERE p.id = p_i.expenseId
+  //   AND p.id=?;
   SELECT_PURCHASE_BY_ID: `
-    SELECT p.id, p_i.image, p.date, p.amount, p.categoryId, p.subcategoryId
-    FROM purchase p, purchase_image p_i
-    WHERE p.id = p_i.purchaseId
-    AND p.id=?;
+  SELECT p.id,  p.date, p.amount, p.categoryId, p.subcategoryId
+    FROM expense p
+    WHERE 
+     p.id=?;
+
+    
   `,
 
   UPDATE_PURCHASE_AMOUNT: "UPDATE purchase SET amount=? WHERE id=?;",

@@ -5,7 +5,7 @@ import color from "../../../utils/styles/color"
 import { monthName } from "../../../utils/date"
 
 const DateNavigatorActivator = props => {
-  const { mode, date, test } = props
+  const { mode, date } = props
 
   const [isDatePickerVisible, setIsDatePickerVisible] = useState()
 
@@ -47,7 +47,6 @@ const DateNavigatorActivator = props => {
 
   const handleOpenDatePicker = () => {
     setIsDatePickerVisible(true)
-    test()
   }
 
   return (
