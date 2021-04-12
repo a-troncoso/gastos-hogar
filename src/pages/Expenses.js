@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import {
   StyleSheet,
   View,
@@ -9,25 +9,57 @@ import {
   Image
 } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
+import { FontAwesome } from "@expo/vector-icons"
 import Hero from "../components/atoms/Hero"
 import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator"
 
 import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
 import { toCurrencyFormat } from "../utils/number"
-import { formatDate, currentMonth } from "../utils/date"
+import { formatDate } from "../utils/date"
 import color from "../utils/styles/color"
 
-const Purchase = props => {
+const PurchaseIcon = props => {
+  const { icon } = props
+
+  return (
+    <View style={purchaseIconStyles.purchaseIcon}>
+      <FontAwesome name={icon} size={36} color={color.blue["0"]} />
+    </View>
+  )
+}
+
+const purchaseIconStyles = StyleSheet.create({
+  purchaseIcon: {
+    // borderColor: "black",
+    // borderStyle: "solid",
+    // borderWidth: 1,
+    height: "100%",
+    width: 72,
+    maxHeight: 72,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 16,
+    color: color.blue["0"]
+  }
+})
+
+const PurchaseItem = props => {
   const { image, date, amount, subcategory, onPress } = props
 
   return (
     <TouchableOpacity style={styles.purchase} onPress={onPress}>
       <View style={styles.purchaseImageView}>
-        <Image style={styles.purchaseImage} source={{ uri: image }} />
+        {image ? (
+          <Image style={styles.purchaseImage} source={{ uri: image }} />
+        ) : (
+          <PurchaseIcon icon="shopping-cart" />
+        )}
       </View>
       <View style={styles.purchaseInfoView}>
         <View style={styles.purchaseDateView}>
-          <Text style={styles.purchaseDate}>{formatDate(date)}</Text>
+          <Text style={styles.purchaseDate}>
+            {formatDate(date, { withMonthName: true })}
+          </Text>
         </View>
         <View style={styles.purchaseExtraInfo}>
           <Text style={styles.purchaseSubcategory}>
@@ -54,7 +86,7 @@ const PurchasesList = props => {
       keyExtractor={item => item.id.toString()}
       renderItem={({ item }) => (
         <View style={styles.purchasesListViewPurchase}>
-          <Purchase
+          <PurchaseItem
             key={item.id}
             image={item.image}
             date={item.date}
@@ -73,20 +105,18 @@ const Expenses = props => {
   const date = route.params.date
   const mode = route.params.mode
 
-  const filterDateByMode = date => ({
-    day: date.getFullYear(),
-    month: date.getMonth() + 1,
-    year: date.getFullYear()
-  })
-
   const [purchases, setPurchases] = useState([])
   const [dateSelected, setDateSelected] = useState(date)
 
   useFocusEffect(
     useCallback(() => {
-      fetchPurchases(date, mode, categoryId)
+      fetchPurchases(dateSelected, mode, categoryId)
     }, [])
   )
+
+  useEffect(() => {
+    fetchPurchases(dateSelected, mode, categoryId)
+  }, [dateSelected])
 
   const fetchPurchases = async (date, mode, categoryId) => {
     const purchases = await fetchPurchasesByCategory({ date, mode, categoryId })
@@ -100,6 +130,10 @@ const Expenses = props => {
     })
   }
 
+  const handleChangeDateNavigation = date => {
+    setDateSelected(date)
+  }
+
   return (
     <View style={styles.purchases}>
       <Hero
@@ -108,6 +142,7 @@ const Expenses = props => {
           <DateNavigatorActivator
             mode={mode.toUpperCase()}
             date={dateSelected}
+            onChange={date => handleChangeDateNavigation(date)}
           />
         }
       />
@@ -148,6 +183,8 @@ const styles = StyleSheet.create({
     width: 82,
     height: "100%",
     marginRight: 8,
+    justifyContent: "center",
+    alignItems: "center",
     borderColor: "black",
     borderStyle: "solid",
     borderWidth: 1,

@@ -11,7 +11,9 @@ const Feature = props => {
     voidValue,
     onPressFeature,
     editableElement,
-    isVisibleEditableElm
+    isVisibleEditableElm,
+    aditionalValue,
+    isUnsavedFeature
   } = props
 
   const handlePressFeature = () => {
@@ -24,16 +26,21 @@ const Feature = props => {
 
   return (
     <TouchableOpacity onPress={() => handlePressFeature()}>
-      <View style={featureStyles.view}>
-        <Text style={featureStyles.featureName}>{name}</Text>
-        <Text
-          style={[
-            featureStyles.featureValue,
-            value ? featureStyles.existValue : featureStyles.notExistValue
-          ]}
-        >
-          {!isVisibleEditableElm && displayedValue()}
-        </Text>
+      <View style={[styles.view, isUnsavedFeature && styles.unsaveFeature]}>
+        <Text style={styles.featureName}>{name}</Text>
+        <View style={styles.valueView}>
+          <Text
+            style={[
+              styles.featureValue,
+              value ? styles.existValue : styles.notExistValue
+            ]}
+          >
+            {!isVisibleEditableElm && displayedValue()}
+          </Text>
+          {aditionalValue && (
+            <Text style={styles.aditionalValueText}>{aditionalValue}</Text>
+          )}
+        </View>
         {isVisibleEditableElm && editableElement}
       </View>
     </TouchableOpacity>
@@ -56,7 +63,7 @@ Feature.propTypes = {
   onPressFeature: PropTypes.func
 }
 
-const featureStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   view: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -68,6 +75,18 @@ const featureStyles = StyleSheet.create({
     borderStyle: "solid",
     borderWidth: 1,
     backgroundColor: color.gray["0"]
+  },
+  unsaveFeature: {
+    borderColor: color.blue["20"]
+  },
+  valueView: {
+    // borderColor: "blue",
+    // borderWidth: 1,
+    // borderStyle: "solid"
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "flex-end"
   },
   featureName: {
     // borderColor: "blue",
@@ -82,7 +101,13 @@ const featureStyles = StyleSheet.create({
     // borderWidth: 1,
     // borderStyle: "solid",
     fontWeight: "bold",
-    textTransform: "capitalize"
+    // textTransform: "capitalize"
+  },
+  aditionalValueText: {
+    marginLeft: 4,
+    fontSize: 12,
+    fontWeight: "bold",
+    color: color.gray["110"]
   },
   existValue: {
     color: color.gray["140"]

@@ -4,7 +4,7 @@ import ModalSelector from "../../atoms/ModalSelector"
 import { fetchAllSubcategories } from "../../../dbOperations/subcategory/subcategoryBDTransactions"
 
 const SubcategoryFeature = props => {
-  const { subcategoryName, onChange } = props
+  const { subcategoryName, isUnsavedFeature, onChange } = props
 
   const [subcategories, setSubcategories] = useState([])
   const [editableElements, setEditatableElements] = useState({
@@ -50,6 +50,7 @@ const SubcategoryFeature = props => {
           onChange={subcategory => handleSelectSubcategory(subcategory)}
         />
       }
+      isUnsavedFeature={isUnsavedFeature}
       onPressFeature={() =>
         setEditatableElements({
           ...editableElements,

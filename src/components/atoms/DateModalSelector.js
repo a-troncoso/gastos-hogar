@@ -1,34 +1,18 @@
-import React, { useEffect, useState, useRef } from "react"
-import {
-  StyleSheet,
-  View,
-  FlatList,
-  Text,
-  TouchableOpacity
-} from "react-native"
+import React, { useEffect, useState } from "react"
+import { StyleSheet, View, Text } from "react-native"
 import Modal from "react-native-modal"
-import { LinearGradient } from "expo-linear-gradient"
 import Button from "./Button"
 import DateRoller from "../molecules/date/DateRoller"
-import { fetchAllCategories } from "../../dbOperations/category/categoryBDTransactions"
 
 import color from "../../utils/styles/color"
 
 const DateModalSelector = props => {
-  const { date, isModalVisible, onBackdropPress, onChange } = props
+  const { date, mode, isModalVisible, onChange, onBackdropPress } = props
 
   const [selectedDate, setSelectedDate] = useState(date)
 
-  useEffect(() => {
-    // console.log("selectedDate", selectedDate);
-  }, [selectedDate])
-
   const handleChangeDate = date => {
-    setSelectedDate(prevState => ({
-      ...prevState,
-      ...date
-    }))
-    // console.log("handleChangeDate", date);
+    setSelectedDate(date)
   }
 
   const handlePressOk = () => {
@@ -43,7 +27,11 @@ const DateModalSelector = props => {
         onBackdropPress={onBackdropPress}
       >
         <View style={styles.viewModal}>
-          <DateRoller selectedDate={selectedDate} onChange={handleChangeDate} />
+          <DateRoller
+            date={selectedDate}
+            mode={mode}
+            onChange={handleChangeDate}
+          />
           <View style={styles.modalViewFooter}>
             <Button onPress={handlePressOk}>
               <Text style={styles.saveBtnText}>OK</Text>

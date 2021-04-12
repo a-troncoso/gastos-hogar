@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react"
+import React, { memo, useState, useCallback, useEffect } from "react"
 import {
   StyleSheet,
   View,
@@ -7,18 +7,14 @@ import {
   SafeAreaView,
   ScrollView,
   Platform,
-  Keyboard
+  ToastAndroid
 } from "react-native"
 import {
   useFocusEffect,
   useNavigation,
   useRoute
 } from "@react-navigation/native"
-import {
-  fetchPurchaseById,
-  patchPurchaseAmount,
-  patchPurchaseCategory
-} from "../dbOperations/purchase/purchaseBDTransactions"
+
 import Hero from "../components/atoms/Hero"
 import Button from "../components/atoms/Button"
 import CategoryFeature from "../components/molecules/category/CategoryFeature"
@@ -27,42 +23,56 @@ import SubcategoryFeature from "../components/molecules/subcategory/SubcategoryF
 import DescriptionFeature from "../components/molecules/description/DescriptionFeature"
 import ExpenseMainFeature from "../components/molecules/feature/ExpenseMainFeature"
 
-import { toCurrencyFormat } from "../utils/number"
+import {
+  fetchPurchaseById,
+  insertExpense,
+  updateExpense
+} from "../dbOperations/purchase/purchaseBDTransactions"
+import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions"
 
 import color from "../utils/styles/color"
+import alerts from "../utils/alerts/Alerts"
 
-import {
-  fetchExpense,
-  insertExpense
-} from "../dbOperations/purchase/purchaseBDTransactions"
-import {
-  fetchCategoryById,
-  fetchAllCategories
-} from "../dbOperations/category/categoryBDTransactions"
+const Toast = memo(({ visible, message }) => {
+  if (visible) {
+    ToastAndroid.show(message, ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50)
+    return null
+  }
+  return null
+})
 
 const ExpenseDetail = props => {
   const navigation = useNavigation()
   const route = useRoute()
   const { params: routeParams } = route
   const expenseDetailMode = routeParams.mode || "NEW_EXPENSE"
+  const [isUnsavedFeature, setIsUnsavedFeature] = useState({
+    pictures: false,
+    category: false,
+    subcategory: false,
+    date: false,
+    amount: false,
+    description: false
+  })
   const [isExpenseInserted, setIsExpenseInserted] = useState(false)
+  const [isExpenseUpdated, setIsExpenseUpdated] = useState(false)
   const [isFixedBottomAreaVisible, setIsFixedBottomAreaVisible] = useState(true)
+  const [isVisibleToast, setIsVisibleToast] = useState(false)
   const expenseId = routeParams.expenseId
 
   const [featureKeys, setFeatureKeys] = useState({
     pictures: [],
     category: 0,
-    subcategory: 0,
-    date: null
+    subcategory: 0
   })
 
   const [featureDataUI, setFeatureDataUI] = useState({
     pictures: [],
     amount: 0,
     category: "",
-    date: "",
     subcategory: "",
-    description: ""
+    description: "",
+    date: null
   })
 
   useFocusEffect(
@@ -74,8 +84,7 @@ const ExpenseDetail = props => {
       if (expenseDetailMode === "NEW_EXPENSE") {
         const date = new Date()
         saveFeatureKey("category", routeParams.categoryId)
-        saveFeatureKey("date", date)
-        // saveFeatureIntoUI("date", formatDate(date, { withMonthName: true }))
+        saveFeatureIntoUI("date", date)
         fetchCategory(routeParams.categoryId)
       }
 
@@ -83,10 +92,16 @@ const ExpenseDetail = props => {
     }, [])
   )
 
+  useEffect(() => {}, [isUnsavedFeature])
+
   useEffect(() => {
     isExpenseInserted &&
       navigation.navigate("ExpenseCategoryGate", { evt: "PURCHASE_SAVED" })
   }, [isExpenseInserted])
+
+  useEffect(() => {
+    isExpenseUpdated && setIsVisibleToast(true)
+  }, [isExpenseUpdated])
 
   const fetchCategory = async categoryId => {
     const categoryDetail = await fetchCategoryById(categoryId)
@@ -95,17 +110,31 @@ const ExpenseDetail = props => {
   }
 
   const fetchExpenseDetail = async expenseId => {
-    const purchase = await fetchPurchaseById(expenseId)
+    const expense = await fetchPurchaseById(expenseId)
 
-    // setPurchase({
-    //   ...purchase,
-    //   amount: toCurrencyFormat(purchase.amount),
-    //   subcategory: purchase.subcategory || "-"
-    // });
-    // saveFeatureIntoUI()
+    setFeatureKeys(prev => ({
+      ...prev,
+      pictures: [],
+      category: expense.category.id,
+      subcategory: expense.subcategory.id
+    }))
+    setFeatureDataUI(prev => ({
+      ...prev,
+      pictures: [],
+      amount: expense.amount,
+      category: expense.category.name,
+      subcategory: expense.subcategory.name,
+      description: expense.description,
+      date: new Date(expense.date)
+    }))
   }
 
   const saveExpense = async () => {
+    if (expenseDetailMode === "NEW_EXPENSE") addExpense()
+    else if (expenseDetailMode === "EXISTING_EXPENSE") editExpense()
+  }
+
+  const addExpense = async () => {
     try {
       const insertResult = await insertExpense(
         featureDataUI.pictures,
@@ -113,12 +142,40 @@ const ExpenseDetail = props => {
         featureKeys.subcategory,
         featureDataUI.amount,
         featureDataUI.description,
-        featureKeys.date.toISOString(),
+        featureDataUI.date.toISOString(),
         1
       )
       if (insertResult.rowsAffected) setIsExpenseInserted(true)
     } catch (err) {
       alerts.throwErrorAlert("ingresar la compra", JSON.stringify(err))
+    }
+  }
+
+  const editExpense = async () => {
+    try {
+      const updateResult = await updateExpense(expenseId, {
+        pictures: featureDataUI.pictures,
+        categoryId: featureKeys.category,
+        subcategoryId: featureKeys.subcategory,
+        amount: featureDataUI.amount,
+        description: featureDataUI.description,
+        date: featureDataUI.date.toISOString(),
+        userId: 1
+      })
+      if (updateResult.rowsAffected) {
+        setIsUnsavedFeature(prev => ({
+          ...prev,
+          pictures: false,
+          category: false,
+          subcategory: false,
+          date: false,
+          amount: false,
+          description: false
+        }))
+        setIsExpenseUpdated(true)
+      }
+    } catch (err) {
+      alerts.throwErrorAlert("actualizar la compra", JSON.stringify(err))
     }
   }
 
@@ -130,6 +187,10 @@ const ExpenseDetail = props => {
     // deleteExpense()
   }
 
+  const handlePressSaveChangesButton = () => {
+    saveExpense()
+  }
+
   const handlePressCamera = () => {
     navigation.navigate("Scan", {
       fromMode: expenseDetailMode,
@@ -137,11 +198,12 @@ const ExpenseDetail = props => {
     })
   }
 
-  const saveTemporaryFeatureData = (field, value) => {
-    if (isObject(value)) {
-      saveFeatureKey(field, value.id)
-      saveFeatureIntoUI(field, value.name)
-    } else saveFeatureIntoUI(field, value)
+  const onChangeFeature = (field, value) => {
+    if (expenseDetailMode === "EXISTING_EXPENSE")
+      setIsUnsavedFeature(prev => ({
+        ...prev,
+        [field]: true
+      }))
   }
 
   const saveFeatureIntoUI = (field, value) => {
@@ -174,7 +236,12 @@ const ExpenseDetail = props => {
                 <ExpenseMainFeature
                   pictures={featureDataUI.pictures}
                   amount={featureDataUI.amount}
-                  onChange={amount => saveFeatureIntoUI("amount", amount)}
+                  isUnsavedFeature={isUnsavedFeature.amount}
+                  onChange={amount => {
+                    saveFeatureIntoUI("amount", amount)
+                    onChangeFeature("amount")
+                  }}
+                  // onChange={amount => saveFeatureIntoUI("amount", amount)}
                   onPressCamera={handlePressCamera}
                 />
               }
@@ -183,26 +250,38 @@ const ExpenseDetail = props => {
               <CategoryFeature
                 categoryId={featureKeys.categoryId}
                 categoryName={featureDataUI.category}
-                onChange={categoryData =>
-                  saveTemporaryFeatureData("category", categoryData)
-                }
+                isUnsavedFeature={isUnsavedFeature.category}
+                onChange={category => {
+                  saveFeatureKey("category", category.id)
+                  saveFeatureIntoUI("category", category.name)
+                  onChangeFeature("category")
+                }}
               />
               <DateFeature
-                date={featureKeys.date}
-                onChange={date => saveTemporaryFeatureData("date", date)}
+                date={featureDataUI.date}
+                isUnsavedFeature={isUnsavedFeature.date}
+                onChange={date => {
+                  saveFeatureIntoUI("date", date)
+                  onChangeFeature("date")
+                }}
               />
               <SubcategoryFeature
                 subcategoryId={featureKeys.subcategoryId}
                 subcategoryName={featureDataUI.subcategory}
-                onChange={subcategoryData =>
-                  saveTemporaryFeatureData("subcategory", subcategoryData)
-                }
+                isUnsavedFeature={isUnsavedFeature.subcategory}
+                onChange={subcategory => {
+                  saveFeatureKey("subcategory", subcategory.id)
+                  saveFeatureIntoUI("subcategory", subcategory.name)
+                  onChangeFeature("subcategory")
+                }}
               />
               <DescriptionFeature
                 description={featureDataUI.description}
-                onChange={({ value }) =>
+                isUnsavedFeature={isUnsavedFeature.description}
+                onChange={({ value }) => {
                   saveFeatureIntoUI("description", value)
-                }
+                  onChangeFeature("description")
+                }}
                 onChageKeyboardVisibility={e =>
                   setIsFixedBottomAreaVisible(!e.isKeyboardVisible)
                 }
@@ -216,16 +295,26 @@ const ExpenseDetail = props => {
               </View>
             )}
             {isFixedBottomAreaVisible &&
+              expenseDetailMode === "EXISTING_EXPENSE" &&
+              Object.values(isUnsavedFeature).some(v => v === true) && (
+                <View style={styles.fixedBottomArea}>
+                  <Button onPress={handlePressSaveChangesButton}>
+                    <Text style={styles.mainBtnText}>GUARDAR CAMBIOS</Text>
+                  </Button>
+                </View>
+              )}
+            {/* {isFixedBottomAreaVisible &&
               expenseDetailMode === "EXISTING_EXPENSE" && (
                 <View style={styles.fixedBottomArea}>
                   <Button onPress={handlePressDeleteButton} type="danger">
                     <Text style={styles.mainBtnText}>ELIMINAR</Text>
                   </Button>
                 </View>
-              )}
+              )} */}
           </SafeAreaView>
         </KeyboardAvoidingView>
       </ScrollView>
+      <Toast visible={isVisibleToast} message="Egreso actualizado" />
     </View>
   )
 }

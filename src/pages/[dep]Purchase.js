@@ -17,6 +17,7 @@ import { toCurrencyFormat } from "../utils/number";
 import { formatDate } from "../utils/date";
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
+// TODO: Deprecar
 const Purchase = props => {
   const { route, navigation } = props;
 

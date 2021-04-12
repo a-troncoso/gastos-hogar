@@ -1,13 +1,7 @@
 import React from "react"
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet
-} from "react-native"
+import { View, TouchableOpacity, StyleSheet } from "react-native"
 import { NavigationContainer, DrawerActions } from "@react-navigation/native"
-import {
-  createStackNavigator
-} from "@react-navigation/stack"
+import { createStackNavigator } from "@react-navigation/stack"
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -18,8 +12,8 @@ import ExpenseCategoryGate from "../pages/RegistryExpenseGate"
 import ExpenseDetail from "../pages/ExpenseDetail"
 import ScanExpense from "../pages/Scan"
 import HistoryGate from "../pages/HistoryGate"
-import Expenses from "../pages/Purchases"
-import Purchase from "../pages/Purchase"
+import Expenses from "../pages/Expenses"
+import Purchase from "../pages/[dep]Purchase"
 import CategoriesAdminGate from "../pages/CategoriesAdminGate"
 import DashbhoardGate from "../pages/DashbhoardGate"
 import CategoryDetail from "../pages/CategoryDetail"
@@ -57,7 +51,6 @@ const menuButtonStyles = StyleSheet.create({
 })
 
 const CustomRouter = () => {
-
   const screenGlobalOption = navigation => ({
     title: "",
     headerStyle: {
@@ -122,14 +115,14 @@ const CustomRouter = () => {
             title: "Compras este Mes"
           })}
         />
-        <SummaryStack.Screen
-          name="Purchase"
-          component={Purchase}
+        <RegistryExpenseStack.Screen
+          name="ExpenseDetail"
+          component={ExpenseDetail}
           options={({ navigation }) => ({
             ...screenGlobalOption(navigation),
-            title: "Detalle de la Compra"
+            title: "Detalles del egreso"
           })}
-          
+          initialParams={{ mode: "EXISTING_EXPENSE" }}
         />
       </SummaryStack.Navigator>
     )

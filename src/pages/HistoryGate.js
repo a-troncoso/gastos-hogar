@@ -69,6 +69,7 @@ const HistoryGate = props => {
   useFocusEffect(
     useCallback(() => {
       fetchTotalPurchases(dateSelected)
+      setDateSelected(currentDate())
     }, [])
   )
 
@@ -82,9 +83,6 @@ const HistoryGate = props => {
         date,
         mode: "month"
       })
-
-      console.log("categories", categories)
-
       setCategories(categories)
     } catch (err) {}
   }
@@ -103,10 +101,20 @@ const HistoryGate = props => {
     // })
   }
 
+  const handleChangeDateNavigation = date => {
+    setDateSelected(date)
+  }
+
   return (
     <View style={styles.mainView}>
       <Hero
-        button={<DateNavigatorActivator mode="MONTH" date={dateSelected} />}
+        button={
+          <DateNavigatorActivator
+            mode="MONTH"
+            date={dateSelected}
+            onChange={date => handleChangeDateNavigation(date)}
+          />
+        }
       />
       <View style={styles.categoriesListView}>
         <SafeAreaView>

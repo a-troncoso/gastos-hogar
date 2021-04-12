@@ -1,43 +1,46 @@
 import React, { useState } from "react"
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native"
-import DateSelector from "../../atoms/DateModalSelector"
+import DateModalSelector from "../../atoms/DateModalSelector"
+
 import color from "../../../utils/styles/color"
 import { monthName } from "../../../utils/date"
 
-const DateNavigatorActivator = props => {
-  const { mode, date } = props
-
-  const [isDatePickerVisible, setIsDatePickerVisible] = useState()
-
-  const DayText = () => {
-    return (
-      <>
-        <Text>20</Text>
-        <View>
-          <Text>Septiembre</Text>
-          <Text>2020</Text>
-        </View>
-      </>
-    )
-  }
-
-  const MonthText = ({ date }) => {
-    return (
-      <>
-        <Text style={{ textTransform: "capitalize" }}>
-          {monthName(date.getMonth())}
-        </Text>
-      </>
-    )
-  }
-
-  const YearText = () => {
-    return (
-      <>
+const DayText = () => {
+  return (
+    <>
+      <Text>20</Text>
+      <View>
+        <Text>Septiembre</Text>
         <Text>2020</Text>
-      </>
-    )
-  }
+      </View>
+    </>
+  )
+}
+
+const MonthText = ({ date }) => {
+  return (
+    <>
+      <Text style={{ textTransform: "capitalize" }}>
+        {monthName(date.getMonth())}
+      </Text>
+    </>
+  )
+}
+
+const YearText = () => {
+  return (
+    <>
+      <Text>2020</Text>
+    </>
+  )
+}
+
+const DateNavigatorActivator = props => {
+  const { mode, date, onChange } = props
+
+  const [isDateModalSelectorVisible, setIsDateModalSelectorVisible] = useState(
+    false
+  )
 
   const modes = date => ({
     DAY: <DayText date={date} />,
@@ -46,25 +49,42 @@ const DateNavigatorActivator = props => {
   })
 
   const handleOpenDatePicker = () => {
-    setIsDatePickerVisible(true)
+    setIsDateModalSelectorVisible(true)
+  }
+
+  const handleChangeSelectedDate = date => {
+    onChange(date)
+    setIsDateModalSelectorVisible(false)
+  }
+
+  const handleBackdropPress = () => {
+    setIsDateModalSelectorVisible(false)
   }
 
   return (
     <>
-      {isDatePickerVisible && <DateSelector />}
-      <View style={dateNavigatorActivatorStyles.mainView}>
+      <View style={styles.mainView}>
         <TouchableOpacity
-          style={dateNavigatorActivatorStyles.activator}
+          style={styles.activator}
           onPress={handleOpenDatePicker}
         >
           {modes(date)[mode]}
         </TouchableOpacity>
       </View>
+      {isDateModalSelectorVisible && (
+        <DateModalSelector
+          date={date}
+          mode={mode}
+          isModalVisible={isDateModalSelectorVisible}
+          onChange={date => handleChangeSelectedDate(date)}
+          onBackdropPress={handleBackdropPress}
+        />
+      )}
     </>
   )
 }
 
-const dateNavigatorActivatorStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   mainView: {},
   activator: {
     width: 150,

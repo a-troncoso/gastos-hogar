@@ -3,12 +3,23 @@ import { TextInput, StyleSheet, Keyboard } from "react-native"
 import Feature from "../../atoms/Feature"
 
 const DescriptionFeature = props => {
-  const { description, onChange, onChageKeyboardVisibility } = props
+  const {
+    description,
+    isUnsavedFeature,
+    onChange,
+    onChageKeyboardVisibility
+  } = props
 
   const [_description, setDescription] = useState(description)
   const [editableElements, setEditatableElements] = useState({
     description: { isVisible: false }
   })
+
+  useEffect(() => {}, [isUnsavedFeature])
+
+  useEffect(() => {
+    setDescription(description)
+  }, [description])
 
   const handleChangeDescription = descriptionText => {
     setDescription(descriptionText)
@@ -65,6 +76,7 @@ const DescriptionFeature = props => {
           autoFocus
         />
       }
+      isUnsavedFeature={isUnsavedFeature}
       onPressFeature={handlePressFeature}
       isVisibleEditableElm={editableElements.description.isVisible}
     />

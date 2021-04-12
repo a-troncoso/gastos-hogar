@@ -51,7 +51,7 @@ const InfiniteScroll = props => {
   // })
 
   const onViewableItemsChanged = useRef(viewableItems => {
-    console.log("onViewableItemsChanged", viewableItems)
+    // console.log("onViewableItemsChanged", viewableItems)
   })
 
   return (

@@ -5,7 +5,7 @@ import { fetchAllCategories } from "../../../dbOperations/category/categoryBDTra
 
 
 const CategoryFeature = props => {
-  const { categoryName, onChange } = props;
+  const { categoryName, isUnsavedFeature, onChange } = props;
 
   const [categories, setCategories] = useState([]);
   const [editableElements, setEditatableElements] = useState({
@@ -27,7 +27,6 @@ const CategoryFeature = props => {
       category: { isVisible: false }
     });
 
-    console.log('category', category);
     onChange(category);
   };
 
@@ -50,6 +49,7 @@ const CategoryFeature = props => {
         />
       }
       isVisibleEditableElm={editableElements.category.isVisible}
+      isUnsavedFeature={isUnsavedFeature}
       onPressFeature={() =>
         setEditatableElements({
           ...editableElements,

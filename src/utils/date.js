@@ -17,7 +17,7 @@ const formattedMonthName = (monthNumber, format) => {
   let exit = []
   switch (format) {
     case "short":
-      exit = monthNamesList[monthNumber].substring(0, 3)
+      exit = monthNamesList[monthNumber].substring(0, 3).capitalize()
       break
     default:
       exit = monthNamesList[monthNumber]
@@ -72,22 +72,20 @@ export const availableYears = () => {
   return exit
 }
 
-export const formatDate = (_date, ...rest) => {
+export const formatDate = (_date, { withMonthName = false, separator = " " }) => {
   const date = new Date(_date)
-  const restParams = rest[0]
   let day = date.getDate()
   const month = date.getMonth()
   const year = date.getFullYear()
-  let formattedMonth =
-    restParams && restParams.withMonthName
-      ? formattedMonthName(month, "short")
-      : month + 1
+  let formattedMonth = withMonthName
+    ? formattedMonthName(month, "short")
+    : month + 1
 
   if (day < 10) day = "0" + day
   if (typeof formattedMonth == "number" && formattedMonth < 10)
     formattedMonth = "0" + formattedMonth
 
-  return `${day}-${formattedMonth}-${year}`
+  return `${day}${separator}${formattedMonth}${separator}${year}`
 }
 
 export const currentDate = () => new Date()
@@ -108,4 +106,12 @@ export const monthName = monthNumber => {
   const monthNames = monthNamesList
 
   return monthNames[monthNumber]
+}
+
+export const formatHour = (_date) => {
+  const date = new Date(_date)
+  const hour = date.getHours()
+  const mins = date.getMinutes()
+
+  return `${hour}:${mins}`
 }

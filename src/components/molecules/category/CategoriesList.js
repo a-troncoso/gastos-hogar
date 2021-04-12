@@ -7,7 +7,7 @@ import {
   View,
   TouchableOpacity
 } from "react-native"
-import Category from "../../atoms/CategoryItem"
+import CategoryItem from "../../atoms/CategoryItem"
 
 const AddCategoryButton = props => {
   const { onPress } = props
@@ -45,7 +45,7 @@ const CategoriesList = props => {
       }
       renderItem={({ item }) => (
         <View style={styles.categoriesListViewCategory}>
-          <Category
+          <CategoryItem
             key={item.id}
             name={item.name}
             extraInfo={item.extraInfo}

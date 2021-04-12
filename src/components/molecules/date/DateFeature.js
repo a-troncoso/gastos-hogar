@@ -1,27 +1,18 @@
 import React, { useState, useEffect } from "react"
-// import {
-//   StyleSheet,
-//   View,
-//   Text,
-//   TouchableHighlight,
-//   TouchableOpacity,
-//   Alert,
-//   Picker
-// } from "react-native";
 import Feature from "../../atoms/Feature"
 import DateModalSelector from "../../atoms/DateModalSelector"
 
-import { formatDate } from "../../../utils/date"
+import { formatDate, formatHour } from "../../../utils/date"
 
 const DateFeature = props => {
-  const { date, onChange } = props
+  const { date, isUnsavedFeature, onChange } = props
 
   const [isEditableElementVisible, setIdEditatableElementVisible] = useState(
     false
   )
 
   const handleSelectDate = date => {
-    // setIdEditatableElementVisible(false);
+    setIdEditatableElementVisible(false)
     onChange(date)
   }
 
@@ -29,6 +20,7 @@ const DateFeature = props => {
     <Feature
       name="fecha"
       value={formatDate(date, { withMonthName: true })}
+      aditionalValue={formatHour(date, { withMonthName: true })}
       voidValue="sin registrar"
       isVisibleEditableElm={isEditableElementVisible}
       editableElement={
@@ -39,6 +31,7 @@ const DateFeature = props => {
           onChange={date => handleSelectDate(date)}
         />
       }
+      isUnsavedFeature={isUnsavedFeature}
       onPressFeature={() => setIdEditatableElementVisible(true)}
     />
   )

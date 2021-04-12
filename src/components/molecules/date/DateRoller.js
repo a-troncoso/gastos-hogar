@@ -1,55 +1,19 @@
 import React, { useEffect, useState, useCallback } from "react"
-import { StyleSheet, View, FlatList, Text } from "react-native"
-import { LinearGradient } from "expo-linear-gradient"
-import InfiniteScroll from "../../atoms/InfiniteScroll"
+import { StyleSheet, View } from "react-native"
 import ScrollPicker from "react-native-wheel-scrollview-picker"
-
-import shortid from "shortid"
 
 import { daysInMonth, monthNames, availableYears } from "../../../utils/date"
 
 import color from "../../../utils/styles/color"
 
-const topLinearGradientColors = [
-  color.blue["90"],
-  `${color.transparent.blue["90"]["90"]}`,
-  `${color.transparent.blue["90"]["30"]}`
-]
-const bottomLinearGradientColors = [
-  `${color.transparent.blue["90"]["30"]}`,
-  `${color.transparent.blue["90"]["90"]}`,
-  color.blue["90"]
-]
-
 const DateRoller = props => {
-  const { selectedDate, onChange } = props
+  const { date, mode = "DAY", onChange } = props
 
-  const [days, setDays] = useState([])
-  const [months, setMonths] = useState([])
-  const [years, setYears] = useState([])
-  const selectedDayIndex = useCallback(() => {
-    console.log(
-      "days.findIndex(day => day == selectedDate.getDate())",
-      days.findIndex(day => day == selectedDate.getDate())
-    )
-    return days.findIndex(day => day == selectedDate.getDate())
-  }, [selectedDate, days])
-
-  useEffect(() => {
-    genCalendarData()
-  }, [])
-
-  const genCalendarData = () => {
-    setDays(daysInMonth())
-    setMonths(monthNames()("short"))
-    setYears(availableYears())
-  }
+  const daysDataSource = daysInMonth()
+  const monthsDataSource = monthNames()("short")
+  const yearsDataSource = availableYears()
 
   const scrollPickerProps = {
-    renderItem: data => {},
-    onValueChange: (data, selectedIndex) => {
-      console.log("data", data, "selectedIndex", selectedIndex)
-    },
     wrapperHeight: 180,
     wrapperWidth: 150,
     wrapperBackground: color.blue["90"],
@@ -60,34 +24,53 @@ const DateRoller = props => {
     highlightBorderWidth: 1
   }
 
-  const find = dayToFind => {
-    console.log("dayToFind", dayToFind)
-    return days.findIndex(day => day == dayToFind)
+  const handleChangeScrollPicker = (scrollName, value) => {
+    let newSelectedDate = new Date(date)
+
+    const updateDatebyScrollName = {
+      day: () => newSelectedDate.setDate(value),
+      month: () => newSelectedDate.setMonth(value),
+      year: () => newSelectedDate.setFullYear(value)
+    }
+
+    updateDatebyScrollName[scrollName]()
+    onChange(newSelectedDate)
   }
 
-  useEffect(() => {}, [])
-
-  useEffect(() => {
-    // console.log("find(selectedDate.getDate()", find(selectedDate.getDate()))
-  }, [days, selectedDate])
+  const indexInScroll = (scrollName, list) =>
+    ({
+      day: list.indexOf(date.getDate()),
+      month: date.getMonth(),
+      year: list.indexOf(date.getFullYear())
+    }[scrollName])
 
   return (
     <View style={styles.viewLists}>
-      {<ScrollPicker
-        {...scrollPickerProps}
-        dataSource={days}
-        selectedIndex={selectedDayIndex()}
-        fontSize={16}
-      />}
+      {mode === "DAY" && (
+        <ScrollPicker
+          {...scrollPickerProps}
+          dataSource={daysDataSource}
+          onValueChange={data => {
+            handleChangeScrollPicker("day", data)
+          }}
+          selectedIndex={indexInScroll("day", daysDataSource)}
+        />
+      )}
       <ScrollPicker
         {...scrollPickerProps}
-        dataSource={months}
-        selectedIndex={1}
+        dataSource={monthsDataSource}
+        onValueChange={(data, selectedIndex) => {
+          handleChangeScrollPicker("month", selectedIndex)
+        }}
+        selectedIndex={indexInScroll("month", monthsDataSource)}
       />
       <ScrollPicker
         {...scrollPickerProps}
-        dataSource={years}
-        selectedIndex={1}
+        dataSource={yearsDataSource}
+        onValueChange={data => {
+          handleChangeScrollPicker("year", data)
+        }}
+        selectedIndex={indexInScroll("year", yearsDataSource)}
       />
     </View>
   )

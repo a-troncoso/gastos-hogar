@@ -1,6 +1,8 @@
 import DB from "../../utils/database"
 import { EXPENSE_QUERIES } from "./purchaseQueries"
 import { formattedMonthNumber } from "../../utils/date"
+import { fetchCategoryById } from "../category/categoryBDTransactions"
+import { fetchSubcategoryById } from "../subcategory/subcategoryBDTransactions"
 
 export const insertExpense = (
   pictures,
@@ -79,7 +81,6 @@ export const fetchTotalExpensesByCategory = ({ date, mode }) => {
           )
         },
         error => {
-          console.log("error", error)
           reject(error)
         }
       )
@@ -121,19 +122,69 @@ export const fetchPurchaseById = purchaseId => {
       tx.executeSql(
         EXPENSE_QUERIES.SELECT_PURCHASE_BY_ID,
         [purchaseId],
-        (_, { rows }) => {
-          const returned =
+        async (_, { rows }) => {
+          const result =
             rows._array.length > 0 ? { ...rows._array[0], images: [] } : {}
-          delete returned.image
+          delete result.image
 
           rows._array.forEach(r => {
-            returned.images = returned.images.concat(r.image)
+            result.images = result.images.concat(r.image)
           })
 
-          resolve(returned)
+          const resultWithProcessedIds = await processIds(result)
+
+          resolve(resultWithProcessedIds)
         },
         error => {
           console.error("Error fetching PURCHASE_BY_ID: ", error)
+        }
+      )
+    })
+  })
+}
+
+const processIds = async result => {
+  const categoryData = await fetchCategoryById(result.categoryId)
+  const subcategoryData = await fetchSubcategoryById(result.subcategoryId)
+
+  const dataProcesed = result
+  dataProcesed.category = {
+    id: dataProcesed.categoryId,
+    name: categoryData ? categoryData.name : undefined
+  }
+  dataProcesed.subcategory = {
+    id: dataProcesed.subcategoryId,
+    name: subcategoryData ? subcategoryData.name : undefined
+  }
+  delete dataProcesed.categoryId
+  delete dataProcesed.subcategoryId
+
+  return dataProcesed
+}
+
+export const updateExpense = (
+  expenseId,
+  { pictures, categoryId, subcategoryId, amount, description, date, userId }
+) => {
+  return new Promise((resolve, reject) => {
+    DB.transaction(tx => {
+      tx.executeSql(
+        EXPENSE_QUERIES.UPDATE_EXPENSE,
+        [
+          categoryId,
+          subcategoryId,
+          parseInt(amount, 10),
+          description,
+          date,
+          userId,
+          expenseId
+        ],
+        (_, s) => {
+          resolve(s)
+        },
+        (_, error) => {
+          reject(error)
+          console.error("Error fetching UPDATE_PURCHASE_AMOUNT: ", error)
         }
       )
     })

@@ -39,12 +39,20 @@ export const EXPENSE_QUERIES = {
   //   WHERE p.id = p_i.expenseId
   //   AND p.id=?;
   SELECT_PURCHASE_BY_ID: `
-  SELECT p.id,  p.date, p.amount, p.categoryId, p.subcategoryId
-    FROM expense p
-    WHERE 
-     p.id=?;
+  SELECT e.id,  e.date, e.amount, e.categoryId, e.subcategoryId, e.description
+    FROM expense e
+    WHERE e.id=?;
+  `,
 
-    
+  UPDATE_EXPENSE: `
+    UPDATE expense
+    SET categoryId=?,
+    subcategoryId=?,
+    amount=?,
+    description=?,
+    date=?,
+    userId=?
+    WHERE id=?;
   `,
 
   UPDATE_PURCHASE_AMOUNT: "UPDATE purchase SET amount=? WHERE id=?;",

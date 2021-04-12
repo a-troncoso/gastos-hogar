@@ -133,7 +133,6 @@ const Scan = props => {
 
     try {
       const result = await MediaLibrary.createAssetAsync(to)
-      console.log("result", result)
       _crop(result.uri)
     } catch (err) {
       alerts.throwErrorAlert(
@@ -156,7 +155,6 @@ const Scan = props => {
       }
     }
 
-    console.log("pictureTaked", pictureTaked)
 
     try {
       const croppedImageURI = await ImageEditor.cropImage(
@@ -165,11 +163,9 @@ const Scan = props => {
       )
 
       if (croppedImageURI) {
-        console.log("croppedImageURI", _savePictureInAppMemory)
         // _savePictureInAppMemory(_savePictureInAppMemory);
       }
     } catch (cropError) {
-      console.log("cropError", cropError)
       // alerts.throwErrorAlert("copiar fotos", JSON.stringify(cropError));
     }
   }

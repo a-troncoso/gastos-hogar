@@ -6,7 +6,13 @@ import ExpenseCamera from "../../atoms/Camera"
 import color from "../../../utils/styles/color"
 
 const ExpenseMainFeature = props => {
-  const { amount, onPressCamera, onChange, onBlurEditableAmount } = props
+  const {
+    amount,
+    isUnsavedFeature,
+    onPressCamera,
+    onChange,
+    onBlurEditableAmount
+  } = props
 
   const handleChangeEditableAmount = e => {
     onChange(e)
@@ -17,10 +23,10 @@ const ExpenseMainFeature = props => {
   }
 
   return (
-    <View style={expenseMainInfo.view}>
-      <View style={expenseMainInfo.expenseCameraView}>
+    <View style={[styles.view, isUnsavedFeature && styles.unsaveFeature]}>
+      <View style={styles.expenseCameraView}>
         <TouchableHighlight
-          style={expenseMainInfo.cameraTouchable}
+          style={styles.cameraTouchable}
           onPress={() => onPressCamera()}
         >
           <ExpenseCamera />
@@ -36,7 +42,7 @@ const ExpenseMainFeature = props => {
   )
 }
 
-const expenseMainInfo = StyleSheet.create({
+const styles = StyleSheet.create({
   view: {
     // borderColor: "blue",
     // borderWidth: 1,
@@ -56,13 +62,17 @@ const expenseMainInfo = StyleSheet.create({
     shadowRadius: 8,
     elevation: 6
   },
+  unsaveFeature: {
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: color.blue["20"]
+  },
   expenseCameraView: {
     // borderColor: "red",
     // borderWidth: 1,
     // borderStyle: "solid",
     flex: 1
   },
-
   amount: {
     color: "red",
     borderStyle: "solid",
