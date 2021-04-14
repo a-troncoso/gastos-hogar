@@ -18,14 +18,26 @@ export const insertExpense = (
       tx.executeSql(
         EXPENSE_QUERIES.INSERT_EXPENSE,
         [categoryId, subcategoryId, amount, description, date, userId],
-        (_, result) => {
+        async (_, result) => {
           const expenseId = result.insertId
 
-          if (pictures.length > 0) insertExpenseImages(expenseId, pictures)
-          else resolve(result)
+          if (pictures.length > 0) {
+            insertExpenseImages(expenseId, pictures)
+              .then(result => {
+                resolve(result)
+              })
+              .catch(error => {
+                console.error(
+                  "Error inserting Expense Image in Database: ",
+                  error
+                )
+
+                reject(error)
+              })
+          } else resolve(result)
         },
         error => {
-          console.error("Error inserting Purchase in Database: ", error)
+          console.error("Error inserting Expense in Database: ", error)
           reject(error)
         }
       )
@@ -34,19 +46,23 @@ export const insertExpense = (
 }
 
 const insertExpenseImages = (expenseId, pictures) => {
-  pictures.forEach(picturePath => {
-    tx.executeSql(
-      EXPENSE_QUERIES.INSERT_EXPENSE_IMAGE,
-      [expenseId, picturePath],
-      (_, s) => {
-        resolve(s)
-      },
-      error => {
-        reject(error)
-        // TODO: This must be a rollback
-        console.error("Error inserting Purchase Image in Database: ", error)
-      }
-    )
+  const variables = pictures.map(p => [expenseId, p]).flat()
+
+  return new Promise((resolve, reject) => {
+    DB.transaction(tx => {
+      tx.executeSql(
+        EXPENSE_QUERIES.INSERT_EXPENSE_IMAGES(pictures),
+        [...variables],
+        (_, s) => {
+          resolve(s)
+        },
+        error => {
+          reject(error)
+          // TODO: This must be a rollback
+          console.error("Error inserting Purchase Images in Database: ", error)
+        }
+      )
+    })
   })
 }
 
@@ -120,19 +136,21 @@ export const fetchPurchaseById = purchaseId => {
   return new Promise(resolve => {
     DB.transaction(tx => {
       tx.executeSql(
-        EXPENSE_QUERIES.SELECT_PURCHASE_BY_ID,
+        EXPENSE_QUERIES.SELECT_EXPENSE_BY_ID,
         [purchaseId],
         async (_, { rows }) => {
-          const result =
-            rows._array.length > 0 ? { ...rows._array[0], images: [] } : {}
-          delete result.image
-
-          rows._array.forEach(r => {
-            result.images = result.images.concat(r.image)
-          })
+          const result = {
+            amount: rows._array[0].amount,
+            categoryId: rows._array[0].categoryId,
+            date: rows._array[0].date,
+            id: rows._array[0].id,
+            images: rows._array
+              .filter(({ imagePath }) => imagePath !== null)
+              .map(({ imagePath }) => imagePath),
+            subcategoryId: rows._array[0].subcategoryId
+          }
 
           const resultWithProcessedIds = await processIds(result)
-
           resolve(resultWithProcessedIds)
         },
         error => {

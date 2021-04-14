@@ -61,7 +61,6 @@ const ExpenseDetail = props => {
   const expenseId = routeParams.expenseId
 
   const [featureKeys, setFeatureKeys] = useState({
-    pictures: [],
     category: 0,
     subcategory: 0
   })
@@ -77,8 +76,6 @@ const ExpenseDetail = props => {
 
   useFocusEffect(
     useCallback(() => {
-      if (routeParams.fromScreen === "Scan")
-        saveFeatureIntoUI("pictures", routeParams.pictures)
       if (expenseDetailMode === "EXISTING_EXPENSE")
         fetchExpenseDetail(expenseId)
       if (expenseDetailMode === "NEW_EXPENSE") {
@@ -87,12 +84,9 @@ const ExpenseDetail = props => {
         saveFeatureIntoUI("date", date)
         fetchCategory(routeParams.categoryId)
       }
-
       return () => {}
     }, [])
   )
-
-  useEffect(() => {}, [isUnsavedFeature])
 
   useEffect(() => {
     isExpenseInserted &&
@@ -114,13 +108,12 @@ const ExpenseDetail = props => {
 
     setFeatureKeys(prev => ({
       ...prev,
-      pictures: [],
       category: expense.category.id,
       subcategory: expense.subcategory.id
     }))
     setFeatureDataUI(prev => ({
       ...prev,
-      pictures: [],
+      pictures: expense.images,
       amount: expense.amount,
       category: expense.category.name,
       subcategory: expense.subcategory.name,
@@ -192,9 +185,9 @@ const ExpenseDetail = props => {
   }
 
   const handlePressCamera = () => {
-    navigation.navigate("Scan", {
-      fromMode: expenseDetailMode,
-      categoryId: routeParams.categoryId
+    // TODO: Aqui intervenir para que cuando vayamos a la vista scan vaya con las fotos del gasto como param
+    navigation.push("Scan", {
+      savePictures: pictures => saveFeatureIntoUI("pictures", pictures)
     })
   }
 
@@ -213,9 +206,6 @@ const ExpenseDetail = props => {
   const saveFeatureKey = (field, value) => {
     setFeatureKeys(prev => ({ ...prev, [field]: value }))
   }
-
-  // TODO: move to some util
-  const isObject = input => typeof input === "object" && input !== null
 
   return (
     <View style={styles.mainView}>
@@ -237,12 +227,12 @@ const ExpenseDetail = props => {
                   pictures={featureDataUI.pictures}
                   amount={featureDataUI.amount}
                   isUnsavedFeature={isUnsavedFeature.amount}
+                  mode={expenseDetailMode}
+                  onPressCamera={handlePressCamera}
                   onChange={amount => {
                     saveFeatureIntoUI("amount", amount)
                     onChangeFeature("amount")
                   }}
-                  // onChange={amount => saveFeatureIntoUI("amount", amount)}
-                  onPressCamera={handlePressCamera}
                 />
               }
             />

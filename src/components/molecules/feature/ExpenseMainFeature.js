@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, View, TouchableHighlight } from "react-native"
+import { StyleSheet, View, TouchableHighlight, Image } from "react-native"
 import EditableAmount from "../../atoms/EditableAmount"
 import ExpenseCamera from "../../atoms/Camera"
 
@@ -7,8 +7,10 @@ import color from "../../../utils/styles/color"
 
 const ExpenseMainFeature = props => {
   const {
+    pictures,
     amount,
     isUnsavedFeature,
+    mode,
     onPressCamera,
     onChange,
     onBlurEditableAmount
@@ -29,7 +31,14 @@ const ExpenseMainFeature = props => {
           style={styles.cameraTouchable}
           onPress={() => onPressCamera()}
         >
-          <ExpenseCamera />
+          {mode === "NEW_EXPENSE" ? (
+            <ExpenseCamera />
+          ) : (
+            <Image
+              style={{ flex: 1, height: "100%" }}
+              source={{ uri: pictures[0] }}
+            />
+          )}
         </TouchableHighlight>
       </View>
       <EditableAmount

@@ -5,6 +5,13 @@ export const EXPENSE_QUERIES = {
   INSERT_EXPENSE_IMAGE:
     "insert into expense_image (expenseId, imagePath) values (?, ?);",
 
+  INSERT_EXPENSE_IMAGES: pictures => {
+    let values = "(?, ?)"
+    if (pictures.length > 1)
+      values = values.concat(", (?, ?)".repeat(pictures.length - 1))
+    return `insert into expense_image (expenseId, imagePath) values ${values};`
+  },
+
   SELECT_TOTAL_EXPENSES_BY_CATEGORY: `
     SELECT c.id, c.name, c.imagePath, c.maxAmountPerMonth, SUM(e.amount) AS amount
     FROM category c, expense e
@@ -16,7 +23,7 @@ export const EXPENSE_QUERIES = {
   //TODO: Arreglar esto, no estamos recogiendo la imagen de compra
   // ( SELECT imagePath FROM expense_image WHERE expenseId=e.id LIMIT 1 ) image,
   // FROM expense e, category c, expense_image p_i
-  // AND e.id = p_i.expenseId
+  // AND e.id = e_i.expenseId
   SELECT_EXPENSES_BY_CATEGORY: `
     SELECT
     e.id,
@@ -32,17 +39,19 @@ export const EXPENSE_QUERIES = {
 
   SELECT_PURCHASE_IMAGE: "SELECT expenseId, image FROM expense_image",
 
-  //TODO: Arreglar esto, no estamos recogiendo la imagen de compra
-
-  // SELECT p.id, p_i.image, p.date, p.amount, p.categoryId, p.subcategoryId
-  //   FROM expense p, expense_image p_i
-  //   WHERE p.id = p_i.expenseId
-  //   AND p.id=?;
-  SELECT_PURCHASE_BY_ID: `
-  SELECT e.id,  e.date, e.amount, e.categoryId, e.subcategoryId, e.description
+  SELECT_EXPENSE_BY_ID: `
+    SELECT e.id, e_i.imagePath, e.date, e.amount, e.categoryId, e.subcategoryId
     FROM expense e
+    LEFT JOIN expense_image e_i ON
+    e.id = e_i.expenseId
     WHERE e.id=?;
   `,
+  // SELECT_EXPENSE_BY_ID: `
+  //   SELECT e.id, e_i.imagePath, e.date, e.amount, e.categoryId, e.subcategoryId
+  //   FROM expense e, expense_image e_i
+  //   WHERE e.id = e_i.expenseId
+  //   AND e.id=?;
+  // `,
 
   UPDATE_EXPENSE: `
     UPDATE expense

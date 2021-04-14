@@ -145,16 +145,9 @@ const Scan = props => {
   // TODO: implementar este recorde cuando termine feature nuevo diseño
   const _crop = async pictureTaked => {
     const cropProps = {
-      offset: {
-        x: 0,
-        y: 0
-      },
-      size: {
-        width: 20,
-        height: 20
-      }
+      offset: { x: 0, y: 0 },
+      size: { width: 20, height: 20 }
     }
-
 
     try {
       const croppedImageURI = await ImageEditor.cropImage(
@@ -176,12 +169,9 @@ const Scan = props => {
   }
 
   const handlePressNavigateNext = async () => {
-    navigation.push("ExpenseDetail", {
-      fromScreen: 'Scan',
-      mode: routeParams.fromMode,
-      categoryId: routeParams.categoryId,
-      pictures
-    })
+    // We're executing callback function passed as route params
+    routeParams.savePictures(pictures)
+    navigation.navigate("ExpenseDetail")
   }
 
   return (
