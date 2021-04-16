@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react"
 import { StyleSheet, View, Text } from "react-native"
 import { Camera as NativeCamera } from "expo-camera"
-import * as Permissions from "expo-permissions"
 
 const Camera = () => {
   const cameraRef = useRef(null)
@@ -13,9 +12,9 @@ const Camera = () => {
   }, [])
 
   const _requestCameraPermission = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA)
-    setHasCameraPermission(status === "granted")
-    await Permissions.askAsync(Permissions.CAMERA_ROLL)
+    const { granted } = await NativeCamera.requestPermissionsAsync()
+    setHasCameraPermission(granted)
+    // await Permissions.askAsync(Permissions.CAMERA_ROLL)
   }
 
   return (

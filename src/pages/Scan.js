@@ -12,9 +12,8 @@ import {
 import { MaterialIcons } from "@expo/vector-icons"
 import { useFocusEffect } from "@react-navigation/native"
 import { Camera } from "expo-camera"
-import * as Permissions from "expo-permissions"
-import * as FileSystem from "expo-file-system"
 import * as MediaLibrary from "expo-media-library"
+import * as FileSystem from "expo-file-system"
 import { Octicons } from "@expo/vector-icons"
 
 import alerts from "../utils/alerts/Alerts"
@@ -85,9 +84,9 @@ const Scan = props => {
   }, [])
 
   const _requestCameraPermission = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA)
-    setHasCameraPermission(status === "granted")
-    await Permissions.askAsync(Permissions.CAMERA_ROLL)
+    const { granted } = await Camera.requestPermissionsAsync()
+    setHasCameraPermission(granted)
+    // await Permissions.askAsync(Permissions.CAMERA_ROLL)
   }
 
   const handlePressTakePicture = () => {
@@ -164,7 +163,7 @@ const Scan = props => {
   }
 
   const handlePressNavigateNext = async () => {
-    console.log('pictures SCAN', pictures)
+    console.log("pictures SCAN", pictures)
     // We're executing callback function passed as route params
     routeParams.savePictures(pictures)
     navigation.navigate("ExpenseDetail")
