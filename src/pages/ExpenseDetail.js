@@ -76,6 +76,8 @@ const ExpenseDetail = props => {
 
   useFocusEffect(
     useCallback(() => {
+      console.log("routeParams", routeParams)
+      console.log("featureDataUI.pictures", featureDataUI.pictures)
       if (expenseDetailMode === "EXISTING_EXPENSE")
         fetchExpenseDetail(expenseId)
       if (expenseDetailMode === "NEW_EXPENSE") {
@@ -185,9 +187,9 @@ const ExpenseDetail = props => {
   }
 
   const handlePressCamera = () => {
-    // TODO: Aqui intervenir para que cuando vayamos a la vista scan vaya con las fotos del gasto como param
     navigation.push("Scan", {
-      savePictures: pictures => saveFeatureIntoUI("pictures", pictures)
+      savePictures: pictures => {console.log('pictures', pictures); saveFeatureIntoUI("pictures", pictures)},
+      pictures: featureDataUI.pictures
     })
   }
 

@@ -124,7 +124,7 @@ const Expenses = props => {
   }
 
   const handlePressPurchase = id => {
-    navigation.navigate("ExpenseDetail", {
+    navigation.push("ExpenseDetail", {
       expenseId: id,
       mode: "EXISTING_EXPENSE"
     })

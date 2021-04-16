@@ -73,7 +73,7 @@ const Scan = props => {
     useCallback(() => {
       setCameraMounted(true)
       setIsPurchaseInserted(false)
-      setPictures([])
+      setPictures(routeParams.pictures)
 
       return () => {
         setCameraMounted(false)
@@ -84,11 +84,6 @@ const Scan = props => {
   useEffect(() => {
     _requestCameraPermission()
   }, [])
-
-  useEffect(() => {
-    if (isPurchaseInserted)
-      navigation.navigate("ExpenseCategoryGate", { evt: "PURCHASE_SAVED" })
-  }, [isPurchaseInserted])
 
   const _requestCameraPermission = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA)
@@ -169,6 +164,7 @@ const Scan = props => {
   }
 
   const handlePressNavigateNext = async () => {
+    console.log('pictures SCAN', pictures)
     // We're executing callback function passed as route params
     routeParams.savePictures(pictures)
     navigation.navigate("ExpenseDetail")

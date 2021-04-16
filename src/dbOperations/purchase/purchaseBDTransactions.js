@@ -147,7 +147,8 @@ export const fetchPurchaseById = purchaseId => {
             images: rows._array
               .filter(({ imagePath }) => imagePath !== null)
               .map(({ imagePath }) => imagePath),
-            subcategoryId: rows._array[0].subcategoryId
+            subcategoryId: rows._array[0].subcategoryId,
+            description: rows._array[0].description
           }
 
           const resultWithProcessedIds = await processIds(result)

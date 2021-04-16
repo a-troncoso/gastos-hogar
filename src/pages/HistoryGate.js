@@ -88,7 +88,7 @@ const HistoryGate = props => {
   }
 
   const handlePressCategory = id => {
-    navigation.navigate("Expenses", {
+    navigation.push("Expenses", {
       categoryId: id,
       date: dateSelected,
       mode: "month"

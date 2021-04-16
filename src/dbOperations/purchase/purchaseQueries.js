@@ -40,7 +40,7 @@ export const EXPENSE_QUERIES = {
   SELECT_PURCHASE_IMAGE: "SELECT expenseId, image FROM expense_image",
 
   SELECT_EXPENSE_BY_ID: `
-    SELECT e.id, e_i.imagePath, e.date, e.amount, e.categoryId, e.subcategoryId
+    SELECT e.id, e_i.imagePath, e.date, e.amount, e.categoryId, e.subcategoryId, e.description
     FROM expense e
     LEFT JOIN expense_image e_i ON
     e.id = e_i.expenseId

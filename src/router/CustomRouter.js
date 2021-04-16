@@ -7,13 +7,11 @@ import {
   DrawerContentScrollView,
   DrawerItemList
 } from "@react-navigation/drawer"
-import PurchaseImagesModal from "../components/templates/image/PurchaseImagesModal"
 import ExpenseCategoryGate from "../pages/RegistryExpenseGate"
 import ExpenseDetail from "../pages/ExpenseDetail"
 import ScanExpense from "../pages/Scan"
 import HistoryGate from "../pages/HistoryGate"
 import Expenses from "../pages/Expenses"
-import Purchase from "../pages/[dep]Purchase"
 import CategoriesAdminGate from "../pages/CategoriesAdminGate"
 import DashbhoardGate from "../pages/DashbhoardGate"
 import CategoryDetail from "../pages/CategoryDetail"
@@ -124,6 +122,11 @@ const CustomRouter = () => {
           })}
           initialParams={{ mode: "EXISTING_EXPENSE" }}
         />
+        <RegistryExpenseStack.Screen
+          name="Scan"
+          component={ScanExpense}
+          options={{ headerShown: false }}
+        />
       </SummaryStack.Navigator>
     )
   }
@@ -207,20 +210,6 @@ const CustomRouter = () => {
           name="Main"
           component={MainStackScreen}
           options={{ headerShown: false }}
-        />
-        <RootStack.Screen
-          name="PurchaseImagesModal"
-          component={PurchaseImagesModal}
-          options={{
-            title: "Fotos de la compra",
-            headerStyle: {
-              height: 60
-            },
-            headerTitleStyle: {
-              fontSize: 16,
-              textAlign: "center"
-            }
-          }}
         />
       </RootStack.Navigator>
     )

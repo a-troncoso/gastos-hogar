@@ -47,7 +47,7 @@ const RegistryExpenseGate = props => {
   }
 
   const handlePressCategory = id => {
-    navigation.navigate("ExpenseDetail", {
+    navigation.push("ExpenseDetail", {
       categoryId: id,
       mode: "NEW_EXPENSE"
     })
