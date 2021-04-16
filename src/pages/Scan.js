@@ -15,7 +15,6 @@ import { Camera } from "expo-camera"
 import * as Permissions from "expo-permissions"
 import * as FileSystem from "expo-file-system"
 import * as MediaLibrary from "expo-media-library"
-import ImageEditor from "@react-native-community/image-editor"
 import { Octicons } from "@expo/vector-icons"
 
 import alerts from "../utils/alerts/Alerts"
@@ -144,18 +143,19 @@ const Scan = props => {
       size: { width: 20, height: 20 }
     }
 
-    try {
-      const croppedImageURI = await ImageEditor.cropImage(
-        pictureTaked.uri,
-        cropProps
-      )
+    // TODO: Revisar como cortar la imagen ya que la libreria culia de image.editor no funciona con rn
+    // try {
+    //   const croppedImageURI = await ImageEditor.cropImage(
+    //     pictureTaked.uri,
+    //     cropProps
+    //   )
 
-      if (croppedImageURI) {
-        // _savePictureInAppMemory(_savePictureInAppMemory);
-      }
-    } catch (cropError) {
-      // alerts.throwErrorAlert("copiar fotos", JSON.stringify(cropError));
-    }
+    //   if (croppedImageURI) {
+    //     // _savePictureInAppMemory(_savePictureInAppMemory);
+    //   }
+    // } catch (cropError) {
+    //   // alerts.throwErrorAlert("copiar fotos", JSON.stringify(cropError));
+    // }
   }
 
   const handleRemoveImage = imageURI => {
