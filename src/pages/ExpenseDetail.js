@@ -188,7 +188,10 @@ const ExpenseDetail = props => {
 
   const handlePressCamera = () => {
     navigation.push("Scan", {
-      savePictures: pictures => {console.log('pictures', pictures); saveFeatureIntoUI("pictures", pictures)},
+      savePictures: pictures => {
+        console.log("pictures", pictures)
+        saveFeatureIntoUI("pictures", pictures)
+      },
       pictures: featureDataUI.pictures
     })
   }

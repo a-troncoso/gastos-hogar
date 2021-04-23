@@ -1,166 +1,395 @@
-import React, { useState, useEffect } from "react";
+import React, { memo, useState, useCallback, useEffect } from "react"
 import {
   StyleSheet,
   View,
   Text,
-  Image,
-  TouchableOpacity,
-  TextInput
-} from "react-native";
-import alerts from "../utils/alerts/Alerts";
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
+  Platform,
+  ToastAndroid
+} from "react-native"
 import {
-  fetchCategoryById,
-  patchCategoryName,
-  removeCategory
-} from "../dbOperations/category/categoryBDTransactions";
+  useFocusEffect,
+  useNavigation,
+  useRoute
+} from "@react-navigation/native"
+
+import Hero from "../components/atoms/Hero"
+import Button from "../components/atoms/Button"
+import CategoryFeature from "../components/molecules/category/CategoryFeature"
+import DateFeature from "../components/molecules/date/DateFeature"
+import SubcategoryFeature from "../components/molecules/subcategory/SubcategoryFeature"
+import DescriptionFeature from "../components/molecules/description/DescriptionFeature"
+import ExpenseMainFeature from "../components/molecules/feature/ExpenseMainFeature"
+
+import {
+  fetchPurchaseById,
+  insertExpense,
+  updateExpense
+} from "../dbOperations/purchase/purchaseBDTransactions"
+import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions"
+
+import color from "../utils/styles/color"
+import alerts from "../utils/alerts/Alerts"
+
+const DETAIL_MODES = {
+  NEW_CATEGORY: "NEW_CATEGORY",
+  EXISTING_CATEGORY: "EXISTING_CATEGORY"
+}
+
+const Toast = memo(({ visible, message }) => {
+  if (visible) {
+    ToastAndroid.show(message, ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50)
+    return null
+  }
+  return null
+})
 
 const CategoryDetail = props => {
-  const { route, navigation } = props;
+  const navigation = useNavigation()
+  const route = useRoute()
+  const { params: routeParams } = route
+  const detailMode = routeParams.mode || DETAIL_MODES.NEW_CATEGORY
+  const [isUnsavedFeature, setIsUnsavedFeature] = useState({
+    image: false,
+    name: false,
+    maxAmountPerMonth: false
+  })
+  const [isExpenseInserted, setIsExpenseInserted] = useState(false)
+  const [isExpenseUpdated, setIsExpenseUpdated] = useState(false)
+  const [isFixedBottomAreaVisible, setIsFixedBottomAreaVisible] = useState(true)
+  const [isVisibleToast, setIsVisibleToast] = useState(false)
+  const categoryId = routeParams.categoryId
 
-  const [categoryDetail, setCategoryDetail] = useState({});
-  const [categoryNameEditMode, setCategoryNameEditMode] = useState(false);
-  const [categoryNameValueEdited, setCategoryNameValueEdited] = useState("");
+  const [featureKeys, setFeatureKeys] = useState({})
+
+  const [featureDataUI, setFeatureDataUI] = useState({
+    image: "",
+    name: "",
+    maxAmountPerMonth: 0
+  })
+
+  useFocusEffect(
+    useCallback(() => {
+      if (detailMode === DETAIL_MODES.EXISTING_CATEGORY)
+      // TODO Aqui voy
+        fetchExpenseDetail(categoryId)
+      if (detailMode === DETAIL_MODES.NEW_CATEGORY) {
+        saveFeatureKey("category", routeParams.categoryId)
+        fetchCategory(routeParams.categoryId)
+      }
+      return () => {}
+    }, [])
+  )
 
   useEffect(() => {
-    _fetchCategory(route.params.categoryId);
-  }, []);
+    isExpenseInserted &&
+      navigation.navigate("ExpenseCategoryGate", { evt: "PURCHASE_SAVED" })
+  }, [isExpenseInserted])
 
-  const _fetchCategory = async categoryId => {
-    const categoryDetail = await fetchCategoryById(categoryId);
+  useEffect(() => {
+    isExpenseUpdated && setIsVisibleToast(true)
+  }, [isExpenseUpdated])
 
-    setCategoryDetail(categoryDetail);
-    setCategoryNameValueEdited(categoryDetail.name);
-  };
+  const fetchCategory = async categoryId => {
+    const categoryDetail = await fetchCategoryById(categoryId)
 
-  const handlePressImageTouchable = () => {
-    // navigation.navigate("PurchaseImagesModal", {
-    //   images: [categoryDetail.image]
-    // });
-  };
+    saveFeatureIntoUI("category", categoryDetail.name)
+  }
 
-  const handlePressCategoryName = () => {
-    setCategoryNameEditMode(true);
-  };
+  const fetchExpenseDetail = async categoryId => {
+    const expense = await fetchPurchaseById(categoryId)
 
-  const handleSubmitEditCategoryName = async () => {
-    const patchResult = await patchCategoryName(
-      route.params.categoryId,
-      categoryNameValueEdited
-    );
+    setFeatureKeys(prev => ({
+      ...prev,
+      category: expense.category.id,
+      subcategory: expense.subcategory.id
+    }))
+    setFeatureDataUI(prev => ({
+      ...prev,
+      pictures: expense.images,
+      amount: expense.amount,
+      category: expense.category.name,
+      subcategory: expense.subcategory.name,
+      description: expense.description,
+      date: new Date(expense.date)
+    }))
+  }
 
-    if (patchResult === "OK") {
-      setCategoryNameEditMode(false);
-      _fetchCategory(route.params.categoryId);
+  const saveExpense = async () => {
+    if (detailMode === DETAIL_MODES.NEW_CATEGORY) addExpense()
+    else if (detailMode === DETAIL_MODES.EXISTING_CATEGORY) editExpense()
+  }
+
+  const addExpense = async () => {
+    try {
+      const insertResult = await insertExpense(
+        featureDataUI.pictures,
+        featureKeys.category,
+        featureKeys.subcategory,
+        featureDataUI.amount,
+        featureDataUI.description,
+        featureDataUI.date.toISOString(),
+        1
+      )
+      if (insertResult.rowsAffected) setIsExpenseInserted(true)
+    } catch (err) {
+      alerts.throwErrorAlert("ingresar la compra", JSON.stringify(err))
     }
-  };
+  }
 
-  const handlePressRemoveCategory = async () => {
-    const _removeCategory = async () => {
-      const removeResult = await removeCategory(route.params.categoryId);
-      if (removeResult === "OK") navigation.navigate("CategoriesAdminGate");
-    };
+  const editExpense = async () => {
+    try {
+      const updateResult = await updateExpense(categoryId, {
+        pictures: featureDataUI.pictures,
+        categoryId: featureKeys.category,
+        subcategoryId: featureKeys.subcategory,
+        amount: featureDataUI.amount,
+        description: featureDataUI.description,
+        date: featureDataUI.date.toISOString(),
+        userId: 1
+      })
+      if (updateResult.rowsAffected) {
+        setIsUnsavedFeature(prev => ({
+          ...prev,
+          pictures: false,
+          category: false,
+          subcategory: false,
+          date: false,
+          amount: false,
+          description: false
+        }))
+        setIsExpenseUpdated(true)
+      }
+    } catch (err) {
+      alerts.throwErrorAlert("actualizar la compra", JSON.stringify(err))
+    }
+  }
 
-    alerts.throwConfirmationAlert({
-      title: `¿Deseas eliminar la categoría ${categoryDetail.name}?`,
-      onPressPositive: () => _removeCategory()
-    });
-  };
+  const handlePressSaveButton = () => {
+    saveExpense()
+  }
+
+  const handlePressDeleteButton = () => {
+    // deleteExpense()
+  }
+
+  const handlePressSaveChangesButton = () => {
+    saveExpense()
+  }
+
+  const handlePressCamera = () => {
+    navigation.push("Scan", {
+      savePictures: pictures => {
+        console.log("pictures", pictures)
+        saveFeatureIntoUI("pictures", pictures)
+      },
+      pictures: featureDataUI.pictures
+    })
+  }
+
+  const onChangeFeature = (field, value) => {
+    if (detailMode === DETAIL_MODES.EXISTING_CATEGORY)
+      setIsUnsavedFeature(prev => ({
+        ...prev,
+        [field]: true
+      }))
+  }
+
+  const saveFeatureIntoUI = (field, value) => {
+    setFeatureDataUI(prev => ({ ...prev, [field]: value }))
+  }
+
+  const saveFeatureKey = (field, value) => {
+    setFeatureKeys(prev => ({ ...prev, [field]: value }))
+  }
 
   return (
-    <View style={styles.categoryDetail}>
-      <TouchableOpacity
-        style={styles.categoryImageTouchable}
-        onPress={handlePressImageTouchable}
-      >
-        <Image
-          style={styles.categoryImage}
-          source={{ uri: categoryDetail.image || null }}
-        />
-      </TouchableOpacity>
-      <View style={styles.categoryFeaturesView}>
-        <TouchableOpacity
-          style={styles.featureView}
-          onPress={handlePressCategoryName}
+    <View style={styles.mainView}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          contentContainerStyle={{ paddingBottom: 60, marginBottom: 60 }}
+          keyboardVerticalOffset={Platform.select({
+            ios: () => 0,
+            android: () => 1000
+          })()}
+          enabled
         >
-          <Text>Nombre</Text>
-          {!categoryNameEditMode ? (
-            <Text style={styles.categoryDetailCategoryName}>
-              {categoryDetail.name}
-            </Text>
-          ) : (
-            <TextInput
-              style={styles.categoryDetailCategoryNameInput}
-              value={categoryNameValueEdited}
-              autoFocus={true}
-              onChangeText={value => setCategoryNameValueEdited(value)}
-              onSubmitEditing={handleSubmitEditCategoryName}
-            />
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.removeCategoryButton}
-          onPress={handlePressRemoveCategory}
-        >
-          <Text>Eliminar</Text>
-        </TouchableOpacity>
-      </View>
+          <SafeAreaView style={{ flex: 1 }}>
+            <Hero central={<CategoryIcon />} />
+            <View style={styles.features}>
+              <CategoryFeature
+                categoryId={featureKeys.categoryId}
+                categoryName={featureDataUI.category}
+                isUnsavedFeature={isUnsavedFeature.category}
+                onChange={category => {
+                  saveFeatureKey("category", category.id)
+                  saveFeatureIntoUI("category", category.name)
+                  onChangeFeature("category")
+                }}
+              />
+              <AmountFeature
+                date={featureDataUI.date}
+                isUnsavedFeature={isUnsavedFeature.date}
+                onChange={date => {
+                  saveFeatureIntoUI("date", date)
+                  onChangeFeature("date")
+                }}
+              />
+            </View>
+            {isFixedBottomAreaVisible &&
+              detailMode === DETAIL_MODES.EXISTING_CATEGORY &&
+              Object.values(isUnsavedFeature).some(v => v === true) && (
+                <View style={styles.fixedBottomArea}>
+                  <Button onPress={handlePressSaveChangesButton}>
+                    <Text style={styles.mainBtnText}>GUARDAR CAMBIOS</Text>
+                  </Button>
+                </View>
+              )}
+          </SafeAreaView>
+        </KeyboardAvoidingView>
+      </ScrollView>
+      <Toast visible={isVisibleToast} message="Categoría actualizada" />
     </View>
-  );
-};
+
+    // <View style={styles.categoryDetail}>
+    //   <TouchableOpacity
+    //     style={styles.categoryImageTouchable}
+    //     onPress={handlePressImageTouchable}
+    //   >
+    //     <Image
+    //       style={styles.categoryImage}
+    //       source={{ uri: categoryDetail.image || null }}
+    //     />
+    //   </TouchableOpacity>
+    //   <View style={styles.categoryFeaturesView}>
+    //     <View style={styles.featureView}>
+    //       <Text>Nombre</Text>
+    //       <TextInputMonto máximo
+    //         style={styles.categoryDetailCategoryNameInput}
+    //         value={categoryNameValue}
+    //         autoFocus={true}
+    //         onChangeText={value => setCategoryNameValue(value)}
+    //       />
+    //     </View>
+    //     <View style={styles.featureView}>
+    //       <Text>Cuota mensual</Text>
+    //       <TextInput
+    //         style={styles.categoryDetailCategoryNameInput}
+    //         value={categoryNameValue}
+    //         autoFocus={true}
+    //         onChangeText={value => setCategoryNameValue(value)}
+    //       />
+    //     </View>
+    //     <TouchableOpacity
+    //       style={styles.removeCategoryButton}
+    //       onPress={handlePressRemoveCategoryButton}
+    //     >
+    //       <Text>Crear</Text>
+    //     </TouchableOpacity>
+    //   </View>
+    // </View>
+  )
+}
 
 const styles = StyleSheet.create({
-  categoryDetail: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#fff"
-  },
-  categoryImageTouchable: {
-    height: 160,
-    alignSelf: "stretch",
+  mainView: {
     borderColor: "black",
-    borderStyle: "solid",
     borderWidth: 1,
-    backgroundColor: "#E8E8E8"
-  },
-  categoryImage: {
-    width: "100%",
-    height: "100%"
-  },
-  categoryFeaturesView: {
+    borderStyle: "solid",
     flex: 1,
-    padding: 8
+    backgroundColor: color.blue["90"]
   },
-  featureView: {
-    height: 56,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderColor: "black",
+  secondaryPart: {
+    borderColor: "yellow",
+    borderWidth: 2,
     borderStyle: "solid",
-    borderWidth: 1
+    flex: 1
   },
-  categoryDetailCategoryName: {
-    textTransform: "capitalize"
-  },
-  categoryDetailCategoryNameInput: {
-    textAlign: "right"
-  },
-  removeCategoryButton: {
-    height: 56,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderColor: "black",
-    borderStyle: "solid",
+  features: {
+    borderColor: "blue",
     borderWidth: 1,
-    backgroundColor: "#E3E3E3"
+    borderStyle: "solid",
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 24
   },
-  border: { borderColor: "red", borderStyle: "solid", borderWidth: 1 }
-});
+  fixedBottomArea: {
+    borderColor: "red",
+    borderWidth: 1,
+    borderStyle: "solid",
+    paddingHorizontal: 16,
+    paddingBottom: 16
+  },
+  mainBtnText: {
+    fontWeight: "bold"
+  },
+  purchaseCategoryPicker: {
+    width: 200,
+    height: 44,
+    borderColor: "black",
+    borderWidth: 1,
+    borderStyle: "solid",
+    textAlign: "left"
+  }
+})
 
-export default CategoryDetail;
+// const styles = StyleSheet.create({
+//   categoryDetail: {
+//     flex: 1,
+//     justifyContent: "center",
+//     backgroundColor: "#fff"
+//   },
+//   categoryImageTouchable: {
+//     height: 160,
+//     alignSelf: "stretch",
+//     borderColor: "black",
+//     borderStyle: "solid",
+//     borderWidth: 1,
+//     backgroundColor: "#E8E8E8"
+//   },
+//   categoryImage: {
+//     width: "100%",
+//     height: "100%"
+//   },
+//   categoryFeaturesView: {
+//     flex: 1,
+//     padding: 8
+//   },
+//   featureView: {
+//     height: 56,
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     marginBottom: 8,
+//     paddingVertical: 8,
+//     paddingHorizontal: 16,
+//     borderColor: "black",
+//     borderStyle: "solid",
+//     borderWidth: 1
+//   },
+//   categoryDetailCategoryName: {
+//     textTransform: "capitalize"
+//   },
+//   categoryDetailCategoryNameInput: {
+//     textAlign: "right"
+//   },
+//   removeCategoryButton: {
+//     height: 56,
+//     flexDirection: "row",
+//     justifyContent: "center",
+//     alignItems: "center",
+//     paddingVertical: 8,
+//     paddingHorizontal: 16,
+//     borderColor: "black",
+//     borderStyle: "solid",
+//     borderWidth: 1,
+//     backgroundColor: "#E3E3E3"
+//   },
+//   border: { borderColor: "red", borderStyle: "solid", borderWidth: 1 }
+// })
+
+export default CategoryDetail

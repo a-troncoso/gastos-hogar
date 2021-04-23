@@ -1,64 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react"
-import { StyleSheet, View, SafeAreaView, TouchableOpacity } from "react-native"
+import { StyleSheet, View, SafeAreaView } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
 import CategoriesList from "../components/molecules/category/CategoriesList"
 import Hero from "../components/atoms/Hero"
 import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator"
-import Constants from "expo-constants"
-import { fetchTotalExpensesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
-import { formattedMonth, currentDate } from "../utils/date"
-import color from "../utils/styles/color"
 
-const mock = [
-  {
-    id: 1,
-    name: "primero",
-    extraInfo: {
-      maximumStop: 100,
-      currentAmount: 90
-    }
-  },
-  {
-    id: 2,
-    name: "segundo",
-    extraInfo: {
-      maximumStop: 100,
-      currentAmount: 50
-    }
-  },
-  {
-    id: 3,
-    name: "tercero",
-    extraInfo: {
-      maximumStop: 100,
-      currentAmount: 10
-    }
-  },
-  {
-    id: 4,
-    name: "cuarto",
-    extraInfo: {
-      maximumStop: 100,
-      currentAmount: 100
-    }
-  },
-  {
-    id: 5,
-    name: "cuarto",
-    extraInfo: {
-      maximumStop: 100,
-      currentAmount: 100
-    }
-  },
-  {
-    id: 6,
-    name: "cuarto",
-    extraInfo: {
-      maximumStop: 100,
-      currentAmount: 100
-    }
-  }
-]
+import { fetchTotalExpensesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
+
+import { currentDate } from "../utils/date"
+import color from "../utils/styles/color"
 
 const HistoryGate = props => {
   const { navigation } = props
@@ -93,12 +43,6 @@ const HistoryGate = props => {
       date: dateSelected,
       mode: "month"
     })
-  }
-
-  const handleTest = () => {
-    // navigation.navigate("PurchaseImagesModal", {
-    //   images: []
-    // })
   }
 
   const handleChangeDateNavigation = date => {
