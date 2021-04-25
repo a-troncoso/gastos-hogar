@@ -1,34 +1,42 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { StyleSheet, View, SafeAreaView } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import CategoriesList from "../components/molecules/category/CategoriesList";
-import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
+import React, { useState, useCallback } from "react"
+import { StyleSheet, View, SafeAreaView, Text } from "react-native"
+import { useFocusEffect } from "@react-navigation/native"
+
+
+import CategoriesList from "../components/molecules/category/CategoriesList"
+import Button from "../components/atoms/Button"
+
+import { CATEGORY_DETAIL_MODES } from "../domain/category/constants"
+import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions"
 
 const CategoriesAdminGate = props => {
-  const { navigation } = props;
+  const { navigation } = props
 
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([])
 
   useFocusEffect(
     useCallback(() => {
-      fetchCategories();
+      fetchCategories()
     }, [])
-  );
+  )
 
   const fetchCategories = async () => {
-    const categories = await fetchAllCategories();
-    setCategories(categories);
-  };
+    const categories = await fetchAllCategories()
+    setCategories(categories)
+  }
 
   const handlePressCategory = id => {
     navigation.navigate("CategoryDetail", {
       categoryId: id
-    });
-  };
+    })
+  }
 
   const handlePressAddCategory = () => {
-    navigation.navigate("CategoryCreation");
-  };
+    navigation.navigate("CategoryDetail", {
+      categoryId: null,
+      mode: CATEGORY_DETAIL_MODES.NEW_CATEGORY
+    })
+  }
 
   return (
     <View style={styles.categories}>
@@ -36,15 +44,19 @@ const CategoriesAdminGate = props => {
         <SafeAreaView>
           <CategoriesList
             categories={categories}
-            features={["add-category"]}
             onPressCategory={handlePressCategory}
             onPressAddCategory={handlePressAddCategory}
           />
         </SafeAreaView>
       </View>
+      <View style={styles.fixedBottomArea}>
+        <Button onPress={handlePressAddCategory}>
+          <Text style={styles.mainBtnText}>AGREGAR OTRA</Text>
+        </Button>
+      </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   categories: {
@@ -55,10 +67,19 @@ const styles = StyleSheet.create({
   },
   categoriesListView: {
     flex: 1,
-    justifyContent: "center",
     alignSelf: "stretch",
     paddingHorizontal: 16
+  },
+  fixedBottomArea: {
+    // borderColor: "red",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    paddingHorizontal: 16,
+    paddingBottom: 16
+  },
+  mainBtnText: {
+    fontWeight: "bold"
   }
-});
+})
 
-export default CategoriesAdminGate;
+export default CategoriesAdminGate

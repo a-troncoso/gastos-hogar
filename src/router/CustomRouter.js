@@ -7,18 +7,18 @@ import {
   DrawerContentScrollView,
   DrawerItemList
 } from "@react-navigation/drawer"
-import ExpenseCategoryGate from "pages/RegistryExpenseGate"
-import ExpenseDetail from "pages/ExpenseDetail"
-import ScanExpense from "pages/Scan"
-import HistoryGate from "pages/HistoryGate"
-import Expenses from "pages/Expenses"
-import CategoriesAdminGate from "pages/CategoriesAdminGate"
-import DashbhoardGate from "pages/DashbhoardGate"
-import CategoryDetail from "pages/CategoryDetail"
+import ExpenseCategoryGate from "../pages/RegistryExpenseGate"
+import ExpenseDetail from "../pages/ExpenseDetail"
+import ScanExpense from "../pages/Scan"
+import HistoryGate from "../pages/HistoryGate"
+import Expenses from "../pages/Expenses"
+import CategoriesAdminGate from "../pages/CategoriesAdminGate"
+import DashbhoardGate from "../pages/DashbhoardGate"
+import CategoryDetail from "../pages/CategoryDetail"
 
 import { Feather } from "@expo/vector-icons"
 
-import color from "utils/styles/color"
+import color from "../utils/styles/color"
 
 const RootStack = createStackNavigator()
 const RegistryExpenseStack = createStackNavigator()
@@ -136,7 +136,10 @@ const CustomRouter = () => {
         <CategoryManagementStack.Screen
           name="CategoriesAdminGate"
           component={CategoriesAdminGate}
-          options={{ ...screenGlobalOption, title: "Administrar Categorías" }}
+          options={({ navigation }) => ({
+            ...screenGlobalOption(navigation),
+            title: "Administrar Categorías"
+          })}
         />
         <CategoryManagementStack.Screen
           name="CategoryDetail"

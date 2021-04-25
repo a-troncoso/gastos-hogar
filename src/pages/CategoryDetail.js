@@ -23,6 +23,8 @@ import SubcategoryFeature from "../components/molecules/subcategory/SubcategoryF
 import DescriptionFeature from "../components/molecules/description/DescriptionFeature"
 import ExpenseMainFeature from "../components/molecules/feature/ExpenseMainFeature"
 
+import { CATEGORY_DETAIL_MODES } from "../domain/category/constants"
+
 import {
   fetchPurchaseById,
   insertExpense,
@@ -32,11 +34,6 @@ import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactio
 
 import color from "../utils/styles/color"
 import alerts from "../utils/alerts/Alerts"
-
-const DETAIL_MODES = {
-  NEW_CATEGORY: "NEW_CATEGORY",
-  EXISTING_CATEGORY: "EXISTING_CATEGORY"
-}
 
 const Toast = memo(({ visible, message }) => {
   if (visible) {
@@ -50,7 +47,7 @@ const CategoryDetail = props => {
   const navigation = useNavigation()
   const route = useRoute()
   const { params: routeParams } = route
-  const detailMode = routeParams.mode || DETAIL_MODES.NEW_CATEGORY
+  const detailMode = routeParams.mode || CATEGORY_DETAIL_MODES.NEW_CATEGORY
   const [isUnsavedFeature, setIsUnsavedFeature] = useState({
     image: false,
     name: false,
@@ -72,10 +69,10 @@ const CategoryDetail = props => {
 
   useFocusEffect(
     useCallback(() => {
-      if (detailMode === DETAIL_MODES.EXISTING_CATEGORY)
-      // TODO Aqui voy
+      if (detailMode === CATEGORY_DETAIL_MODES.EXISTING_CATEGORY)
+        // TODO Aqui voy
         fetchExpenseDetail(categoryId)
-      if (detailMode === DETAIL_MODES.NEW_CATEGORY) {
+      if (detailMode === CATEGORY_DETAIL_MODES.NEW_CATEGORY) {
         saveFeatureKey("category", routeParams.categoryId)
         fetchCategory(routeParams.categoryId)
       }
@@ -118,8 +115,9 @@ const CategoryDetail = props => {
   }
 
   const saveExpense = async () => {
-    if (detailMode === DETAIL_MODES.NEW_CATEGORY) addExpense()
-    else if (detailMode === DETAIL_MODES.EXISTING_CATEGORY) editExpense()
+    if (detailMode === CATEGORY_DETAIL_MODES.NEW_CATEGORY) addExpense()
+    else if (detailMode === CATEGORY_DETAIL_MODES.EXISTING_CATEGORY)
+      editExpense()
   }
 
   const addExpense = async () => {
@@ -190,7 +188,7 @@ const CategoryDetail = props => {
   }
 
   const onChangeFeature = (field, value) => {
-    if (detailMode === DETAIL_MODES.EXISTING_CATEGORY)
+    if (detailMode === CATEGORY_DETAIL_MODES.EXISTING_CATEGORY)
       setIsUnsavedFeature(prev => ({
         ...prev,
         [field]: true
@@ -241,7 +239,7 @@ const CategoryDetail = props => {
               />
             </View>
             {isFixedBottomAreaVisible &&
-              detailMode === DETAIL_MODES.EXISTING_CATEGORY &&
+              detailMode === CATEGORY_DETAIL_MODES.EXISTING_CATEGORY &&
               Object.values(isUnsavedFeature).some(v => v === true) && (
                 <View style={styles.fixedBottomArea}>
                   <Button onPress={handlePressSaveChangesButton}>
