@@ -23,7 +23,7 @@ import SubcategoryFeature from "../components/molecules/subcategory/SubcategoryF
 import DescriptionFeature from "../components/molecules/description/DescriptionFeature"
 import ExpenseMainFeature from "../components/molecules/feature/ExpenseMainFeature"
 
-import { CATEGORY_DETAIL_MODES } from "../domain/category/constants"
+import { CATEGORY_DETAIL_MODES } from "../domain/category/categoryDetailModes"
 
 import {
   fetchPurchaseById,

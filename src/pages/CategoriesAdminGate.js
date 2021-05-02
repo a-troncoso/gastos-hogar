@@ -6,7 +6,7 @@ import { useFocusEffect } from "@react-navigation/native"
 import CategoriesList from "../components/molecules/category/CategoriesList"
 import Button from "../components/atoms/Button"
 
-import { CATEGORY_DETAIL_MODES } from "../domain/category/constants"
+import { CATEGORY_DETAIL_MODES } from "../domain/category/categoryDetailModes"
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions"
 
 const CategoriesAdminGate = props => {

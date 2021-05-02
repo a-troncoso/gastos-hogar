@@ -30,6 +30,7 @@ import {
 } from "../dbOperations/purchase/purchaseBDTransactions"
 import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions"
 
+import { EXPENSE_DETAIL_MODES } from "../domain/expense/expenseDetailModes"
 import color from "../utils/styles/color"
 import alerts from "../utils/alerts/Alerts"
 
@@ -41,11 +42,11 @@ const Toast = memo(({ visible, message }) => {
   return null
 })
 
-const ExpenseDetail = props => {
+const ExpenseDetail = () => {
   const navigation = useNavigation()
   const route = useRoute()
   const { params: routeParams } = route
-  const expenseDetailMode = routeParams.mode || "NEW_EXPENSE"
+  const expenseDetailMode = routeParams.mode || EXPENSE_DETAIL_MODES.NEW_EXPENSE
   const [isUnsavedFeature, setIsUnsavedFeature] = useState({
     pictures: false,
     category: false,
@@ -76,11 +77,9 @@ const ExpenseDetail = props => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("routeParams", routeParams)
-      console.log("featureDataUI.pictures", featureDataUI.pictures)
-      if (expenseDetailMode === "EXISTING_EXPENSE")
+      if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
         fetchExpenseDetail(expenseId)
-      if (expenseDetailMode === "NEW_EXPENSE") {
+      if (expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE) {
         const date = new Date()
         saveFeatureKey("category", routeParams.categoryId)
         saveFeatureIntoUI("date", date)
@@ -125,8 +124,9 @@ const ExpenseDetail = props => {
   }
 
   const saveExpense = async () => {
-    if (expenseDetailMode === "NEW_EXPENSE") addExpense()
-    else if (expenseDetailMode === "EXISTING_EXPENSE") editExpense()
+    if (expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE) addExpense()
+    else if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
+      editExpense()
   }
 
   const addExpense = async () => {
@@ -197,7 +197,7 @@ const ExpenseDetail = props => {
   }
 
   const onChangeFeature = (field, value) => {
-    if (expenseDetailMode === "EXISTING_EXPENSE")
+    if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
       setIsUnsavedFeature(prev => ({
         ...prev,
         [field]: true
@@ -296,15 +296,16 @@ const ExpenseDetail = props => {
                 <>{feat}</>
               ))}
             </View>
-            {isFixedBottomAreaVisible && expenseDetailMode === "NEW_EXPENSE" && (
-              <View style={styles.fixedBottomArea}>
-                <Button onPress={handlePressSaveButton}>
-                  <Text style={styles.mainBtnText}>GUARDAR</Text>
-                </Button>
-              </View>
-            )}
             {isFixedBottomAreaVisible &&
-              expenseDetailMode === "EXISTING_EXPENSE" &&
+              expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE && (
+                <View style={styles.fixedBottomArea}>
+                  <Button onPress={handlePressSaveButton}>
+                    <Text style={styles.mainBtnText}>GUARDAR</Text>
+                  </Button>
+                </View>
+              )}
+            {isFixedBottomAreaVisible &&
+              expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE &&
               Object.values(isUnsavedFeature).some(v => v === true) && (
                 <View style={styles.fixedBottomArea}>
                   <Button onPress={handlePressSaveChangesButton}>
@@ -313,7 +314,7 @@ const ExpenseDetail = props => {
                 </View>
               )}
             {/* {isFixedBottomAreaVisible &&
-              expenseDetailMode === "EXISTING_EXPENSE" && (
+              expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE && (
                 <View style={styles.fixedBottomArea}>
                   <Button onPress={handlePressDeleteButton} type="danger">
                     <Text style={styles.mainBtnText}>ELIMINAR</Text>

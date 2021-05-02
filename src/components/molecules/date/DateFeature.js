@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import Feature from "../../atoms/Feature"
+import Feature from "../../atoms/Feature/Feature"
 import DateModalSelector from "../../atoms/DateModalSelector"
 
 import { formatDate, formatHour } from "../../../utils/date"

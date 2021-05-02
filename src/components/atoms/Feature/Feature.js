@@ -2,7 +2,7 @@ import React, { Fragment } from "react"
 import PropTypes from "prop-types"
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 
-import color from "../../utils/styles/color"
+import color from "../../../utils/styles/color"
 
 const Feature = props => {
   const {
@@ -21,7 +21,7 @@ const Feature = props => {
   }
 
   const ValueText = () => (
-    <Fragment testID="feature-value-text">{value || voidValue}</Fragment>
+    <Fragment>{value || voidValue}</Fragment>
   )
 
   return (

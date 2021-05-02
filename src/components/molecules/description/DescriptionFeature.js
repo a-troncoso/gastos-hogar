@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { TextInput, StyleSheet, Keyboard } from "react-native"
-import Feature from "../../atoms/Feature"
+import Feature from "../../atoms/Feature/Feature"
 
 const DescriptionFeature = props => {
   const {

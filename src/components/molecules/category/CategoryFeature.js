@@ -1,34 +1,33 @@
-import React, { useState, useEffect } from "react";
-import Feature from "../../atoms/Feature";
-import CategoryModalSelector from "../../atoms/ModalSelector";
-import { fetchAllCategories } from "../../../dbOperations/category/categoryBDTransactions";
-
+import React, { useState, useEffect } from "react"
+import Feature from "../../atoms/Feature/Feature"
+import CategoryModalSelector from "../../atoms/ModalSelector"
+import { fetchAllCategories } from "../../../dbOperations/category/categoryBDTransactions"
 
 const CategoryFeature = props => {
-  const { categoryName, isUnsavedFeature, onChange } = props;
+  const { categoryName, isUnsavedFeature, onChange } = props
 
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([])
   const [editableElements, setEditatableElements] = useState({
     category: { isVisible: false }
-  });
+  })
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    fetchCategories()
+  }, [])
 
   const fetchCategories = async () => {
-    const categories = await fetchAllCategories();
-    setCategories(categories);
-  };
+    const categories = await fetchAllCategories()
+    setCategories(categories)
+  }
 
   const handleSelectCategory = category => {
     setEditatableElements({
       ...editableElements,
       category: { isVisible: false }
-    });
+    })
 
-    onChange(category);
-  };
+    onChange(category)
+  }
 
   return (
     <Feature
@@ -57,7 +56,7 @@ const CategoryFeature = props => {
         })
       }
     />
-  );
-};
+  )
+}
 
-export default CategoryFeature;
+export default CategoryFeature
