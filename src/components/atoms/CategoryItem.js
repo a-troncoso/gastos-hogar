@@ -5,7 +5,7 @@ import { toCurrencyFormat } from "../../utils/number"
 
 import { FontAwesome } from "@expo/vector-icons"
 import { SimpleLineIcons } from "@expo/vector-icons"
-import Termometer from "./Termometer/Termometer"
+import Termometer from "./Termometer"
 
 import color from "../../utils/styles/color"
 

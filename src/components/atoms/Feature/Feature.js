@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { Fragment } from "react"
 import PropTypes from "prop-types"
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 
@@ -9,25 +9,27 @@ const Feature = props => {
     name,
     value,
     voidValue,
-    onPressFeature,
     editableElement,
     isVisibleEditableElm,
     aditionalValue,
-    isUnsavedFeature
+    isUnsavedFeature,
+    onPressFeature
   } = props
 
   const handlePressFeature = () => {
     onPressFeature()
   }
 
-  const displayedValue = () => {
-    return value || voidValue
-  }
+  const ValueText = () => (
+    <Fragment testID="feature-value-text">{value || voidValue}</Fragment>
+  )
 
   return (
-    <TouchableOpacity onPress={() => handlePressFeature()}>
+    <TouchableOpacity testID="touchable" onPress={handlePressFeature}>
       <View style={[styles.view, isUnsavedFeature && styles.unsaveFeature]}>
-        <Text style={styles.featureName}>{name}</Text>
+        <Text testID="feature-name-text" style={styles.featureName}>
+          {name}
+        </Text>
         <View style={styles.valueView}>
           <Text
             style={[
@@ -35,30 +37,35 @@ const Feature = props => {
               value ? styles.existValue : styles.notExistValue
             ]}
           >
-            {!isVisibleEditableElm && displayedValue()}
+            {!isVisibleEditableElm && <ValueText />}
           </Text>
           {aditionalValue && (
             <Text style={styles.aditionalValueText}>{aditionalValue}</Text>
           )}
         </View>
-        {isVisibleEditableElm && editableElement}
+        {isVisibleEditableElm && (
+          <Fragment testID="editable-elm">{editableElement}</Fragment>
+        )}
       </View>
     </TouchableOpacity>
   )
 }
 
 Feature.defaultProps = {
+  isVisibleEditableElm: false,
   value: "",
   voidValue: "",
+  aditionalValue: false,
   editableElement: <></>,
-  onPressFeature: () => null
+  onPressFeature: () => undefined
 }
 
 Feature.propTypes = {
   name: PropTypes.string.isRequired,
-  isVisibleEditableElm: PropTypes.bool.isRequired,
+  isVisibleEditableElm: PropTypes.bool,
   value: PropTypes.string,
   voidValue: PropTypes.string,
+  aditionalValue: PropTypes.bool,
   editableElement: PropTypes.element,
   onPressFeature: PropTypes.func
 }
@@ -100,7 +107,7 @@ const styles = StyleSheet.create({
     // borderColor: "blue",
     // borderWidth: 1,
     // borderStyle: "solid",
-    fontWeight: "bold",
+    fontWeight: "bold"
     // textTransform: "capitalize"
   },
   aditionalValueText: {

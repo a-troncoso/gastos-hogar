@@ -212,6 +212,56 @@ const ExpenseDetail = props => {
     setFeatureKeys(prev => ({ ...prev, [field]: value }))
   }
 
+  const features = {
+    category: (
+      <CategoryFeature
+        categoryId={featureKeys.categoryId}
+        categoryName={featureDataUI.category}
+        isUnsavedFeature={isUnsavedFeature.category}
+        onChange={category => {
+          saveFeatureKey("category", category.id)
+          saveFeatureIntoUI("category", category.name)
+          onChangeFeature("category")
+        }}
+      />
+    ),
+    date: (
+      <DateFeature
+        date={featureDataUI.date}
+        isUnsavedFeature={isUnsavedFeature.date}
+        onChange={date => {
+          saveFeatureIntoUI("date", date)
+          onChangeFeature("date")
+        }}
+      />
+    ),
+    subcategory: (
+      <SubcategoryFeature
+        subcategoryId={featureKeys.subcategoryId}
+        subcategoryName={featureDataUI.subcategory}
+        isUnsavedFeature={isUnsavedFeature.subcategory}
+        onChange={subcategory => {
+          saveFeatureKey("subcategory", subcategory.id)
+          saveFeatureIntoUI("subcategory", subcategory.name)
+          onChangeFeature("subcategory")
+        }}
+      />
+    ),
+    description: (
+      <DescriptionFeature
+        description={featureDataUI.description}
+        isUnsavedFeature={isUnsavedFeature.description}
+        onChange={({ value }) => {
+          saveFeatureIntoUI("description", value)
+          onChangeFeature("description")
+        }}
+        onChageKeyboardVisibility={e =>
+          setIsFixedBottomAreaVisible(!e.isKeyboardVisible)
+        }
+      />
+    )
+  }
+
   return (
     <View style={styles.mainView}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
@@ -242,45 +292,9 @@ const ExpenseDetail = props => {
               }
             />
             <View style={styles.features}>
-              <CategoryFeature
-                categoryId={featureKeys.categoryId}
-                categoryName={featureDataUI.category}
-                isUnsavedFeature={isUnsavedFeature.category}
-                onChange={category => {
-                  saveFeatureKey("category", category.id)
-                  saveFeatureIntoUI("category", category.name)
-                  onChangeFeature("category")
-                }}
-              />
-              <DateFeature
-                date={featureDataUI.date}
-                isUnsavedFeature={isUnsavedFeature.date}
-                onChange={date => {
-                  saveFeatureIntoUI("date", date)
-                  onChangeFeature("date")
-                }}
-              />
-              <SubcategoryFeature
-                subcategoryId={featureKeys.subcategoryId}
-                subcategoryName={featureDataUI.subcategory}
-                isUnsavedFeature={isUnsavedFeature.subcategory}
-                onChange={subcategory => {
-                  saveFeatureKey("subcategory", subcategory.id)
-                  saveFeatureIntoUI("subcategory", subcategory.name)
-                  onChangeFeature("subcategory")
-                }}
-              />
-              <DescriptionFeature
-                description={featureDataUI.description}
-                isUnsavedFeature={isUnsavedFeature.description}
-                onChange={({ value }) => {
-                  saveFeatureIntoUI("description", value)
-                  onChangeFeature("description")
-                }}
-                onChageKeyboardVisibility={e =>
-                  setIsFixedBottomAreaVisible(!e.isKeyboardVisible)
-                }
-              />
+              {Object.values(features).map(feat => (
+                <>{feat}</>
+              ))}
             </View>
             {isFixedBottomAreaVisible && expenseDetailMode === "NEW_EXPENSE" && (
               <View style={styles.fixedBottomArea}>
