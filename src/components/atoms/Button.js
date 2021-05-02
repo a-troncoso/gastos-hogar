@@ -8,7 +8,7 @@ import {
   Alert
 } from "react-native"
 
-import color from "../../utils/styles/color"
+import color from "../../assets/colors"
 
 const Button = props => {
   const { children, type, onPress } = props

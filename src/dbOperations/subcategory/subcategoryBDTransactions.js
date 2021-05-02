@@ -1,4 +1,4 @@
-import DB from "../../utils/database";
+import DB from "../database";
 import { SUBCATEGORY_QUERIES } from "./subcategoryQueries";
 
 export const fetchAllSubcategories = () => {

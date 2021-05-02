@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableHighlight, Image } from "react-native"
 import EditableAmount from "../../atoms/EditableAmount"
 import ExpenseCamera from "../../atoms/Camera"
 
-import color from "../../../utils/styles/color"
+import color from "../../../assets/colors"
 
 const ExpenseMainFeature = props => {
   const {

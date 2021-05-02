@@ -1,5 +1,5 @@
-import DB from "../utils/database"
-import { MAIN_QUERIES } from "./mainQueries"
+import DB from "../database"
+import { MAIN_QUERIES } from "./appQueries"
 import * as SQLite from "expo-sqlite"
 import * as FileSystem from "expo-file-system"
 

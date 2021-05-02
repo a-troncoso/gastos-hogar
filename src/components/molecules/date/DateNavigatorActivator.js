@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native"
 import DateModalSelector from "../../atoms/DateModalSelector"
 
-import color from "../../../utils/styles/color"
+import color from "../../../assets/colors"
 import { monthName } from "../../../utils/date"
 
 const DayText = () => {

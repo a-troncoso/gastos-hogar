@@ -8,7 +8,7 @@ import DateNavigatorActivator from "../components/molecules/date/DateNavigatorAc
 import { fetchTotalExpensesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
 
 import { currentDate } from "../utils/date"
-import color from "../utils/styles/color"
+import color from "../assets/colors"
 
 const HistoryGate = props => {
   const { navigation } = props

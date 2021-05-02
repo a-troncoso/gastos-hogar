@@ -1,24 +1,22 @@
 import { start } from "./start"
 import React, { useEffect, useState } from "react"
-import { View, StyleSheet, Text } from "react-native"
-import { AppContext } from "./src/state/appContext"
 import {
   createInitialTables,
   insertBasicData,
   selectBasicData,
   selectOldData,
   describeTable
-} from "./src/dbOperations/main"
-import CustomRouter from "./src/router/CustomRouter"
+} from "./src/dbOperations/app/appBDTransactions"
+import Navigation from "./src/navigation"
 import * as SQLite from "expo-sqlite"
 import * as FileSystem from "expo-file-system"
-import alerts from "./src/utils/alerts/Alerts"
-import { useApp } from "./src/hooks/appHook"
+import alerts from "./src/components/atoms/Alerts"
+import AppContext from "./src/state"
+import { initialContext } from "./src/state"
 
 start()
 
 const App = () => {
-  const app = useApp()
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false)
 
   useEffect(() => {
@@ -98,8 +96,8 @@ const App = () => {
 
   return (
     isBasicTablesCreated && (
-      <AppContext.Provider value={app}>
-        <CustomRouter />
+      <AppContext.Provider value={initialContext}>
+        <Navigation />
       </AppContext.Provider>
     )
   )

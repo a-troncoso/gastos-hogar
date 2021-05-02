@@ -10,7 +10,7 @@ import CategoriesList from "../components/molecules/category/CategoriesList"
 
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions"
 
-import color from "../utils/styles/color"
+import color from "../assets/colors"
 
 const Toast = ({ visible, message }) => {
   if (visible) {

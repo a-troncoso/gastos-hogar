@@ -16,7 +16,7 @@ import DateNavigatorActivator from "../components/molecules/date/DateNavigatorAc
 import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
 import { toCurrencyFormat } from "../utils/number"
 import { formatDate } from "../utils/date"
-import color from "../utils/styles/color"
+import color from "../assets/colors"
 
 const PurchaseIcon = props => {
   const { icon } = props

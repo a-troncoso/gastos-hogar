@@ -21,7 +21,7 @@ import CategoryFeature from "../components/molecules/category/CategoryFeature"
 import DateFeature from "../components/molecules/date/DateFeature"
 import SubcategoryFeature from "../components/molecules/subcategory/SubcategoryFeature"
 import DescriptionFeature from "../components/molecules/description/DescriptionFeature"
-import ExpenseMainFeature from "../components/molecules/feature/ExpenseMainFeature"
+import ExpenseMainFeature from "../components/molecules/expense/ExpenseMainFeature"
 
 import {
   fetchPurchaseById,
@@ -31,8 +31,8 @@ import {
 import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions"
 
 import { EXPENSE_DETAIL_MODES } from "../domain/expense/expenseDetailModes"
-import color from "../utils/styles/color"
-import alerts from "../utils/alerts/Alerts"
+import color from "../assets/colors"
+import alerts from "../components/atoms/Alerts"
 
 const Toast = memo(({ visible, message }) => {
   if (visible) {

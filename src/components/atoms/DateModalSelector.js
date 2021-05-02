@@ -4,7 +4,7 @@ import Modal from "react-native-modal"
 import Button from "./Button"
 import DateRoller from "../molecules/date/DateRoller"
 
-import color from "../../utils/styles/color"
+import color from "../../assets/colors"
 
 const DateModalSelector = props => {
   const { date, mode, isModalVisible, onChange, onBackdropPress } = props

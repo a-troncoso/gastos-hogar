@@ -1,4 +1,4 @@
-import DB from "../../utils/database";
+import DB from "../database";
 import { DESCRIPTION_QUERIES } from "./descriptionQueries";
 
 

@@ -16,8 +16,8 @@ import * as MediaLibrary from "expo-media-library"
 import * as FileSystem from "expo-file-system"
 import { Octicons } from "@expo/vector-icons"
 
-import alerts from "../utils/alerts/Alerts"
-import color from "../utils/styles/color"
+import alerts from "../components/atoms/Alerts"
+import color from "../assets/colors"
 
 const PurchaseImage = props => {
   const { uri, onRemoveImage } = props

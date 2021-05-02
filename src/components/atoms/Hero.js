@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { StyleSheet, View } from "react-native"
 
-import color from "../../utils/styles/color"
+import color from "../../assets/colors"
 
 const Hero = props => {
   const { childStyles, central, button } = props

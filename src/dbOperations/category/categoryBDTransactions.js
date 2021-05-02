@@ -1,5 +1,11 @@
-import DB from "../../utils/database"
+import DB from "../database"
 import { CATEGORY_QUERIES } from "./categoryQueries"
+import { connectDB } from "../database"
+
+const inEnv = "db.GastosHogar"
+
+const connectedDB = connectDB({ engine: "slqlite", name: inEnv })
+console.log({ connectedDB })
 
 export const fetchAllCategories = () => {
   return new Promise(resolve => {

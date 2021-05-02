@@ -1,5 +1,5 @@
-import React from "react"
-import { View } from "react-native"
+import React, { useContext } from "react"
+import { View, Text } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
 import {
@@ -18,9 +18,10 @@ import CategoriesAdminGate from "../pages/CategoriesAdminGate"
 import DashbhoardGate from "../pages/DashbhoardGate"
 import CategoryDetail from "../pages/CategoryDetail"
 
-import ScreenNames from "../domain/router/screenNames"
+import ScreenNames from "./screenNames"
 import { EXPENSE_DETAIL_MODES } from "../domain/expense/expenseDetailModes"
-import color from "../utils/styles/color"
+import color from "../assets/colors"
+import AppContext from "../state"
 
 const RootStack = createStackNavigator()
 const RegistryExpenseStack = createStackNavigator()
@@ -45,7 +46,9 @@ const screenOptionsBase = navigation => ({
   headerRight: () => <View></View>
 })
 
-const CustomRouter = () => {
+const Navigation = () => {
+  const appContext = useContext(AppContext)
+
   const RootStackScreenNavigator = () => {
     return (
       <RootStack.Navigator>
@@ -61,7 +64,7 @@ const CustomRouter = () => {
   const MainStackScreenNavigator = () => {
     return (
       <Drawer.Navigator
-        initialRouteName="RegistryExpense"
+        initialRouteName={ScreenNames.MainStackScreenNavigator.RegistryExpense}
         drawerContent={props => <DrawerContent {...props} />}
       >
         <Drawer.Screen
@@ -91,6 +94,7 @@ const CustomRouter = () => {
   const DrawerContent = props => {
     return (
       <DrawerContentScrollView {...props}>
+        <Text>Estoy loggeado como: {appContext.userContext.logged.name.capitalize()}</Text>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
     )
@@ -206,4 +210,4 @@ const CustomRouter = () => {
   )
 }
 
-export default CustomRouter
+export default Navigation

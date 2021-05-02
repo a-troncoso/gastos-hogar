@@ -2,7 +2,7 @@ import React, { Fragment } from "react"
 import PropTypes from "prop-types"
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 
-import color from "../../../utils/styles/color"
+import color from "../../../assets/colors"
 
 const Feature = props => {
   const {

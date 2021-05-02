@@ -4,7 +4,7 @@ import ScrollPicker from "react-native-wheel-scrollview-picker"
 
 import { daysInMonth, monthNames, availableYears } from "../../../utils/date"
 
-import color from "../../../utils/styles/color"
+import color from "../../../assets/colors"
 
 const DateRoller = props => {
   const { date, mode = "DAY", onChange } = props

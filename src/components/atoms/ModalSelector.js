@@ -10,7 +10,7 @@ import {
 import Modal from "react-native-modal"
 import renderSeparator from "../../components/atoms/Separator"
 
-import color from "../../utils/styles/color"
+import color from "../../assets/colors"
 
 const ModalSelector = props => {
   const { items, isModalVisible, onBackdropPress, onChange } = props

@@ -1,4 +1,4 @@
-import DB from "../../utils/database"
+import DB from "../database"
 import { EXPENSE_QUERIES } from "./purchaseQueries"
 import { formattedMonthNumber } from "../../utils/date"
 import { fetchCategoryById } from "../category/categoryBDTransactions"

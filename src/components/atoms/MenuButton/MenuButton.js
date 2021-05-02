@@ -4,7 +4,7 @@ import { DrawerActions } from "@react-navigation/native"
 
 import { Feather } from "@expo/vector-icons"
 
-import color from "../../../utils/styles/color"
+import color from "../../../assets/colors"
 
 const MenuButton = props => {
   const { navigation } = props

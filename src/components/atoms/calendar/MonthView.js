@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { StyleSheet, View } from "react-native";
-import Row from "../../../components/atoms/Row";
+import Row from "../Row";
 
 const MonthView = props => {
   const DaysTable = props => {

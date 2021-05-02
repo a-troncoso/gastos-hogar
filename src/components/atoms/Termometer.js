@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { StyleSheet, View, Text } from "react-native"
 
-import color from "../../utils/styles/color"
+import color from "../../assets/colors"
 
 const Termometer = ({ maxValue, value }) => {
   const [temperature, setTemperature] = useState({
