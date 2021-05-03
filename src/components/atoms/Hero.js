@@ -40,6 +40,9 @@ const styles = StyleSheet.create({
     backgroundColor: color.blue["50"]
   },
   withCentral: {
+    // borderColor: "blue",
+    // borderWidth: 1,
+    // borderStyle: "solid",
     // height: 112
   },
   withButton: {

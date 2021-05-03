@@ -38,6 +38,28 @@ export const fetchCategoryById = categoryId => {
   })
 }
 
+export const updateCategory = (
+  categoryId,
+  { name, maxAmountPerMonth, imagePath }
+) => {
+  return new Promise((resolve, reject) => {
+    connectedDB.transaction(tx => {
+      tx.executeSql(
+        CATEGORY_QUERIES.UPDATE_CATEGORY,
+        [name, maxAmountPerMonth, imagePath, categoryId],
+        (_, s) => {
+          console.log({ s })
+          resolve(s)
+        },
+        (_, error) => {
+          console.log({ error })
+          reject(error)
+        }
+      )
+    })
+  })
+}
+
 export const patchCategoryName = (categoryId, categoryName) => {
   return new Promise(resolve => {
     connectedDB.transaction(tx => {
@@ -72,14 +94,14 @@ export const removeCategory = categoryId => {
   })
 }
 
-export const addCategory = (name, imagePath, maxAmountPerMonth) => {
+export const insertCategory = ({ name, imagePath, maxAmountPerMonth }) => {
   return new Promise(resolve => {
     connectedDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.ADD_CATEGORY,
         [name, imagePath, maxAmountPerMonth],
-        () => {
-          resolve("OK")
+        (_, result) => {
+          resolve(result)
         },
         error => {
           console.error("Error adding ADD_CATEGORY: ", error)

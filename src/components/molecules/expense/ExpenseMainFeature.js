@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   unsaveFeature: {
     borderWidth: 1,
     borderStyle: "solid",
-    borderColor: color.blue["20"]
+    borderColor: color.yellow["30"]
   },
   expenseCameraView: {
     // borderColor: "red",

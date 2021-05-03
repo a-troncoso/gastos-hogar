@@ -16,6 +16,8 @@ import DateNavigatorActivator from "../components/molecules/date/DateNavigatorAc
 import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
 import { toCurrencyFormat } from "../utils/number"
 import { formatDate } from "../utils/date"
+
+import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions"
 import color from "../assets/colors"
 
 const PurchaseIcon = props => {
@@ -107,6 +109,9 @@ const Expenses = props => {
 
   const [purchases, setPurchases] = useState([])
   const [dateSelected, setDateSelected] = useState(date)
+  const [category, setCategory] = useState({
+    name: ""
+  })
 
   useFocusEffect(
     useCallback(() => {
@@ -114,9 +119,26 @@ const Expenses = props => {
     }, [])
   )
 
+  // useEffect(() => {
+  //   navigation.setOptions({ title: "Updated!" })
+  // }, [])
+
+  useEffect(() => {
+    fetchCategoryDetail(categoryId)
+  }, [categoryId])
+
   useEffect(() => {
     fetchPurchases(dateSelected, mode, categoryId)
   }, [dateSelected])
+
+  const fetchCategoryDetail = async categoryId => {
+    const categoryDetail = await fetchCategoryById(categoryId)
+
+    setCategory(prev => ({
+      ...prev,
+      name: categoryDetail.name
+    }))
+  }
 
   const fetchPurchases = async (date, mode, categoryId) => {
     const purchases = await fetchPurchasesByCategory({ date, mode, categoryId })
@@ -136,6 +158,21 @@ const Expenses = props => {
 
   return (
     <View style={styles.purchases}>
+      <Text
+        style={{
+          paddingBottom: 8,
+          backgroundColor: color.blue["50"],
+          textAlign: "center",
+          fontSize: 16,
+          fontWeight: "500",
+          lineHeight: 16
+          // borderColor: "blue",
+          // borderWidth: 1,
+          // borderStyle: "solid"
+        }}
+      >
+        {category.name}
+      </Text>
       <Hero
         childStyles={styles.hero}
         button={

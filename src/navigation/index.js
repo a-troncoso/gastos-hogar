@@ -94,7 +94,9 @@ const Navigation = () => {
   const DrawerContent = props => {
     return (
       <DrawerContentScrollView {...props}>
-        <Text>Estoy loggeado como: {appContext.userContext.logged.name.capitalize()}</Text>
+        <Text>
+          Estoy loggeado como: {appContext.userContext.logged.name.capitalize()}
+        </Text>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
     )
@@ -197,7 +199,10 @@ const Navigation = () => {
             ScreenNames.CategoryManagementStackScreenNavigator.CategoryDetail
           }
           component={CategoryDetail}
-          options={{ ...screenOptionsBase, title: "Detalle de la categoría" }}
+          options={({ navigation }) => ({
+            ...screenOptionsBase(navigation),
+            title: "Detalle de la categoría"
+          })}
         />
       </CategoryManagementStack.Navigator>
     )

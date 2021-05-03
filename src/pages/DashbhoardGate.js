@@ -128,7 +128,6 @@ const DashbhoardGate = () => {
       });
       setTotalAmount(totalAmountInfo.totalAmount);
     } catch (err) {
-      console.err(err);
       alerts.throwErrorAlert("calcular el monto total", JSON.stringify(err));
     }
   };

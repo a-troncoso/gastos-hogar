@@ -13,6 +13,7 @@ const Feature = props => {
     isVisibleEditableElm,
     aditionalValue,
     isUnsavedFeature,
+    prefix,
     onPressFeature
   } = props
 
@@ -20,9 +21,7 @@ const Feature = props => {
     onPressFeature()
   }
 
-  const ValueText = () => (
-    <Fragment>{value || voidValue}</Fragment>
-  )
+  const ValueText = () => <Fragment>{value || voidValue}</Fragment>
 
   return (
     <TouchableOpacity testID="touchable" onPress={handlePressFeature}>
@@ -31,6 +30,11 @@ const Feature = props => {
           {name}
         </Text>
         <View style={styles.valueView}>
+          {prefix && (
+            <Text style={{ ...styles.featureName, paddingRight: 5 }}>
+              {prefix}
+            </Text>
+          )}
           <Text
             style={[
               styles.featureValue,
@@ -44,7 +48,7 @@ const Feature = props => {
           )}
         </View>
         {isVisibleEditableElm && (
-          <Fragment testID="editable-elm">{editableElement}</Fragment>
+          <Fragment>{editableElement}</Fragment>
         )}
       </View>
     </TouchableOpacity>
@@ -84,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.gray["0"]
   },
   unsaveFeature: {
-    borderColor: color.blue["20"]
+    borderColor: color.yellow["30"]
   },
   valueView: {
     // borderColor: "blue",

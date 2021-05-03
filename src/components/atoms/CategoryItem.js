@@ -1,42 +1,18 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
-import { toCurrencyFormat } from "../../utils/number"
-
-import { FontAwesome } from "@expo/vector-icons"
 import { SimpleLineIcons } from "@expo/vector-icons"
 import Termometer from "./Termometer"
+import CategoryIcon from './CategoryIcon/CategoryIcon'
 
 import color from "../../assets/colors"
-
-const CategoryIcon = props => {
-  const { icon } = props
-
-  return (
-    <View style={categoryIconStyles.categoryIcon}>
-      <FontAwesome name={icon} size={36} color={color.gray["0"]} />
-    </View>
-  )
-}
-
-const categoryIconStyles = StyleSheet.create({
-  categoryIcon: {
-    height: "100%",
-    width: 72,
-    maxHeight: 72,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 16,
-    backgroundColor: color.blue["0"]
-  }
-})
 
 const CategoryItem = props => {
   const { name, extraInfo, onPress } = props
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.category}>
-      <CategoryIcon icon="shopping-cart" />
+      <CategoryIcon iconName="shopping-cart" />
       <View style={styles.rightSection}>
         <View style={styles.name}>
           <Text style={styles.categoryCategoryName}>{name}</Text>

@@ -26,15 +26,15 @@ const red = {
 
 const yellow = {
   0: "#FFAE00",
-  10: "",
-  20: "",
-  30: "",
-  40: "",
-  50: "",
-  60: "",
-  70: "",
-  80: "",
-  90: ""
+  10: "#FFBC2A",
+  20: "#FFCC5D",
+  30: "#FFDA89",
+  40: "#FFE5AB",
+  50: "#FFEDC6",
+  60: "#FFF3D9",
+  70: "#FFF7E7",
+  80: "#FFFAEF",
+  90: "#FFFCF4"
 }
 
 const green = {

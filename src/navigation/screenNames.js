@@ -1,3 +1,21 @@
+export const screenNames = {
+  Main: "Main",
+  Dashboard: "Dashboard",
+  RegistryExpense: "RegistryExpense",
+  Summary: "Summary",
+  CategoryManagement: "CategoryManagement",
+  DashbhoardGate: "DashbhoardGate",
+  ExpenseCategoryGate: "ExpenseCategoryGate",
+  ExpenseDetail: "ExpenseDetail",
+  Scan: "Scan",
+  HistoryGate: "HistoryGate",
+  Expenses: "Expenses",
+  ExpenseDetail: "ExpenseDetail",
+  Scan: "Scan",
+  CategoriesAdminGate: "CategoriesAdminGate",
+  CategoryDetail: "CategoryDetail"
+}
+
 const RootStackScreenNavigator = { Main: "Main" }
 
 const MainStackScreenNavigator = {

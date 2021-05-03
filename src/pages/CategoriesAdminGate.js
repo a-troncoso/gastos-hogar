@@ -2,12 +2,13 @@ import React, { useState, useCallback } from "react"
 import { StyleSheet, View, SafeAreaView, Text } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
 
-
 import CategoriesList from "../components/molecules/category/CategoriesList"
 import Button from "../components/atoms/Button"
 
 import { CATEGORY_DETAIL_MODES } from "../domain/category/categoryDetailModes"
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions"
+
+import screenNames from "../navigation/screenNames"
 
 const CategoriesAdminGate = props => {
   const { navigation } = props
@@ -26,16 +27,26 @@ const CategoriesAdminGate = props => {
   }
 
   const handlePressCategory = id => {
-    navigation.navigate("CategoryDetail", {
-      categoryId: id
+    pushCategoryDetailScreen({
+      categoryId: id,
+      mode: CATEGORY_DETAIL_MODES.EXISTING_CATEGORY
     })
   }
 
   const handlePressAddCategory = () => {
-    navigation.navigate("CategoryDetail", {
-      categoryId: null,
+    pushCategoryDetailScreen({
       mode: CATEGORY_DETAIL_MODES.NEW_CATEGORY
     })
+  }
+
+  const pushCategoryDetailScreen = ({
+    categoryId,
+    mode = CATEGORY_DETAIL_MODES.NEW_CATEGORY
+  }) => {
+    navigation.push(
+      screenNames.CategoryManagementStackScreenNavigator.CategoryDetail,
+      { categoryId, mode }
+    )
   }
 
   return (
@@ -68,14 +79,15 @@ const styles = StyleSheet.create({
   categoriesListView: {
     flex: 1,
     alignSelf: "stretch",
+    // paddingTop: 16,
     paddingHorizontal: 16
   },
   fixedBottomArea: {
     // borderColor: "red",
     // borderWidth: 1,
     // borderStyle: "solid",
-    paddingHorizontal: 16,
-    paddingBottom: 16
+    paddingVertical: 16,
+    paddingHorizontal: 16
   },
   mainBtnText: {
     fontWeight: "bold"

@@ -189,14 +189,13 @@ const ExpenseDetail = () => {
   const handlePressCamera = () => {
     navigation.push("Scan", {
       savePictures: pictures => {
-        console.log("pictures", pictures)
         saveFeatureIntoUI("pictures", pictures)
       },
       pictures: featureDataUI.pictures
     })
   }
 
-  const onChangeFeature = (field, value) => {
+  const onChangeFeature = (field) => {
     if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
       setIsUnsavedFeature(prev => ({
         ...prev,

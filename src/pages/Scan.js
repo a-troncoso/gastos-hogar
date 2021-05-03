@@ -163,7 +163,6 @@ const Scan = props => {
   }
 
   const handlePressNavigateNext = async () => {
-    console.log("pictures SCAN", pictures)
     // We're executing callback function passed as route params
     routeParams.savePictures(pictures)
     navigation.navigate("ExpenseDetail")
