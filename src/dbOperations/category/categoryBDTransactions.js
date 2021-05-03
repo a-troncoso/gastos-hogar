@@ -1,15 +1,12 @@
-import DB from "../database"
 import { CATEGORY_QUERIES } from "./categoryQueries"
-import { connectDB } from "../database"
+import { connectDB } from "../../dbOperations"
 
-const inEnv = "db.GastosHogar"
-
-const connectedDB = connectDB({ engine: "slqlite", name: inEnv })
-console.log({ connectedDB })
+const dbName = "db.GastosHogar"
+const connectedDB = connectDB({ engine: "sqlite", name: dbName })
 
 export const fetchAllCategories = () => {
   return new Promise(resolve => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.SELECT_ALL_CATEGORIES,
         [],
@@ -26,7 +23,7 @@ export const fetchAllCategories = () => {
 
 export const fetchCategoryById = categoryId => {
   return new Promise(resolve => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.SELECT_CATEGORY_BY_ID,
         [categoryId],
@@ -43,7 +40,7 @@ export const fetchCategoryById = categoryId => {
 
 export const patchCategoryName = (categoryId, categoryName) => {
   return new Promise(resolve => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.UPDATE_CATEGORY,
         [categoryName.toString().toLowerCase(), categoryId],
@@ -60,7 +57,7 @@ export const patchCategoryName = (categoryId, categoryName) => {
 
 export const removeCategory = categoryId => {
   return new Promise(resolve => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.REMOVE_CATEGORY,
         [categoryId],
@@ -77,7 +74,7 @@ export const removeCategory = categoryId => {
 
 export const addCategory = (name, imagePath, maxAmountPerMonth) => {
   return new Promise(resolve => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.ADD_CATEGORY,
         [name, imagePath, maxAmountPerMonth],

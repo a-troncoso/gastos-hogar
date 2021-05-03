@@ -1,11 +1,14 @@
-import DB from "../database"
 import { MAIN_QUERIES } from "./appQueries"
 import * as SQLite from "expo-sqlite"
 import * as FileSystem from "expo-file-system"
+import { connectDB } from "../../dbOperations"
+
+const dbName = "db.GastosHogar"
+const connectedDB = connectDB({ engine: "sqlite", name: dbName })
 
 const _createUserTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         opts && opts.overrideTable
           ? MAIN_QUERIES.OVERRIDE_TABLE_USER
@@ -24,7 +27,7 @@ const _createUserTable = ({ ...opts }) => {
 
 const _createExpenseTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         opts && opts.overrideTable
           ? MAIN_QUERIES.OVERRIDE_TABLE_EXPENSE
@@ -43,7 +46,7 @@ const _createExpenseTable = ({ ...opts }) => {
 
 const _createCategoryTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         opts && opts.overrideTable
           ? MAIN_QUERIES.OVERRIDE_TABLE_CATEGORY
@@ -62,7 +65,7 @@ const _createCategoryTable = ({ ...opts }) => {
 
 const _createSubcategoryTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         opts && opts.overrideTable
           ? MAIN_QUERIES.OVERRIDE_TABLE_SUBCATEGORY
@@ -81,7 +84,7 @@ const _createSubcategoryTable = ({ ...opts }) => {
 
 const _createPurchaseImageTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         opts && opts.overrideTable
           ? MAIN_QUERIES.OVERRIDE_TABLE_PURCHASE_IMAGE
@@ -129,7 +132,7 @@ export const insertBasicData = () => {
   ]
 
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       querysInsert.forEach(query => {
         tx.executeSql(
           query,
@@ -146,7 +149,7 @@ export const selectBasicData = table => {
   const querys = [`SELECT * FROM ${table};`]
 
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         querys[0],
         [],
@@ -161,7 +164,7 @@ export const describeTable = table => {
   const querys = [`pragma table_info(${table});`]
 
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         querys[0],
         [],
@@ -181,7 +184,7 @@ export const selectOldData = table => {
   const querys = [`SELECT * FROM ${table};`]
 
   return new Promise((resolve, reject) => {
-    OLD_DB.transaction(tx => {
+    OLD_connectedDB.transaction(tx => {
       tx.executeSql(
         querys[0],
         [],

@@ -1,8 +1,11 @@
-import DB from "../database"
 import { EXPENSE_QUERIES } from "./purchaseQueries"
 import { formattedMonthNumber } from "../../utils/date"
 import { fetchCategoryById } from "../category/categoryBDTransactions"
 import { fetchSubcategoryById } from "../subcategory/subcategoryBDTransactions"
+import { connectDB } from "../../dbOperations"
+
+const dbName = "db.GastosHogar"
+const connectedDB = connectDB({ engine: "sqlite", name: dbName })
 
 export const insertExpense = (
   pictures,
@@ -14,7 +17,7 @@ export const insertExpense = (
   userId
 ) => {
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES.INSERT_EXPENSE,
         [categoryId, subcategoryId, amount, description, date, userId],
@@ -49,7 +52,7 @@ const insertExpenseImages = (expenseId, pictures) => {
   const variables = pictures.map(p => [expenseId, p]).flat()
 
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES.INSERT_EXPENSE_IMAGES(pictures),
         [...variables],
@@ -74,7 +77,7 @@ export const fetchTotalExpensesByCategory = ({ date, mode }) => {
   })
 
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES.SELECT_TOTAL_EXPENSES_BY_CATEGORY,
         [
@@ -112,7 +115,7 @@ export const fetchPurchasesByCategory = ({ date, mode, categoryId }) => {
   })
 
   return new Promise(resolve => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES.SELECT_EXPENSES_BY_CATEGORY,
         [
@@ -134,7 +137,7 @@ export const fetchPurchasesByCategory = ({ date, mode, categoryId }) => {
 
 export const fetchPurchaseById = purchaseId => {
   return new Promise(resolve => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES.SELECT_EXPENSE_BY_ID,
         [purchaseId],
@@ -186,7 +189,7 @@ export const updateExpense = (
   { pictures, categoryId, subcategoryId, amount, description, date, userId }
 ) => {
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES.UPDATE_EXPENSE,
         [
@@ -212,7 +215,7 @@ export const updateExpense = (
 
 export const patchPurchaseAmount = (purchaseId, amount) => {
   return new Promise(resolve => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES.UPDATE_PURCHASE_AMOUNT,
         [parseInt(amount, 10), purchaseId],
@@ -229,7 +232,7 @@ export const patchPurchaseAmount = (purchaseId, amount) => {
 
 export const patchPurchaseCategory = (purchaseId, categoryId) => {
   return new Promise(resolve => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES.UPDATE_PURCHASE_CATEGORY,
         [categoryId, purchaseId],
@@ -262,7 +265,7 @@ export const fetchTotalAmountByDateCriteria = ({ ...dateOptions }) => {
   }
 
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES[queryStatementByDateMode[dateOptions.mode]],
         params[dateOptions.mode],
@@ -298,7 +301,7 @@ export const fetchTotalAmountByDateCriteriaPerCategory = ({
   }
 
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES[queryStatementByDateMode[dateOptions.mode]],
         params[dateOptions.mode],
@@ -335,7 +338,7 @@ export const fetchAmountsByDateCriteria = ({ ...dateOptions }) => {
     })
 
   return new Promise((resolve, reject) => {
-    DB.transaction(tx => {
+    connectedDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES[queryStatementByDateMode[dateOptions.mode]],
         params[dateOptions.mode],
