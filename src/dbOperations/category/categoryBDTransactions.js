@@ -48,11 +48,9 @@ export const updateCategory = (
         CATEGORY_QUERIES.UPDATE_CATEGORY,
         [name, maxAmountPerMonth, imagePath, categoryId],
         (_, s) => {
-          console.log({ s })
           resolve(s)
         },
         (_, error) => {
-          console.log({ error })
           reject(error)
         }
       )
