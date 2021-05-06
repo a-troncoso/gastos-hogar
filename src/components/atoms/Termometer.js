@@ -10,6 +10,10 @@ const Termometer = ({ maxValue, value }) => {
     overValue: 0
   })
 
+  useEffect(() => {
+    getTermometerStyles()
+  }, [value])
+
   const termConfig = [
     {
       min: 0,
@@ -42,10 +46,6 @@ const Termometer = ({ maxValue, value }) => {
       color: config ? config.color : "red"
     }))
   }
-
-  useEffect(() => {
-    getTermometerStyles()
-  }, [])
 
   return (
     <View style={termometerStyles.termometer}>

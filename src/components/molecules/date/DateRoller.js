@@ -63,6 +63,7 @@ const DateRoller = props => {
           handleChangeScrollPicker("month", selectedIndex)
         }}
         selectedIndex={indexInScroll("month", monthsDataSource)}
+        onPress={()=> undefined}
       />
       <ScrollPicker
         {...scrollPickerProps}
@@ -71,6 +72,7 @@ const DateRoller = props => {
           handleChangeScrollPicker("year", data)
         }}
         selectedIndex={indexInScroll("year", yearsDataSource)}
+        onPress={()=> undefined}
       />
     </View>
   )

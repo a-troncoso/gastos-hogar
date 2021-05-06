@@ -109,9 +109,7 @@ const Expenses = props => {
 
   const [purchases, setPurchases] = useState([])
   const [dateSelected, setDateSelected] = useState(date)
-  const [category, setCategory] = useState({
-    name: ""
-  })
+  const [category, setCategory] = useState({ name: "" })
 
   useFocusEffect(
     useCallback(() => {
@@ -163,9 +161,9 @@ const Expenses = props => {
           paddingBottom: 8,
           backgroundColor: color.blue["50"],
           textAlign: "center",
-          fontSize: 16,
-          fontWeight: "500",
-          lineHeight: 16
+          fontSize: 18,
+          fontWeight: "bold",
+          lineHeight: 18,
           // borderColor: "blue",
           // borderWidth: 1,
           // borderStyle: "solid"

@@ -15,13 +15,13 @@ import ScanExpense from "../pages/Scan"
 import HistoryGate from "../pages/HistoryGate"
 import Expenses from "../pages/Expenses"
 import CategoriesAdminGate from "../pages/CategoriesAdminGate"
-import DashbhoardGate from "../pages/DashbhoardGate"
+// import DashbhoardGate from "../pages/DashbhoardGate"
 import CategoryDetail from "../pages/CategoryDetail"
 
 import ScreenNames from "./screenNames"
 import { EXPENSE_DETAIL_MODES } from "../domain/expense/expenseDetailModes"
 import color from "../assets/colors"
-import AppContext from "../state"
+// import AppContext from "../state"
 
 const RootStack = createStackNavigator()
 const RegistryExpenseStack = createStackNavigator()
@@ -47,7 +47,7 @@ const screenOptionsBase = navigation => ({
 })
 
 const Navigation = () => {
-  const appContext = useContext(AppContext)
+  // const appContext = useContext(AppContext)
 
   const RootStackScreenNavigator = () => {
     return (
@@ -67,11 +67,11 @@ const Navigation = () => {
         initialRouteName={ScreenNames.MainStackScreenNavigator.RegistryExpense}
         drawerContent={props => <DrawerContent {...props} />}
       >
-        <Drawer.Screen
+        {/* <Drawer.Screen
           name={ScreenNames.MainStackScreenNavigator.Dashboard}
           component={DashboardStackScreenNavigator}
           options={{ title: "Dashboard" }}
-        />
+        /> */}
         <Drawer.Screen
           name={ScreenNames.MainStackScreenNavigator.RegistryExpense}
           component={RegistryExpenseStackNavigator}
@@ -94,25 +94,26 @@ const Navigation = () => {
   const DrawerContent = props => {
     return (
       <DrawerContentScrollView {...props}>
-        <Text>
+        {/* TODO: Next feature: Add login */}
+        {/* <Text>
           Estoy loggeado como: {appContext.userContext.logged.name.capitalize()}
-        </Text>
+        </Text> */}
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
     )
   }
 
-  const DashboardStackScreenNavigator = () => {
-    return (
-      <DashboardStack.Navigator>
-        <DashboardStack.Screen
-          name={ScreenNames.DashboardStackScreenNavigator.DashbhoardGate}
-          component={DashbhoardGate}
-          options={{ ...screenOptionsBase, title: "Dashboard" }}
-        />
-      </DashboardStack.Navigator>
-    )
-  }
+  // const DashboardStackScreenNavigator = () => {
+  //   return (
+  //     <DashboardStack.Navigator>
+  //       <DashboardStack.Screen
+  //         name={ScreenNames.DashboardStackScreenNavigator.DashbhoardGate}
+  //         component={DashbhoardGate}
+  //         options={{ ...screenOptionsBase, title: "Dashboard" }}
+  //       />
+  //     </DashboardStack.Navigator>
+  //   )
+  // }
 
   const RegistryExpenseStackNavigator = () => {
     return (
@@ -122,7 +123,7 @@ const Navigation = () => {
           component={ExpenseCategoryGate}
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
-            title: "Categoría del egreso"
+            title: "Registrar egreso"
           })}
         />
         <RegistryExpenseStack.Screen
@@ -130,7 +131,7 @@ const Navigation = () => {
           component={ExpenseDetail}
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
-            title: "Registro de egreso"
+            title: "Detalles de egreso"
           })}
           initialParams={{ mode: EXPENSE_DETAIL_MODES.NEW_EXPENSE }}
         />

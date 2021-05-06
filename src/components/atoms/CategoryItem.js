@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
 import { SimpleLineIcons } from "@expo/vector-icons"
 import Termometer from "./Termometer"
-import CategoryIcon from './CategoryIcon/CategoryIcon'
+import CategoryIcon from "./CategoryIcon/CategoryIcon"
 
 import color from "../../assets/colors"
 
