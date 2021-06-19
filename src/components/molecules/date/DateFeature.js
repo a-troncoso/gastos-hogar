@@ -20,7 +20,6 @@ const DateFeature = props => {
     <Feature
       name="fecha"
       value={formatDate(date, { withMonthName: true })}
-      aditionalValue={formatHour(date, { withMonthName: true })}
       voidValue="sin registrar"
       isVisibleEditableElm={isEditableElementVisible}
       editableElement={

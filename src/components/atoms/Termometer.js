@@ -33,7 +33,7 @@ const Termometer = ({ maxValue, value }) => {
   ]
 
   const getTermometerStyles = () => {
-    const percentage = (value * 100) / maxValue
+    const percentage = ((value * 100) / maxValue).toFixed()
 
     const config = termConfig.find(
       ({ min, max }) => min <= percentage && max >= percentage

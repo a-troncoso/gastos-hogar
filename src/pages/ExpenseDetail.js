@@ -1,4 +1,10 @@
-import React, { memo, useState, useCallback, useEffect } from "react"
+import React, {
+  memo,
+  useState,
+  useCallback,
+  useEffect,
+  useLayoutEffect
+} from "react"
 import {
   StyleSheet,
   View,
@@ -14,6 +20,7 @@ import {
   useNavigation,
   useRoute
 } from "@react-navigation/native"
+import shortid from "shortid"
 
 import Hero from "../components/atoms/Hero"
 import Button from "../components/atoms/Button"
@@ -22,6 +29,7 @@ import DateFeature from "../components/molecules/date/DateFeature"
 import SubcategoryFeature from "../components/molecules/subcategory/SubcategoryFeature"
 import DescriptionFeature from "../components/molecules/description/DescriptionFeature"
 import ExpenseMainFeature from "../components/molecules/expense/ExpenseMainFeature"
+import Picker from "../components/atoms/Picker"
 
 import {
   fetchPurchaseById,
@@ -29,10 +37,20 @@ import {
   updateExpense
 } from "../dbOperations/purchase/purchaseBDTransactions"
 import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions"
+import apiDomain from "../utils/apiDomain"
 
 import { EXPENSE_DETAIL_MODES } from "../domain/expense/expenseDetailModes"
 import color from "../assets/colors"
 import alerts from "../components/atoms/Alerts"
+
+const unsavedFeaturesInitial = {
+  pictures: false,
+  category: false,
+  subcategory: false,
+  date: false,
+  amount: false,
+  description: false
+}
 
 const Toast = memo(({ visible, message }) => {
   if (visible) {
@@ -45,15 +63,11 @@ const Toast = memo(({ visible, message }) => {
 const ExpenseDetail = () => {
   const navigation = useNavigation()
   const route = useRoute()
+  const apiExpense = apiDomain("expense")
   const { params: routeParams } = route
   const expenseDetailMode = routeParams.mode || EXPENSE_DETAIL_MODES.NEW_EXPENSE
   const [isUnsavedFeature, setIsUnsavedFeature] = useState({
-    pictures: false,
-    category: false,
-    subcategory: false,
-    date: false,
-    amount: false,
-    description: false
+    ...unsavedFeaturesInitial
   })
   const [isExpenseInserted, setIsExpenseInserted] = useState(false)
   const [isExpenseUpdated, setIsExpenseUpdated] = useState(false)
@@ -74,6 +88,15 @@ const ExpenseDetail = () => {
     description: "",
     date: null
   })
+
+  useLayoutEffect(() => {
+    if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
+      navigation.setOptions({
+        headerRight: () => (
+          <Picker onPressItem={() => deleteExpense(expenseId)} />
+        )
+      })
+  }, [navigation])
 
   useFocusEffect(
     useCallback(() => {
@@ -158,15 +181,7 @@ const ExpenseDetail = () => {
         userId: 1
       })
       if (updateResult.rowsAffected) {
-        setIsUnsavedFeature(prev => ({
-          ...prev,
-          pictures: false,
-          category: false,
-          subcategory: false,
-          date: false,
-          amount: false,
-          description: false
-        }))
+        setIsUnsavedFeature({ ...unsavedFeaturesInitial })
         setIsExpenseUpdated(true)
       }
     } catch (err) {
@@ -174,12 +189,17 @@ const ExpenseDetail = () => {
     }
   }
 
-  const handlePressSaveButton = () => {
-    saveExpense()
+  const deleteExpense = async id => {
+    try {
+      await apiExpense.remove(id)
+      navigation.goBack()
+    } catch (error) {
+      alerts.throwErrorAlert("eliminar egreso", JSON.stringify(err))
+    }
   }
 
-  const handlePressDeleteButton = () => {
-    // deleteExpense()
+  const handlePressSaveButton = () => {
+    saveExpense()
   }
 
   const handlePressSaveChangesButton = () => {
@@ -195,7 +215,7 @@ const ExpenseDetail = () => {
     })
   }
 
-  const onChangeFeature = (field) => {
+  const onChangeFeature = field => {
     if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
       setIsUnsavedFeature(prev => ({
         ...prev,
@@ -214,6 +234,7 @@ const ExpenseDetail = () => {
   const features = {
     category: (
       <CategoryFeature
+        key={shortid.generate()}
         categoryId={featureKeys.categoryId}
         categoryName={featureDataUI.category}
         isUnsavedFeature={isUnsavedFeature.category}
@@ -226,6 +247,7 @@ const ExpenseDetail = () => {
     ),
     date: (
       <DateFeature
+        key={shortid.generate()}
         date={featureDataUI.date}
         isUnsavedFeature={isUnsavedFeature.date}
         onChange={date => {
@@ -236,6 +258,7 @@ const ExpenseDetail = () => {
     ),
     subcategory: (
       <SubcategoryFeature
+        key={shortid.generate()}
         subcategoryId={featureKeys.subcategoryId}
         subcategoryName={featureDataUI.subcategory}
         isUnsavedFeature={isUnsavedFeature.subcategory}
@@ -248,6 +271,7 @@ const ExpenseDetail = () => {
     ),
     description: (
       <DescriptionFeature
+        key={shortid.generate()}
         description={featureDataUI.description}
         isUnsavedFeature={isUnsavedFeature.description}
         onChange={({ value }) => {
@@ -291,9 +315,7 @@ const ExpenseDetail = () => {
               }
             />
             <View style={styles.features}>
-              {Object.values(features).map(feat => (
-                <>{feat}</>
-              ))}
+              {Object.values(features).map(feat => feat)}
             </View>
             {isFixedBottomAreaVisible &&
               expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE && (
@@ -312,14 +334,6 @@ const ExpenseDetail = () => {
                   </Button>
                 </View>
               )}
-            {/* {isFixedBottomAreaVisible &&
-              expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE && (
-                <View style={styles.fixedBottomArea}>
-                  <Button onPress={handlePressDeleteButton} type="danger">
-                    <Text style={styles.mainBtnText}>ELIMINAR</Text>
-                  </Button>
-                </View>
-              )} */}
           </SafeAreaView>
         </KeyboardAvoidingView>
       </ScrollView>

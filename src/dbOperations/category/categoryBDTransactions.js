@@ -1,12 +1,12 @@
 import { CATEGORY_QUERIES } from "./categoryQueries"
-import { connectDB } from "../../dbOperations"
+import { connectedDB } from "../utils/database"
 
 const dbName = "db.GastosHogar"
-const connectedDB = connectDB({ engine: "sqlite", name: dbName })
+const connDB = connectedDB({ engine: "sqlite", name: dbName })
 
 export const fetchAllCategories = () => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.SELECT_ALL_CATEGORIES,
         [],
@@ -23,7 +23,7 @@ export const fetchAllCategories = () => {
 
 export const fetchCategoryById = categoryId => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.SELECT_CATEGORY_BY_ID,
         [categoryId],
@@ -43,7 +43,7 @@ export const updateCategory = (
   { name, maxAmountPerMonth, imagePath }
 ) => {
   return new Promise((resolve, reject) => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.UPDATE_CATEGORY,
         [name, maxAmountPerMonth, imagePath, categoryId],
@@ -60,7 +60,7 @@ export const updateCategory = (
 
 export const patchCategoryName = (categoryId, categoryName) => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.UPDATE_CATEGORY,
         [categoryName.toString().toLowerCase(), categoryId],
@@ -75,14 +75,15 @@ export const patchCategoryName = (categoryId, categoryName) => {
   })
 }
 
-export const removeCategory = categoryId => {
+export const deleteCategory = categoryId => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.REMOVE_CATEGORY,
         [categoryId],
-        () => {
-          resolve("OK")
+        (_, result) => {
+          if (result.rowsAffected === 1) resolve()
+          else reject("no hay filas actualizadas")
         },
         error => {
           console.error("Error fetching REMOVE_CATEGORY: ", error)
@@ -94,7 +95,7 @@ export const removeCategory = categoryId => {
 
 export const insertCategory = ({ name, imagePath, maxAmountPerMonth }) => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.ADD_CATEGORY,
         [name, imagePath, maxAmountPerMonth],

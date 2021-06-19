@@ -1,12 +1,12 @@
 import { SUBCATEGORY_QUERIES } from "./subcategoryQueries"
-import { connectDB } from "../../dbOperations"
+import { connectedDB } from "../utils/database"
 
 const dbName = "db.GastosHogar"
-const connectedDB = connectDB({ engine: "sqlite", name: dbName })
+const connDB = connectedDB({ engine: "sqlite", name: dbName })
 
 export const fetchAllSubcategories = () => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         SUBCATEGORY_QUERIES.SELECT_ALL_SUBCATEGORIES,
         [],
@@ -23,7 +23,7 @@ export const fetchAllSubcategories = () => {
 
 export const fetchSubcategoryById = subcategoryId => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         SUBCATEGORY_QUERIES.SELECT_SUBCATEGORY_BY_ID,
         [subcategoryId],
@@ -40,7 +40,7 @@ export const fetchSubcategoryById = subcategoryId => {
 
 export const patchSubcategoryName = (subcategoryId, subcategoryName) => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         SUBCATEGORY_QUERIES.UPDATE_SUBCATEGORY,
         [subcategoryName.toString().toLowerCase(), subcategoryId],
@@ -57,7 +57,7 @@ export const patchSubcategoryName = (subcategoryId, subcategoryName) => {
 
 export const removeSubcategory = subcategoryId => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         SUBCATEGORY_QUERIES.REMOVE_SUBCATEGORY,
         [subcategoryId],
@@ -74,7 +74,7 @@ export const removeSubcategory = subcategoryId => {
 
 export const addSubcategory = (name, imageURI) => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         SUBCATEGORY_QUERIES.ADD_SUBCATEGORY,
         [name, imageURI],

@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import Feature from "../../atoms/Feature/Feature"
 import CategoryModalSelector from "../../atoms/ModalSelector"
+import alerts from "../../atoms/Alerts"
+
 import { fetchAllCategories } from "../../../dbOperations/category/categoryBDTransactions"
 
 const CategoryFeature = props => {
   const { categoryName, isUnsavedFeature, onChange } = props
 
+  const componentIsMounted = useRef(true)
   const [categories, setCategories] = useState([])
   const [editableElements, setEditatableElements] = useState({
     category: { isVisible: false }
@@ -13,11 +16,19 @@ const CategoryFeature = props => {
 
   useEffect(() => {
     fetchCategories()
+
+    return () => {
+      componentIsMounted.current = false
+    }
   }, [])
 
   const fetchCategories = async () => {
-    const categories = await fetchAllCategories()
-    setCategories(categories)
+    try {
+      const categories = await fetchAllCategories()
+      if (componentIsMounted.current) setCategories(categories)
+    } catch (err) {
+      alerts.throwErrorAlert("obtener categorías", JSON.stringify(err))
+    }
   }
 
   const handleSelectCategory = category => {

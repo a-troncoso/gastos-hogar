@@ -90,7 +90,7 @@ const PurchasesList = props => {
         <View style={styles.purchasesListViewPurchase}>
           <PurchaseItem
             key={item.id}
-            image={item.image}
+            image={item.imagePath}
             date={item.date}
             amount={item.amount}
             onPress={() => handlePressPurchase(item.id)}
@@ -163,7 +163,7 @@ const Expenses = props => {
           textAlign: "center",
           fontSize: 18,
           fontWeight: "bold",
-          lineHeight: 18,
+          lineHeight: 18
           // borderColor: "blue",
           // borderWidth: 1,
           // borderStyle: "solid"
@@ -231,7 +231,8 @@ const styles = StyleSheet.create({
   },
   purchaseImage: {
     width: "100%",
-    height: "100%"
+    height: "100%",
+    borderRadius: 16
   },
   purchaseInfoView: {
     justifyContent: "space-between",

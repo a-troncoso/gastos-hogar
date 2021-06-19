@@ -20,20 +20,22 @@ export const EXPENSE_QUERIES = {
     AND c.active = 1
     GROUP BY c.id, c.name;
   `,
-  //TODO: Arreglar esto, no estamos recogiendo la imagen de compra
-  // ( SELECT imagePath FROM expense_image WHERE expenseId=e.id LIMIT 1 ) image,
-  // FROM expense e, category c, expense_image p_i
-  // AND e.id = e_i.expenseId
+  //TODO: Sólo esta trayendo la primera foto
   SELECT_EXPENSES_BY_CATEGORY: `
     SELECT
     e.id,
     e.date,
-    e.amount
-    FROM expense e, category c
-    WHERE e.categoryId=c.id
-    AND strftime('%m', e.date) = ?
-    AND c.active = 1
+    e.amount, 
+    e_i.imagePath
+    FROM expense e INNER JOIN category c ON 
+    e.categoryId=c.id 
+    LEFT JOIN expense_image e_i ON 
+    e.id=e_i.expenseId 
+    WHERE 
+    strftime('%m', e.date) = ?
+    AND e.active = 1
     AND c.id=?
+    AND c.active = 1
     GROUP BY e.id;
   `,
 
@@ -137,5 +139,7 @@ export const EXPENSE_QUERIES = {
     WHERE strftime('%Y', p.date) = ?
     AND p.active = 1
     GROUP BY strftime('%Y-%m', p.date);
-  `
+  `,
+
+  DELETE_EXPENSE: `UPDATE expense SET active=0 WHERE id=?;`
 }

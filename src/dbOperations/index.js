@@ -1,8 +1,22 @@
-import * as SQLite from "expo-sqlite"
+import {
+  fetchAllCategories,
+  fetchCategoryById,
+  insertCategory,
+  deleteCategory
+} from "./category/categoryBDTransactions"
 
-export const connectDB = ({ engine, name }) => {
-  const sqlite = SQLite.openDatabase(name)
+import { deleteExpense } from "./purchase/purchaseBDTransactions"
 
-  const engines = { sqlite }
-  return engines[engine]
+export const dbOperations = {
+  category: {
+    fetch: {
+      fetchAll: fetchAllCategories,
+      fetchById: fetchCategoryById
+    },
+    add: insertCategory,
+    remove: deleteCategory
+  },
+  expense: {
+    remove: deleteExpense
+  }
 }

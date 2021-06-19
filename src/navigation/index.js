@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import { View, Text } from "react-native"
-import { NavigationContainer } from "@react-navigation/native"
+import { NavigationContainer, DrawerActions } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
 import {
   createDrawerNavigator,
@@ -42,7 +42,12 @@ const screenOptionsBase = navigation => ({
     fontSize: 20,
     textAlign: "center"
   },
-  headerLeft: () => <MenuButton navigation={navigation} />,
+  headerLeft: () => (
+    <MenuButton
+      type="main"
+      onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+    />
+  ),
   headerRight: () => <View></View>
 })
 

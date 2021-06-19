@@ -1,4 +1,10 @@
-import React, { memo, useState, useCallback, useEffect } from "react"
+import React, {
+  memo,
+  useState,
+  useCallback,
+  useEffect,
+  useLayoutEffect
+} from "react"
 import {
   StyleSheet,
   View,
@@ -20,13 +26,12 @@ import Button from "../components/atoms/Button"
 import CategoryIcon from "../components/atoms/CategoryIcon/CategoryIcon"
 import AmountFeature from "../components/molecules/amount/AmountFeature"
 import NameFeature from "../components/molecules/name/NameFeature"
+import Picker from "../components/atoms/Picker"
 
 import { CATEGORY_DETAIL_MODES } from "../domain/category/categoryDetailModes"
 
-import {
-  insertCategory,
-  updateCategory
-} from "../dbOperations/category/categoryBDTransactions"
+import { updateCategory } from "../dbOperations/category/categoryBDTransactions"
+import apiDomain from "../utils/apiDomain"
 import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions"
 
 import color from "../assets/colors"
@@ -49,6 +54,7 @@ const Toast = memo(({ visible, message }) => {
 const CategoryDetail = props => {
   const navigation = useNavigation()
   const route = useRoute()
+  const apiCategories = apiDomain("category")
   const { params: routeParams } = route
   const detailMode = routeParams.mode || CATEGORY_DETAIL_MODES.NEW_CATEGORY
   const [isUnsavedFeature, setIsUnsavedFeature] = useState(
@@ -65,6 +71,15 @@ const CategoryDetail = props => {
     name: "",
     maxAmountPerMonth: 0
   })
+
+  useLayoutEffect(() => {
+    if (detailMode === CATEGORY_DETAIL_MODES.EXISTING_CATEGORY)
+      navigation.setOptions({
+        headerRight: () => (
+          <Picker onPressItem={() => deleteCategory(categoryId)} />
+        )
+      })
+  }, [navigation])
 
   useFocusEffect(
     useCallback(() => {
@@ -105,7 +120,7 @@ const CategoryDetail = props => {
 
   const addCategory = async () => {
     try {
-      const insertResult = await insertCategory({
+      const insertResult = await apiCategories.add({
         name: featureDataUI.name,
         imagePath: featureDataUI.image,
         maxAmountPerMonth: featureDataUI.maxAmountPerMonth
@@ -132,12 +147,17 @@ const CategoryDetail = props => {
     }
   }
 
-  const handlePressSaveButton = () => {
-    saveCategory()
+  const deleteCategory = async id => {
+    try {
+      await apiCategories.remove(id)
+      navigation.goBack()
+    } catch (error) {
+      alerts.throwErrorAlert("eliminar categoría", JSON.stringify(err))
+    }
   }
 
-  const handlePressDeleteButton = () => {
-    // deleteExpense()
+  const handlePressSaveButton = () => {
+    saveCategory()
   }
 
   const handlePressSaveChangesButton = () => {

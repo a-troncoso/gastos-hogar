@@ -9,6 +9,7 @@ import {
 import CategoriesList from "../components/molecules/category/CategoriesList"
 
 import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions"
+import apiDomain from '../utils/apiDomain'
 
 import color from "../assets/colors"
 
@@ -25,10 +26,11 @@ const RegistryExpenseGate = props => {
   const navigation = useNavigation()
   const [categories, setCategories] = useState([])
   const [visibleToast, setVisibleToast] = useState(false)
+  const apiCategories = apiDomain("category")
 
   useFocusEffect(
     useCallback(() => {
-      _fetchCategories()
+      fetchCategories()
     }, [])
   )
 
@@ -41,8 +43,8 @@ const RegistryExpenseGate = props => {
 
   useEffect(() => setVisibleToast(false), [visibleToast])
 
-  const _fetchCategories = async () => {
-    const categories = await fetchAllCategories()
+  const fetchCategories = async () => {
+    const categories = await apiCategories.fetch()
     setCategories(categories)
   }
 

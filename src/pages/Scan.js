@@ -19,6 +19,8 @@ import { Octicons } from "@expo/vector-icons"
 import alerts from "../components/atoms/Alerts"
 import color from "../assets/colors"
 
+const { StorageAccessFramework } = FileSystem
+
 const PurchaseImage = props => {
   const { uri, onRemoveImage } = props
 
@@ -66,6 +68,7 @@ const Scan = props => {
   const [isPurchaseInserted, setIsPurchaseInserted] = useState(false)
   const cameraRef = useRef(null)
   const picturesRoll = useRef(null)
+  const AppUri = StorageAccessFramework.getUriForDirectoryInRoot('GastosHogar');
 
   useFocusEffect(
     useCallback(() => {
@@ -81,13 +84,17 @@ const Scan = props => {
 
   useEffect(() => {
     _requestCameraPermission()
+    // _requestDirectoryPermission()
   }, [])
 
   const _requestCameraPermission = async () => {
     const { granted } = await Camera.requestPermissionsAsync()
     setHasCameraPermission(granted)
-    // await Permissions.askAsync(Permissions.CAMERA_ROLL)
   }
+
+  // const _requestDirectoryPermission = async () => {
+  //   await StorageAccessFramework.requestDirectoryPermissionsAsync(AppUri)
+  // }
 
   const handlePressTakePicture = () => {
     if (!cameraRef) return
@@ -101,7 +108,7 @@ const Scan = props => {
   const _handlePictureSaved = e => {
     const { uri } = e
     _savePictureInAppMemory(uri)
-    _savePictureInAppInternalStorage(uri)
+    // _savePictureInAppInternalStorage(uri)
   }
 
   const _savePictureInAppMemory = async pictureURI => {
@@ -118,24 +125,24 @@ const Scan = props => {
     }
   }
 
-  const _savePictureInAppInternalStorage = async pictureURI => {
-    const to = `${FileSystem.documentDirectory}/${pictureURI.substring(
-      pictureURI.lastIndexOf("/") + 1,
-      pictureURI.length
-    )}`
+  // const _savePictureInAppInternalStorage = async pictureURI => {
+  //   const to = `${FileSystem.documentDirectory}/${pictureURI.substring(
+  //     pictureURI.lastIndexOf("/") + 1,
+  //     pictureURI.length
+  //   )}`
 
-    try {
-      const result = await MediaLibrary.createAssetAsync(to)
-      _crop(result.uri)
-    } catch (err) {
-      alerts.throwErrorAlert(
-        "guardar foto en el dispositivo",
-        JSON.stringify(err)
-      )
-    }
-  }
+  //   try {
+  //     const result = await MediaLibrary.createAssetAsync(to)
+  //     _crop(result.uri)
+  //   } catch (err) {
+  //     alerts.throwErrorAlert(
+  //       "guardar foto en el dispositivo",
+  //       JSON.stringify(err)
+  //     )
+  //   }
+  // }
 
-  // TODO: implementar este recorde cuando termine feature nuevo diseño
+  // TODO: implementar este recorte cuando termine feature nuevo diseño
   const _crop = async pictureTaked => {
     const cropProps = {
       offset: { x: 0, y: 0 },

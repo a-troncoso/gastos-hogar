@@ -1,12 +1,12 @@
 import { DESCRIPTION_QUERIES } from "./descriptionQueries"
-import { connectDB } from "../../dbOperations"
+import { connectedDB } from "../utils/database"
 
 const dbName = "db.GastosHogar"
-const connectedDB = connectDB({ engine: "sqlite", name: dbName })
+const connDB = connectedDB({ engine: "sqlite", name: dbName })
 
 export const fetchDescriptionById = descriptionId => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         DESCRIPTION_QUERIES.SELECT_DESCRIPTION_BY_ID,
         [descriptionId],
@@ -23,7 +23,7 @@ export const fetchDescriptionById = descriptionId => {
 
 export const patchDescription = (descriptionId, descriptioN) => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         DESCRIPTION_QUERIES.UPDATE_DESCRIPTION,
         [descriptioN.toString().toLowerCase(), descriptionId],
@@ -40,7 +40,7 @@ export const patchDescription = (descriptionId, descriptioN) => {
 
 export const removeDescription = descriptionId => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         DESCRIPTION_QUERIES.REMOVE_DESCRIPTION,
         [descriptionId],
@@ -57,7 +57,7 @@ export const removeDescription = descriptionId => {
 
 export const addDescription = (description, imageURI) => {
   return new Promise(resolve => {
-    connectedDB.transaction(tx => {
+    connDB.transaction(tx => {
       tx.executeSql(
         DESCRIPTION_QUERIES.ADD_DESCRIPTION,
         [description, imageURI],
