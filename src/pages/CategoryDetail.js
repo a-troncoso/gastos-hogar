@@ -31,8 +31,9 @@ import Picker from "../components/atoms/Picker"
 import { CATEGORY_DETAIL_MODES } from "../domain/category/categoryDetailModes"
 
 import { updateCategory } from "../dbOperations/category/categoryBDTransactions"
-import apiDomain from "../utils/apiDomain"
 import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions"
+import apiDomain from "../utils/apiDomain"
+import { extractNumbers } from "../utils/number"
 
 import color from "../assets/colors"
 import alerts from "../components/atoms/Alerts"
@@ -123,7 +124,7 @@ const CategoryDetail = props => {
       const insertResult = await apiCategories.add({
         name: featureDataUI.name,
         imagePath: featureDataUI.image,
-        maxAmountPerMonth: featureDataUI.maxAmountPerMonth
+        maxAmountPerMonth: extractNumbers(featureDataUI.maxAmountPerMonth)
       })
       if (insertResult.rowsAffected) setIsCategoryInserted(true)
     } catch (err) {
@@ -135,8 +136,8 @@ const CategoryDetail = props => {
     try {
       const updateResult = await updateCategory(categoryId, {
         name: featureDataUI.name,
-        maxAmountPerMonth: featureDataUI.maxAmountPerMonth,
-        imagePath: featureDataUI.image
+        imagePath: featureDataUI.image,
+        maxAmountPerMonth: extractNumbers(featureDataUI.maxAmountPerMonth)
       })
       if (updateResult.rowsAffected) {
         setIsUnsavedFeature(initialStateunsavedFeature)

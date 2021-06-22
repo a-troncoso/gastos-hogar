@@ -6,6 +6,7 @@ const DescriptionFeature = props => {
   const {
     description,
     isUnsavedFeature,
+    isFocusedInput,
     onChange,
     onChageKeyboardVisibility
   } = props
@@ -14,6 +15,7 @@ const DescriptionFeature = props => {
   const [editableElements, setEditatableElements] = useState({
     description: { isVisible: false }
   })
+  const [inputHeight, setInputHeight] = useState(0)
 
   useEffect(() => {}, [isUnsavedFeature])
 
@@ -68,11 +70,15 @@ const DescriptionFeature = props => {
       isVisibleEditableElm={editableElements.description.isVisible}
       editableElement={
         <TextInput
-          style={styles.descTextInput}
+          style={{ ...styles.descTextInput, height: inputHeight }}
           value={_description}
           onChangeText={handleChangeDescription}
           onBlur={handleBlurInput}
           onSubmitEditing={Keyboard.dismiss}
+          onContentSizeChange={event => {
+            setInputHeight(event.nativeEvent.contentSize.height)
+          }}
+          multiline
           autoFocus
         />
       }
@@ -85,7 +91,13 @@ const DescriptionFeature = props => {
 
 const styles = StyleSheet.create({
   descTextInput: {
+    // borderColor: "blue",
+    // borderWidth: 1,
+    // borderStyle: "solid",
+
     height: 20,
+    width: "60%",
+    paddingVertical: 1,
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "right"

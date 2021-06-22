@@ -35,21 +35,21 @@ const Feature = props => {
               {prefix}
             </Text>
           )}
-          <Text
-            style={[
-              styles.featureValue,
-              value ? styles.existValue : styles.notExistValue
-            ]}
-          >
-            {!isVisibleEditableElm && <ValueText />}
-          </Text>
+          {!isVisibleEditableElm && (
+            <Text
+              style={[
+                styles.featureValue,
+                value ? styles.existValue : styles.notExistValue
+              ]}
+            >
+              {<ValueText />}
+            </Text>
+          )}
           {aditionalValue && (
             <Text style={styles.aditionalValueText}>{aditionalValue}</Text>
           )}
         </View>
-        {isVisibleEditableElm && (
-          <Fragment>{editableElement}</Fragment>
-        )}
+        {isVisibleEditableElm && <Fragment>{editableElement}</Fragment>}
       </View>
     </TouchableOpacity>
   )
@@ -103,6 +103,9 @@ const styles = StyleSheet.create({
     // borderColor: "blue",
     // borderWidth: 1,
     // borderStyle: "solid",
+
+    width: "40%",
+    marginRight: 8,
     color: color.gray["110"],
     fontWeight: "bold",
     textTransform: "capitalize"
@@ -112,7 +115,6 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderStyle: "solid",
     fontWeight: "bold"
-    // textTransform: "capitalize"
   },
   aditionalValueText: {
     marginLeft: 4,

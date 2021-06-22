@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { TextInput, StyleSheet, Keyboard } from "react-native"
+
 import Feature from "../../atoms/Feature/Feature"
+
+import { extractNumbers, number_format } from "../../../utils/number"
 
 const AmountFeature = props => {
   const {
@@ -11,18 +14,29 @@ const AmountFeature = props => {
     onChageKeyboardVisibility = () => undefined
   } = props
 
-  
   const [_value, _setValue] = useState(value)
   const [editableElements, setEditatableElements] = useState({
     value: { isVisible: false }
   })
-  
+
   useEffect(() => {
-    _setValue(value)
+    const valueFormattedInThousand = number_format(
+      extractNumbers(value),
+      0,
+      ",",
+      "."
+    )
+    _setValue(valueFormattedInThousand)
   }, [value])
 
-  const handleChangeValue = valuenText => {
-    _setValue(valuenText)
+  const handleChangeValue = value => {
+    const valueFormattedInThousand = number_format(
+      extractNumbers(value),
+      0,
+      ",",
+      "."
+    )
+    _setValue(valueFormattedInThousand)
   }
 
   const handleBlurInput = () => {

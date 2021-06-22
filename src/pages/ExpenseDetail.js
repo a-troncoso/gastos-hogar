@@ -20,6 +20,7 @@ import {
   useNavigation,
   useRoute
 } from "@react-navigation/native"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import shortid from "shortid"
 
 import Hero from "../components/atoms/Hero"
@@ -82,6 +83,7 @@ const ExpenseDetail = () => {
 
   const [featureDataUI, setFeatureDataUI] = useState({
     pictures: [],
+    newPictures: [],
     amount: 0,
     category: "",
     subcategory: "",
@@ -98,17 +100,29 @@ const ExpenseDetail = () => {
       })
   }, [navigation])
 
+  useEffect(() => {
+    if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
+      fetchExpenseDetail(expenseId)
+    if (expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE) {
+      const date = new Date()
+      saveFeatureKey("category", routeParams.categoryId)
+      saveFeatureIntoUI("date", date)
+      fetchCategory(routeParams.categoryId)
+    }
+    return () => {}
+  }, [])
+
   useFocusEffect(
     useCallback(() => {
-      if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
-        fetchExpenseDetail(expenseId)
-      if (expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE) {
-        const date = new Date()
-        saveFeatureKey("category", routeParams.categoryId)
-        saveFeatureIntoUI("date", date)
-        fetchCategory(routeParams.categoryId)
-      }
-      return () => {}
+      // if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
+      //   fetchExpenseDetail(expenseId)
+      // if (expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE) {
+      //   const date = new Date()
+      //   saveFeatureKey("category", routeParams.categoryId)
+      //   saveFeatureIntoUI("date", date)
+      //   fetchCategory(routeParams.categoryId)
+      // }
+      // return () => {}
     }, [])
   )
 
@@ -172,7 +186,7 @@ const ExpenseDetail = () => {
   const editExpense = async () => {
     try {
       const updateResult = await updateExpense(expenseId, {
-        pictures: featureDataUI.pictures,
+        pictures: featureDataUI.newPictures,
         categoryId: featureKeys.category,
         subcategoryId: featureKeys.subcategory,
         amount: featureDataUI.amount,
@@ -209,7 +223,14 @@ const ExpenseDetail = () => {
   const handlePressCamera = () => {
     navigation.push("Scan", {
       savePictures: pictures => {
-        saveFeatureIntoUI("pictures", pictures)
+        const arePicturesEdited = !featureDataUI.pictures.equals(pictures)
+        const newPictures = featureDataUI.pictures.getDifferenceWith(pictures)
+
+        if (arePicturesEdited) {
+          saveIsUnsavedFeature("pictures")
+          saveFeatureIntoUI("pictures", pictures)
+          saveFeatureIntoUI("newPictures", newPictures)
+        }
       },
       pictures: featureDataUI.pictures
     })
@@ -217,10 +238,7 @@ const ExpenseDetail = () => {
 
   const onChangeFeature = field => {
     if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
-      setIsUnsavedFeature(prev => ({
-        ...prev,
-        [field]: true
-      }))
+      saveIsUnsavedFeature(field)
   }
 
   const saveFeatureIntoUI = (field, value) => {
@@ -229,6 +247,13 @@ const ExpenseDetail = () => {
 
   const saveFeatureKey = (field, value) => {
     setFeatureKeys(prev => ({ ...prev, [field]: value }))
+  }
+
+  const saveIsUnsavedFeature = field => {
+    setIsUnsavedFeature(prev => ({
+      ...prev,
+      [field]: true
+    }))
   }
 
   const features = {
@@ -278,33 +303,24 @@ const ExpenseDetail = () => {
           saveFeatureIntoUI("description", value)
           onChangeFeature("description")
         }}
-        onChageKeyboardVisibility={e =>
-          setIsFixedBottomAreaVisible(!e.isKeyboardVisible)
-        }
+        onChageKeyboardVisibility={e => {}}
       />
     )
   }
 
   return (
     <View style={styles.mainView}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          contentContainerStyle={{ paddingBottom: 60, marginBottom: 60 }}
-          keyboardVerticalOffset={Platform.select({
-            ios: () => 0,
-            android: () => 1000
-          })()}
-          enabled
-        >
+      <KeyboardAwareScrollView>
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
           <SafeAreaView style={{ flex: 1 }}>
             <Hero
               central={
                 <ExpenseMainFeature
                   pictures={featureDataUI.pictures}
                   amount={featureDataUI.amount}
-                  isUnsavedFeature={isUnsavedFeature.amount}
+                  isUnsavedFeature={
+                    isUnsavedFeature.amount || isUnsavedFeature.pictures
+                  }
                   mode={expenseDetailMode}
                   onPressCamera={handlePressCamera}
                   onChange={amount => {
@@ -335,8 +351,8 @@ const ExpenseDetail = () => {
                 </View>
               )}
           </SafeAreaView>
-        </KeyboardAvoidingView>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAwareScrollView>
       <Toast visible={isVisibleToast} message="Egreso actualizado" />
     </View>
   )
@@ -344,30 +360,18 @@ const ExpenseDetail = () => {
 
 const styles = StyleSheet.create({
   mainView: {
-    // borderColor: "black",
-    // borderWidth: 1,
-    // borderStyle: "solid",
     flex: 1,
     backgroundColor: color.blue["90"]
   },
   secondaryPart: {
-    // borderColor: "yellow",
-    // borderWidth: 2,
-    // borderStyle: "solid",
     flex: 1
   },
   features: {
-    // borderColor: "blue",
-    // borderWidth: 1,
-    // borderStyle: "solid",
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 24
   },
   fixedBottomArea: {
-    // borderColor: "red",
-    // borderWidth: 1,
-    // borderStyle: "solid",
     paddingHorizontal: 16,
     paddingBottom: 16
   },

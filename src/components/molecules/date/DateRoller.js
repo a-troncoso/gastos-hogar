@@ -21,7 +21,8 @@ const DateRoller = props => {
     activeItemTextStyle: styles.viewItemSelectedText,
     itemHeight: 50,
     highlightColor: color.gray["100"],
-    highlightBorderWidth: 1
+    highlightBorderWidth: 1,
+    onPress: () => {}
   }
 
   const handleChangeScrollPicker = (scrollName, value) => {
@@ -63,7 +64,7 @@ const DateRoller = props => {
           handleChangeScrollPicker("month", selectedIndex)
         }}
         selectedIndex={indexInScroll("month", monthsDataSource)}
-        onPress={()=> undefined}
+        onPress={() => undefined}
       />
       <ScrollPicker
         {...scrollPickerProps}
@@ -72,7 +73,7 @@ const DateRoller = props => {
           handleChangeScrollPicker("year", data)
         }}
         selectedIndex={indexInScroll("year", yearsDataSource)}
-        onPress={()=> undefined}
+        onPress={() => undefined}
       />
     </View>
   )

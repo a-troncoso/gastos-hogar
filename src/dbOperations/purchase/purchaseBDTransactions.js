@@ -202,7 +202,20 @@ export const updateExpense = (
           expenseId
         ],
         (_, s) => {
-          resolve(s)
+          if (pictures.length > 0) {
+            insertExpenseImages(expenseId, pictures)
+              .then(result => {
+                resolve(result)
+              })
+              .catch(error => {
+                console.error(
+                  "Error inserting Expense Image in Database: ",
+                  error
+                )
+
+                reject(error)
+              })
+          } else resolve(s)
         },
         (_, error) => {
           reject(error)

@@ -68,7 +68,7 @@ const Scan = props => {
   const [isPurchaseInserted, setIsPurchaseInserted] = useState(false)
   const cameraRef = useRef(null)
   const picturesRoll = useRef(null)
-  const AppUri = StorageAccessFramework.getUriForDirectoryInRoot('GastosHogar');
+  const AppUri = StorageAccessFramework.getUriForDirectoryInRoot("GastosHogar")
 
   useFocusEffect(
     useCallback(() => {
@@ -175,9 +175,15 @@ const Scan = props => {
     navigation.navigate("ExpenseDetail")
   }
 
+  if (!hasCameraPermission)
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text>No hay permisos para acceder a la cámara</Text>
+      </View>
+    )
   return (
     <View style={styles.scan}>
-      {hasCameraPermission && cameraMounted ? (
+      {cameraMounted && (
         <Camera style={{ flex: 1 }} ref={cameraRef}>
           <View style={styles.scanCameraContent}>
             <View style={styles.scanPicturesRollView}>
@@ -218,12 +224,6 @@ const Scan = props => {
             </View>
           </View>
         </Camera>
-      ) : (
-        <View
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        >
-          <Text>Loading...</Text>
-        </View>
       )}
     </View>
   )
