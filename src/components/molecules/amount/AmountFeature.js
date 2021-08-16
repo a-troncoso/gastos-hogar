@@ -3,7 +3,7 @@ import { TextInput, StyleSheet, Keyboard } from "react-native"
 
 import Feature from "../../atoms/Feature/Feature"
 
-import { extractNumbers, number_format } from "../../../utils/number"
+import { extractNumbers, numberFormat } from "../../../utils/number"
 
 const AmountFeature = props => {
   const {
@@ -20,7 +20,7 @@ const AmountFeature = props => {
   })
 
   useEffect(() => {
-    const valueFormattedInThousand = number_format(
+    const valueFormattedInThousand = numberFormat(
       extractNumbers(value),
       0,
       ",",
@@ -30,7 +30,7 @@ const AmountFeature = props => {
   }, [value])
 
   const handleChangeValue = value => {
-    const valueFormattedInThousand = number_format(
+    const valueFormattedInThousand = numberFormat(
       extractNumbers(value),
       0,
       ",",

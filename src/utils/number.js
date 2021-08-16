@@ -11,14 +11,22 @@ const _formatFloat = amount =>
   String(amount).replace(".", ",").replace(_regExp, "$1.")
 
 const _cleanFormat = (amount, decimal = false) =>
-  decimal ? _formatFloat(amount) : number_format(amount)
+  decimal ? _formatFloat(amount) : thousandFormat(amount)
 
 export const toCurrencyFormat = (amount, decimal) =>
   `$ ${_cleanFormat(amount, decimal)}`
 
-export const extractNumbers = value => +value.toString().match(/\d+/g).join("")
+export const extractNumbers = value => {
+  // console.log(value)
+  // console.log(+value)
+  // console.log(+value.toString())
+  // console.log(+value.toString().match(/\d+/g))
+  // console.log(+value.toString().match(/\d+/g).join(""))
+  // return value
+  return value ? +value.toString().match(/\d+/g).join("") : 0
+}
 
-export const number_format = (number, decimals, dec_point, thousands_sep) => {
+export const thousandFormat = (number, decimals, dec_point, thousands_sep) => {
   let n = !isFinite(+number) ? 0 : +number,
     prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
     sep = typeof thousands_sep === "undefined" ? "," : thousands_sep,

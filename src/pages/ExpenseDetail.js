@@ -9,10 +9,8 @@ import {
   StyleSheet,
   View,
   Text,
-  KeyboardAvoidingView,
   SafeAreaView,
   ScrollView,
-  Platform,
   ToastAndroid
 } from "react-native"
 import {
@@ -39,6 +37,7 @@ import {
 } from "../dbOperations/purchase/purchaseBDTransactions"
 import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions"
 import apiDomain from "../utils/apiDomain"
+import { numberFormat, extractNumbers } from "../utils/number"
 
 import { EXPENSE_DETAIL_MODES } from "../domain/expense/expenseDetailModes"
 import color from "../assets/colors"
@@ -318,6 +317,12 @@ const ExpenseDetail = () => {
                 <ExpenseMainFeature
                   pictures={featureDataUI.pictures}
                   amount={featureDataUI.amount}
+                  // amount={numberFormat(
+                  //   extractNumbers(featureDataUI.amount),
+                  //   0,
+                  //   ",",
+                  //   "."
+                  // )}
                   isUnsavedFeature={
                     isUnsavedFeature.amount || isUnsavedFeature.pictures
                   }

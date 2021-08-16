@@ -11,6 +11,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native"
 import { FontAwesome } from "@expo/vector-icons"
 import Hero from "../components/atoms/Hero"
+import ModalPicture from "../components/atoms/ModalPicture"
 import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator"
 
 import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
@@ -46,36 +47,51 @@ const purchaseIconStyles = StyleSheet.create({
 })
 
 const PurchaseItem = props => {
-  const { image, date, amount, subcategory, onPress } = props
+  const { image, date, amount, subcategory, onPress, onPressImage } = props
+
+  const handlePressPurchaseImage = () => {
+    onPressImage({ image })
+  }
 
   return (
-    <TouchableOpacity style={styles.purchase} onPress={onPress}>
-      <View style={styles.purchaseImageView}>
-        {image ? (
-          <Image style={styles.purchaseImage} source={{ uri: image }} />
-        ) : (
-          <PurchaseIcon icon="shopping-cart" />
-        )}
+    <>
+      <View style={styles.purchaseView}>
+        <TouchableOpacity onPress={handlePressPurchaseImage}>
+          <View style={styles.purchaseImageView}>
+            {image ? (
+              <Image style={styles.purchaseImage} source={{ uri: image }} />
+            ) : (
+              <PurchaseIcon icon="shopping-cart" />
+            )}
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={onPress}
+          style={styles.purchaseTouchableInfoView}
+        >
+          <View style={styles.purchaseInfoView}>
+            <View style={styles.purchaseDateView}>
+              <Text style={styles.purchaseDate}>
+                {formatDate(date, { withMonthName: true })}
+              </Text>
+            </View>
+            <View style={styles.purchaseExtraInfo}>
+              <Text style={styles.purchaseSubcategory}>
+                {subcategory || "Sin subcategoría"}
+              </Text>
+              <Text style={styles.purchaseAmount}>
+                {toCurrencyFormat(amount)}
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
       </View>
-      <View style={styles.purchaseInfoView}>
-        <View style={styles.purchaseDateView}>
-          <Text style={styles.purchaseDate}>
-            {formatDate(date, { withMonthName: true })}
-          </Text>
-        </View>
-        <View style={styles.purchaseExtraInfo}>
-          <Text style={styles.purchaseSubcategory}>
-            {subcategory || "Sin subcategoría"}
-          </Text>
-          <Text style={styles.purchaseAmount}>{toCurrencyFormat(amount)}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
+    </>
   )
 }
 
 const PurchasesList = props => {
-  const { purchases, onPressPurchase } = props
+  const { purchases, onPressPurchase, onPressImage } = props
 
   const handlePressPurchase = id => {
     onPressPurchase(id)
@@ -94,6 +110,7 @@ const PurchasesList = props => {
             date={item.date}
             amount={item.amount}
             onPress={() => handlePressPurchase(item.id)}
+            onPressImage={onPressImage}
           />
         </View>
       )}
@@ -154,42 +171,62 @@ const Expenses = props => {
     setDateSelected(date)
   }
 
+  const [isVisibleModalPicture, setIsVisibleModalPicture] = useState(false)
+  const [imageModal, setImageModal] = useState(null)
+
+  const handleBackdropPressModalPic = () => {
+    setIsVisibleModalPicture(false)
+  }
+
+  const handlePressImage = ({ image }) => {
+    setImageModal(image)
+    setIsVisibleModalPicture(true)
+  }
+
   return (
-    <View style={styles.purchases}>
-      <Text
-        style={{
-          paddingBottom: 8,
-          backgroundColor: color.blue["50"],
-          textAlign: "center",
-          fontSize: 18,
-          fontWeight: "bold",
-          lineHeight: 18
-          // borderColor: "blue",
-          // borderWidth: 1,
-          // borderStyle: "solid"
-        }}
-      >
-        {category.name}
-      </Text>
-      <Hero
-        childStyles={styles.hero}
-        button={
-          <DateNavigatorActivator
-            mode={mode.toUpperCase()}
-            date={dateSelected}
-            onChange={date => handleChangeDateNavigation(date)}
-          />
-        }
-      />
-      <View style={styles.purchasesListView}>
-        <SafeAreaView>
-          <PurchasesList
-            purchases={purchases}
-            onPressPurchase={handlePressPurchase}
-          />
-        </SafeAreaView>
+    <>
+      <View style={styles.purchases}>
+        <Text
+          style={{
+            paddingBottom: 8,
+            backgroundColor: color.blue["50"],
+            textAlign: "center",
+            fontSize: 18,
+            fontWeight: "bold",
+            lineHeight: 18
+            // borderColor: "blue",
+            // borderWidth: 1,
+            // borderStyle: "solid"
+          }}
+        >
+          {category.name}
+        </Text>
+        <Hero
+          childStyles={styles.hero}
+          button={
+            <DateNavigatorActivator
+              mode={mode.toUpperCase()}
+              date={dateSelected}
+              onChange={date => handleChangeDateNavigation(date)}
+            />
+          }
+        />
+        <View style={styles.purchasesListView}>
+          <SafeAreaView>
+            <PurchasesList
+              purchases={purchases}
+              onPressPurchase={handlePressPurchase}
+              onPressImage={handlePressImage}
+            />
+          </SafeAreaView>
+        </View>
       </View>
-    </View>
+      <ModalPicture
+        source={{ uri: imageModal }}
+        isModalVisible={isVisibleModalPicture}
+        onBackdropPress={handleBackdropPressModalPic}
+      />
+    </>
   )
 }
 
@@ -205,7 +242,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16
   },
-  purchase: {
+  purchaseView: {
     height: 82,
     flex: 1,
     flexDirection: "row",
@@ -213,6 +250,9 @@ const styles = StyleSheet.create({
     // borderColor: "black",
     // borderStyle: "solid",
     // borderWidth: 1
+  },
+  purchaseTouchableInfoView: {
+    flex: 1
   },
   purchaseImageView: {
     width: 82,

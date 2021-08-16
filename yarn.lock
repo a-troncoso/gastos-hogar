@@ -1156,6 +1156,14 @@
     "exec-sh" "^0.3.2"
     "minimist" "^1.2.0"
 
+"@dudigital/react-native-zoomable-view@^1.1.3":
+  "integrity" "sha512-Ue43aUZ6dkMEu1SHU4JGt9hVEds3x+ctITIgR7KerfKV0RHmVu4W9rt5Yk/nfiF+3DulGZR70Dj4k9ucFYJTwQ=="
+  "resolved" "https://registry.npmjs.org/@dudigital/react-native-zoomable-view/-/react-native-zoomable-view-1.1.3.tgz"
+  "version" "1.1.3"
+  dependencies:
+    "prop-types" "^15.7.2"
+    "react-native" ">=0.54.0"
+
 "@egjs/hammerjs@^2.0.17":
   "integrity" "sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A=="
   "resolved" "https://registry.npmjs.org/@egjs/hammerjs/-/hammerjs-2.0.17.tgz"
@@ -2284,6 +2292,11 @@
   "version" "3.0.0"
   dependencies:
     "event-target-shim" "^5.0.0"
+
+"abs-svg-path@^0.1.1":
+  "integrity" "sha1-32Acjo0roQ1KdtYl4japo5wnI78="
+  "resolved" "https://registry.npmjs.org/abs-svg-path/-/abs-svg-path-0.1.1.tgz"
+  "version" "0.1.1"
 
 "absolute-path@^0.0.0":
   "integrity" "sha1-p4di+9rftSl76ZsV01p4Wy8JW/c="
@@ -6488,6 +6501,13 @@
   "resolved" "https://registry.npmjs.org/normalize-path/-/normalize-path-3.0.0.tgz"
   "version" "3.0.0"
 
+"normalize-svg-path@^1.0.1":
+  "integrity" "sha512-r9KHKG2UUeB5LoTouwDzBy2VxXlHsiM6fyLQvnJa0S5hrhzqElH/CH7TUGhT1fVvIYBIKf3OpY4YJ4CK+iaqHg=="
+  "resolved" "https://registry.npmjs.org/normalize-svg-path/-/normalize-svg-path-1.1.0.tgz"
+  "version" "1.1.0"
+  dependencies:
+    "svg-arc-to-cubic-bezier" "^3.0.0"
+
 "npm-run-path@^2.0.0":
   "integrity" "sha1-NakjLfo11wZ7TLLd8jV7GHFTbF8="
   "resolved" "https://registry.npmjs.org/npm-run-path/-/npm-run-path-2.0.2.tgz"
@@ -6795,6 +6815,11 @@
   "version" "2.1.0"
   dependencies:
     "pngjs" "^3.3.0"
+
+"parse-svg-path@^0.1.2":
+  "integrity" "sha1-en7A0esG+lMlx9PgCbhZoJtdSes="
+  "resolved" "https://registry.npmjs.org/parse-svg-path/-/parse-svg-path-0.1.2.tgz"
+  "version" "0.1.2"
 
 "parse5@5.1.0":
   "integrity" "sha512-fxNG2sQjHvlVAYmzBZS9YlDp6PTSSDwa98vkD4QgVDDCAo84z5X1t5XyJQ62ImdLXx5NdIIfihey6xpum9/gRQ=="
@@ -7130,7 +7155,14 @@
   dependencies:
     "prop-types" "^15.7.2"
 
-"react-native-gesture-handler@*", "react-native-gesture-handler@>= 1.0.0", "react-native-gesture-handler@~1.10.2":
+"react-native-awesome-gallery@^0.1.7":
+  "integrity" "sha512-yr0T9fMph6io5m6GnZJgAGeL85r9wtRXQBRjV3c4Ix3FvHIMOjt6lIqvpDLXEtAiQBSad5k1lxalsbpZ52CVIg=="
+  "resolved" "https://registry.npmjs.org/react-native-awesome-gallery/-/react-native-awesome-gallery-0.1.7.tgz"
+  "version" "0.1.7"
+  dependencies:
+    "react-native-redash" "^16.0.8"
+
+"react-native-gesture-handler@*", "react-native-gesture-handler@^1.10.1", "react-native-gesture-handler@>= 1.0.0", "react-native-gesture-handler@~1.10.2":
   "integrity" "sha512-cBGMi1IEsIVMgoox4RvMx7V2r6bNKw0uR1Mu1o7NbuHS6BRSVLq0dP34l2ecnPlC+jpWd3le6Yg1nrdCjby2Mw=="
   "resolved" "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-1.10.3.tgz"
   "version" "1.10.3"
@@ -7140,6 +7172,16 @@
     "hoist-non-react-statics" "^3.3.0"
     "invariant" "^2.2.4"
     "prop-types" "^15.7.2"
+
+"react-native-image-pan-zoom@^2.1.12":
+  "integrity" "sha512-BF66XeP6dzuANsPmmFsJshM2Jyh/Mo1t8FsGc1L9Q9/sVP8MJULDabB1hms+eAoqgtyhMr5BuXV3E1hJ5U5H6Q=="
+  "resolved" "https://registry.npmjs.org/react-native-image-pan-zoom/-/react-native-image-pan-zoom-2.1.12.tgz"
+  "version" "2.1.12"
+
+"react-native-image-view@^2.1.9":
+  "integrity" "sha512-+DA/+tLM7KHaLs41Hdd+m5UpGX2qtEdMamMZCsXCsJ5J6RwWrqBXQrGVB9Op7dIkZW2DDRVKZTP/FuSNEGtzJg=="
+  "resolved" "https://registry.npmjs.org/react-native-image-view/-/react-native-image-view-2.1.9.tgz"
+  "version" "2.1.9"
 
 "react-native-iphone-x-helper@^1.0.3", "react-native-iphone-x-helper@^1.3.0":
   "integrity" "sha512-HOf0jzRnq2/aFUcdCJ9w9JGzN3gdEg0zFE4FyYlp4jtidqU03D5X7ZegGKfT1EWteR0gPBGp9ye5T5FvSWi9Yg=="
@@ -7162,7 +7204,7 @@
     "prop-types" "^15.6.2"
     "react-native-animatable" "1.3.3"
 
-"react-native-reanimated@>= 1.0.0", "react-native-reanimated@~2.1.0":
+"react-native-reanimated@^2.0.0", "react-native-reanimated@>= 1.0.0", "react-native-reanimated@>=2.0.0-rc.0", "react-native-reanimated@~2.1.0":
   "integrity" "sha512-tlPvvcdf+X7HGQ7g/7npBFhwMznfdk7MHUc9gUB/kp2abSscXNe/kOVKlrNEOO4DS11rNOXc+llFxVFMuNk0zA=="
   "resolved" "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-2.1.0.tgz"
   "version" "2.1.0"
@@ -7171,6 +7213,15 @@
     "fbjs" "^3.0.0"
     "mockdate" "^3.0.2"
     "string-hash-64" "^1.0.3"
+
+"react-native-redash@^16.0.8":
+  "integrity" "sha512-9yTpeabkAoWASzmhEkynNh1wDTrLVtbE+x9dOV1DI23vRa7k1HI+Y1jOUNOPyRG2ddgHampNq9iHtsLnkK4mtw=="
+  "resolved" "https://registry.npmjs.org/react-native-redash/-/react-native-redash-16.0.11.tgz"
+  "version" "16.0.11"
+  dependencies:
+    "abs-svg-path" "^0.1.1"
+    "normalize-svg-path" "^1.0.1"
+    "parse-svg-path" "^0.1.2"
 
 "react-native-safe-area-context@>= 0.6.0", "react-native-safe-area-context@3.2.0":
   "integrity" "sha512-k2Nty4PwSnrg9HwrYeeE+EYqViYJoOFwEy9LxL5RIRfoqxAq/uQXNGwpUg2/u4gnKpBbEPa9eRh15KKMe/VHkA=="
@@ -7195,7 +7246,7 @@
   "resolved" "https://registry.npmjs.org/react-native-wheel-scrollview-picker/-/react-native-wheel-scrollview-picker-1.0.2.tgz"
   "version" "1.0.2"
 
-"react-native@*", "react-native@>=0.42.0", "react-native@>=0.48.4", "react-native@>=0.50.0", "react-native@>=0.57", "react-native@>=0.59", "react-native@>=0.62.0-rc.0 <0.64.0", "react-native@https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz":
+"react-native@*", "react-native@>=0.42.0", "react-native@>=0.44.0", "react-native@>=0.48.4", "react-native@>=0.50.0", "react-native@>=0.54.0", "react-native@>=0.57", "react-native@>=0.59", "react-native@>=0.62.0-rc.0 <0.64.0", "react-native@https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz":
   "integrity" "sha512-3jHI2YufrJi7eIABRf/DN/I2yOkmIZ0vAyezTz+PAUJiEs4v//5LLojWEU+W53AZsnuaEMcl/4fVy4bd+OuUbA=="
   "resolved" "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz"
   "version" "0.63.2"
@@ -7261,7 +7312,7 @@
     "react-is" "^16.8.6"
     "scheduler" "^0.17.0"
 
-"react@*", "react@^16.0", "react@^16.0.0", "react@^16.0.0 || ^17.0.0", "react@^16.8.0", "react@>=16.0.0", "react@16.13.1", "react@17.0.2":
+"react@*", "react@^16.0", "react@^16.0.0", "react@^16.0.0 || ^17.0.0", "react@^16.8.0", "react@>=15.2.0", "react@>=16.0.0", "react@>=16.8.0", "react@16.13.1", "react@17.0.2":
   "integrity" "sha512-YMZQQq32xHLX0bz5Mnibv1/LHb3Sqzngu7xstSM+vrkE5Kzr9xE0yMByK5kMoTK30YVJE61WfbxIFFvfeDKT1w=="
   "resolved" "https://registry.npmjs.org/react/-/react-16.13.1.tgz"
   "version" "16.13.1"
@@ -8182,6 +8233,11 @@
   dependencies:
     "has-flag" "^4.0.0"
     "supports-color" "^7.0.0"
+
+"svg-arc-to-cubic-bezier@^3.0.0":
+  "integrity" "sha512-djbJ/vZKZO+gPoSDThGNpKDO+o+bAeA4XQKovvkNCqnIS2t+S4qnLAGQhyyrulhCFRl1WWzAp0wUDV8PpTVU3g=="
+  "resolved" "https://registry.npmjs.org/svg-arc-to-cubic-bezier/-/svg-arc-to-cubic-bezier-3.2.0.tgz"
+  "version" "3.2.0"
 
 "symbol-tree@^3.2.2":
   "integrity" "sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw=="
