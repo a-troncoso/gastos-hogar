@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react"
+import React, { useState, useCallback, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,30 +6,30 @@ import {
   FlatList,
   Text,
   TouchableOpacity,
-  Image
-} from "react-native"
-import { useFocusEffect } from "@react-navigation/native"
-import { FontAwesome } from "@expo/vector-icons"
-import Hero from "../components/atoms/Hero"
-import ModalPicture from "../components/atoms/ModalPicture"
-import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator"
+  Image,
+} from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { FontAwesome } from "@expo/vector-icons";
+import Hero from "../components/atoms/Hero";
+import ModalPicture from "../components/atoms/ModalPicture";
+import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator";
 
-import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
-import { toCurrencyFormat } from "../utils/number"
-import { formatDate } from "../utils/date"
+import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
+import { toCurrencyFormat } from "../utils/number";
+import { formatDate } from "../utils/date";
 
-import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions"
-import color from "../assets/colors"
+import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions";
+import color from "../assets/colors";
 
 const PurchaseIcon = props => {
-  const { icon } = props
+  const { icon } = props;
 
   return (
     <View style={purchaseIconStyles.purchaseIcon}>
       <FontAwesome name={icon} size={36} color={color.blue["0"]} />
     </View>
-  )
-}
+  );
+};
 
 const purchaseIconStyles = StyleSheet.create({
   purchaseIcon: {
@@ -42,16 +42,16 @@ const purchaseIconStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 16,
-    color: color.blue["0"]
-  }
-})
+    color: color.blue["0"],
+  },
+});
 
 const PurchaseItem = props => {
-  const { image, date, amount, subcategory, onPress, onPressImage } = props
+  const { image, date, amount, subcategory, onPress, onPressImage } = props;
 
   const handlePressPurchaseImage = () => {
-    onPressImage({ image })
-  }
+    onPressImage({ image });
+  };
 
   return (
     <>
@@ -87,15 +87,15 @@ const PurchaseItem = props => {
         </TouchableOpacity>
       </View>
     </>
-  )
-}
+  );
+};
 
 const PurchasesList = props => {
-  const { purchases, onPressPurchase, onPressImage } = props
+  const { purchases, onPressPurchase, onPressImage } = props;
 
   const handlePressPurchase = id => {
-    onPressPurchase(id)
-  }
+    onPressPurchase(id);
+  };
 
   return (
     <FlatList
@@ -115,73 +115,77 @@ const PurchasesList = props => {
         </View>
       )}
     ></FlatList>
-  )
-}
+  );
+};
 
 const Expenses = props => {
-  const { navigation, route } = props
-  const categoryId = route.params.categoryId
-  const date = route.params.date
-  const mode = route.params.mode
+  const { navigation, route } = props;
+  const categoryId = route.params.categoryId;
+  const date = route.params.date;
+  const mode = route.params.mode;
 
-  const [purchases, setPurchases] = useState([])
-  const [dateSelected, setDateSelected] = useState(date)
-  const [category, setCategory] = useState({ name: "" })
+  const [purchases, setPurchases] = useState([]);
+  const [dateSelected, setDateSelected] = useState(date);
+  const [category, setCategory] = useState({ name: "" });
 
   useFocusEffect(
     useCallback(() => {
-      fetchPurchases(dateSelected, mode, categoryId)
+      fetchPurchases(dateSelected, mode, categoryId);
     }, [])
-  )
+  );
 
   // useEffect(() => {
   //   navigation.setOptions({ title: "Updated!" })
   // }, [])
 
   useEffect(() => {
-    fetchCategoryDetail(categoryId)
-  }, [categoryId])
+    fetchCategoryDetail(categoryId);
+  }, [categoryId]);
 
   useEffect(() => {
-    fetchPurchases(dateSelected, mode, categoryId)
-  }, [dateSelected])
+    fetchPurchases(dateSelected, mode, categoryId);
+  }, [dateSelected]);
 
   const fetchCategoryDetail = async categoryId => {
-    const categoryDetail = await fetchCategoryById(categoryId)
+    const categoryDetail = await fetchCategoryById(categoryId);
 
     setCategory(prev => ({
       ...prev,
-      name: categoryDetail.name
-    }))
-  }
+      name: categoryDetail.name,
+    }));
+  };
 
   const fetchPurchases = async (date, mode, categoryId) => {
-    const purchases = await fetchPurchasesByCategory({ date, mode, categoryId })
-    setPurchases(purchases)
-  }
+    const purchases = await fetchPurchasesByCategory({
+      date,
+      mode,
+      categoryId,
+    });
+    setPurchases(purchases);
+  };
 
   const handlePressPurchase = id => {
     navigation.push("ExpenseDetail", {
       expenseId: id,
-      mode: "EXISTING_EXPENSE"
-    })
-  }
+      mode: "EXISTING_EXPENSE",
+    });
+  };
 
   const handleChangeDateNavigation = date => {
-    setDateSelected(date)
-  }
+    setDateSelected(date);
+  };
 
-  const [isVisibleModalPicture, setIsVisibleModalPicture] = useState(false)
-  const [imageModal, setImageModal] = useState(null)
+  const [isVisibleModalPicture, setIsVisibleModalPicture] = useState(false);
+  const [imageModal, setImageModal] = useState(null);
 
   const handleBackdropPressModalPic = () => {
-    setIsVisibleModalPicture(false)
-  }
+    setIsVisibleModalPicture(false);
+  };
 
   const handlePressImage = ({ image }) => {
-    setImageModal(image)
-    setIsVisibleModalPicture(true)
-  }
+    setImageModal(image);
+    setIsVisibleModalPicture(true);
+  };
 
   return (
     <>
@@ -193,10 +197,7 @@ const Expenses = props => {
             textAlign: "center",
             fontSize: 18,
             fontWeight: "bold",
-            lineHeight: 18
-            // borderColor: "blue",
-            // borderWidth: 1,
-            // borderStyle: "solid"
+            lineHeight: 18,
           }}
         >
           {category.name}
@@ -221,38 +222,38 @@ const Expenses = props => {
           </SafeAreaView>
         </View>
       </View>
-      <ModalPicture
+      {/* <ModalPicture
         source={{ uri: imageModal }}
         isModalVisible={isVisibleModalPicture}
         onBackdropPress={handleBackdropPressModalPic}
-      />
+      /> */}
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   purchases: {
     flex: 1,
-    backgroundColor: color.blue["90"]
+    backgroundColor: color.blue["90"],
   },
   hero: {
-    marginBottom: 8
+    marginBottom: 8,
   },
   purchasesListView: {
     flex: 1,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   purchaseView: {
     height: 82,
     flex: 1,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
     // borderColor: "black",
     // borderStyle: "solid",
     // borderWidth: 1
   },
   purchaseTouchableInfoView: {
-    flex: 1
+    flex: 1,
   },
   purchaseImageView: {
     width: 82,
@@ -267,12 +268,12 @@ const styles = StyleSheet.create({
     backgroundColor: color.gray[0],
     backgroundColor: color.gray[0],
     borderColor: color.blue[60],
-    borderStyle: "solid"
+    borderStyle: "solid",
   },
   purchaseImage: {
     width: "100%",
     height: "100%",
-    borderRadius: 16
+    borderRadius: 16,
   },
   purchaseInfoView: {
     justifyContent: "space-between",
@@ -286,33 +287,33 @@ const styles = StyleSheet.create({
     backgroundColor: color.gray[0],
     borderColor: color.blue[60],
     borderStyle: "solid",
-    borderWidth: 1
+    borderWidth: 1,
   },
   purchaseDateView: {
     // padding: 8,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   purchaseDate: {
     fontSize: 16,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   purchaseExtraInfo: {
     alignSelf: "stretch",
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center"
+    alignItems: "center",
   },
   purchasesListViewPurchase: {
-    marginBottom: 8
+    marginBottom: 8,
   },
   purchaseSubcategory: {
     fontWeight: "bold",
-    color: color.yellow[0]
+    color: color.yellow[0],
   },
   purchaseAmount: {
     fontWeight: "bold",
-    color: color.red[0]
-  }
-})
+    color: color.red[0],
+  },
+});
 
-export default Expenses
+export default Expenses;

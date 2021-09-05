@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { StyleSheet, View } from "react-native";
 import Row from "../Row";
 
+import color from "../../../assets/colors";
+
 const MonthView = props => {
   const DaysTable = props => {
     const { firstDay, lastDayData, relevantDays } = props;
@@ -53,7 +55,7 @@ const MonthView = props => {
         day += 1;
       }
       monthDataStructure = monthDataStructure.concat([
-        Array.from(weekDataStructure)
+        Array.from(weekDataStructure),
       ]);
       weekDataStructure.fill(undefined);
 
@@ -70,7 +72,7 @@ const MonthView = props => {
         }
 
         monthDataStructure = monthDataStructure.concat([
-          Array.from(weekDataStructure)
+          Array.from(weekDataStructure),
         ]);
         weekDataStructure.fill(undefined);
       }
@@ -87,6 +89,7 @@ const MonthView = props => {
               d ? { label: d.getDate(), score: d.score } : ""
             )}
             isLastRow={i === monthData.length - 1}
+            cellBorderColor={color["blue"][30]}
           />
         ))}
       </View>
@@ -101,16 +104,20 @@ const MonthView = props => {
 
   const firstDayData = {
     dayOfWeek: firstDay.getDay(),
-    fullData: firstDay
+    fullData: firstDay,
   };
   const lastDayData = {
     dayOfWeek: lastDay.getDay(),
-    fullData: lastDay
+    fullData: lastDay,
   };
 
   return (
     <View style={styles.main}>
-      <Row labels={["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"]} />
+      <Row
+        labels={["LUN", "MAR", "MIE", "JUE", "VIE", "SAB", "DOM"]}
+        cellBackgroundColor={color["blue"][50]}
+        cellBorderColor={color["blue"][20]}
+      />
       <DaysTable
         firstDay={firstDayData}
         lastDayData={lastDayData}
@@ -125,7 +132,7 @@ const styles = StyleSheet.create({
     // borderColor: "blue",
     // borderStyle: "solid",
     // borderWidth: 1
-  }
+  },
 });
 
 export default MonthView;

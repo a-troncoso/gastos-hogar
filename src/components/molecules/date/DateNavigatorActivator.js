@@ -1,21 +1,25 @@
-import React, { useState } from "react"
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native"
-import DateModalSelector from "../../atoms/DateModalSelector"
+import React, { useState } from "react";
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import DateModalSelector from "../../atoms/DateModalSelector";
 
-import color from "../../../assets/colors"
-import { monthName } from "../../../utils/date"
+import color from "../../../assets/colors";
+import { monthName } from "../../../utils/date";
 
-const DayText = () => {
+const DayText = ({ date }) => {
   return (
     <>
-      <Text>20</Text>
-      <View>
-        <Text>Septiembre</Text>
-        <Text>2020</Text>
+      <Text>{date.getDate()}</Text>
+      <View style={{ flexDirection: "row" }}>
+        <Text
+          style={{ textTransform: "capitalize", marginRight: 4, fontSize: 12 }}
+        >
+          {monthName(date.getMonth())}
+        </Text>
+        <Text style={{ fontSize: 12 }}>{date.getFullYear()}</Text>
       </View>
     </>
-  )
-}
+  );
+};
 
 const MonthText = ({ date }) => {
   return (
@@ -24,42 +28,41 @@ const MonthText = ({ date }) => {
         {monthName(date.getMonth())}
       </Text>
     </>
-  )
-}
+  );
+};
 
-const YearText = () => {
+const YearText = ({ date }) => {
   return (
     <>
-      <Text>2020</Text>
+      <Text>{date.getFullYear()}</Text>
     </>
-  )
-}
+  );
+};
 
 const DateNavigatorActivator = props => {
-  const { mode, date, onChange } = props
+  const { mode, date, onChange } = props;
 
-  const [isDateModalSelectorVisible, setIsDateModalSelectorVisible] = useState(
-    false
-  )
+  const [isDateModalSelectorVisible, setIsDateModalSelectorVisible] =
+    useState(false);
 
   const modes = date => ({
     DAY: <DayText date={date} />,
     MONTH: <MonthText date={date} />,
-    YEAR: <YearText date={date} />
-  })
+    YEAR: <YearText date={date} />,
+  });
 
   const handleOpenDatePicker = () => {
-    setIsDateModalSelectorVisible(true)
-  }
+    setIsDateModalSelectorVisible(true);
+  };
 
   const handleChangeSelectedDate = date => {
-    onChange(date)
-    setIsDateModalSelectorVisible(false)
-  }
+    onChange(date);
+    setIsDateModalSelectorVisible(false);
+  };
 
   const handleBackdropPress = () => {
-    setIsDateModalSelectorVisible(false)
-  }
+    setIsDateModalSelectorVisible(false);
+  };
 
   return (
     <>
@@ -81,8 +84,8 @@ const DateNavigatorActivator = props => {
         />
       )}
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   mainView: {},
@@ -92,8 +95,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     backgroundColor: color.blue["30"],
-    borderRadius: 8
-  }
-})
+    borderRadius: 8,
+  },
+});
 
-export default DateNavigatorActivator
+export default DateNavigatorActivator;

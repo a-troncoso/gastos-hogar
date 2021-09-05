@@ -7,18 +7,16 @@ import YearView from "./YearView";
 const Calendar = props => {
   const { view, month, year, relevantDays, relevantMonths } = props;
 
-  const [processedRelevantDays, setProcessedRelevantDays] = useState(
-    relevantDays
-  );
-  const [processedRelevantMonths, setProcessedRelevantMonths] = useState(
-    relevantMonths
-  );
+  const [processedRelevantDays, setProcessedRelevantDays] =
+    useState(relevantDays);
+  const [processedRelevantMonths, setProcessedRelevantMonths] =
+    useState(relevantMonths);
 
   useEffect(() => {
     const _processedRelevantDays = relevantDays.map(rd => ({
       day: rd.day,
       month: rd.month,
-      relevance: calculatedRelevance(rd.relevance)
+      relevance: calculatedRelevance(rd.relevance),
     }));
     setProcessedRelevantDays(_processedRelevantDays);
   }, [relevantDays]);
@@ -27,7 +25,7 @@ const Calendar = props => {
     const _processedRelevantMonths = relevantMonths.map(rd => ({
       day: rd.day,
       month: rd.month,
-      relevance: calculatedRelevance(rd.relevance)
+      relevance: calculatedRelevance(rd.relevance),
     }));
     setProcessedRelevantMonths(_processedRelevantMonths);
   }, [relevantMonths]);
@@ -59,6 +57,7 @@ const Calendar = props => {
         break;
       }
     }
+
     return finalRelevance;
   };
 
@@ -71,7 +70,7 @@ const Calendar = props => {
           relevantDays={processedRelevantDays}
         />
       ),
-      year: <YearView year={year} relevantMonths={processedRelevantMonths} />
+      year: <YearView year={year} relevantMonths={processedRelevantMonths} />,
     }[view];
   };
 
@@ -83,7 +82,7 @@ const styles = StyleSheet.create({
     // borderColor: "blue",
     // borderStyle: "solid",
     // borderWidth: 1
-  }
+  },
 });
 
 export default Calendar;

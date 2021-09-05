@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { StyleSheet, View } from "react-native";
 import Row from "../Row";
 
+import color from "../../../assets/colors";
+
 const YearView = props => {
   const MonthsTable = props => {
     const { relevantMonths } = props;
@@ -22,7 +24,7 @@ const YearView = props => {
       "Sep",
       "Oct",
       "Nov",
-      "Dic"
+      "Dic",
     ];
 
     useEffect(() => {
@@ -39,10 +41,12 @@ const YearView = props => {
       ms.forEach(r => {
         r.forEach(m => {
           relevantMonths.forEach(rm => {
+            // TODO: Revisar esto
             if (rm.month === m.month) m.score = rm.relevance;
           });
         });
       });
+      console.log("ms", ms);
       return ms;
     };
 
@@ -60,7 +64,7 @@ const YearView = props => {
         }
 
         yearDataStructure = yearDataStructure.concat([
-          Array.from(rowDataStructure)
+          Array.from(rowDataStructure),
         ]);
         rowDataStructure.fill(undefined);
       }
@@ -76,6 +80,7 @@ const YearView = props => {
               return { label: monthLabels[m.month], score: m.score };
             })}
             isLastRow={i === yearData.length - 1}
+            cellBorderColor={color["blue"][30]}
           />
         ))}
       </View>
@@ -96,7 +101,7 @@ const styles = StyleSheet.create({
     // borderColor: "blue",
     // borderStyle: "solid",
     // borderWidth: 1
-  }
+  },
 });
 
 export default YearView;

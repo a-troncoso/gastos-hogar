@@ -8,21 +8,21 @@ const blue = {
   60: "#D9EDFF",
   70: "#E7F3FF",
   80: "#EFF8FF",
-  90: "#F4FAFF"
-}
+  90: "#F4FAFF",
+};
 
 const red = {
   0: "#FF2200",
-  10: "",
+  10: "#FF462A",
   20: "#FF725D",
-  30: "",
-  40: "",
-  50: "",
-  60: "",
-  70: "",
-  80: "",
-  90: ""
-}
+  30: "#FF9889",
+  40: "#FFB7AB",
+  50: "#FFCEC6",
+  60: "#FFDED9",
+  70: "#FFEAE7",
+  80: "#FFF1EF",
+  90: "#FFF6F4",
+};
 
 const yellow = {
   0: "#FFAE00",
@@ -34,21 +34,21 @@ const yellow = {
   60: "#FFF3D9",
   70: "#FFF7E7",
   80: "#FFFAEF",
-  90: "#FFFCF4"
-}
+  90: "#FFFCF4",
+};
 
 const green = {
   0: "#88FF00",
-  10: "",
-  20: "",
-  30: "",
-  40: "",
-  50: "",
-  60: "",
+  10: "#9EFF2E",
+  20: "#B5FF60",
+  30: "#C9FF8B",
+  40: "#D9FFAD",
+  50: "#E5FFC7",
+  60: "#EEFFDA",
   70: "",
   80: "",
-  90: ""
-}
+  90: "",
+};
 
 const gray = {
   0: "#ffffff",
@@ -65,19 +65,19 @@ const gray = {
   110: "#5D5D64",
   120: "#403F44",
   130: "#201F22",
-  140: "#000000"
-}
+  140: "#000000",
+};
 
 const blueTransparent = {
   90: {
     90: `${blue["90"]}E6`,
-    30: `${blue["90"]}4D`
-  }
-}
+    30: `${blue["90"]}4D`,
+  },
+};
 
 const transparent = {
-  blue: blueTransparent
-}
+  blue: blueTransparent,
+};
 
 export default {
   blue,
@@ -85,5 +85,5 @@ export default {
   yellow,
   green,
   gray,
-  transparent
-}
+  transparent,
+};

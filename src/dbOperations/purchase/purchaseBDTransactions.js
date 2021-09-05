@@ -1,11 +1,11 @@
-import { EXPENSE_QUERIES } from "./purchaseQueries"
-import { formattedMonthNumber } from "../../utils/date"
-import { fetchCategoryById } from "../category/categoryBDTransactions"
-import { fetchSubcategoryById } from "../subcategory/subcategoryBDTransactions"
-import { connectedDB } from "../utils/database"
+import { EXPENSE_QUERIES } from "./purchaseQueries";
+import { formattedMonthNumber } from "../../utils/date";
+import { fetchCategoryById } from "../category/categoryBDTransactions";
+import { fetchSubcategoryById } from "../subcategory/subcategoryBDTransactions";
+import { connectedDB } from "../utils/database";
 
-const dbName = "db.GastosHogar"
-const connDB = connectedDB({ engine: "sqlite", name: dbName })
+const dbName = "db.GastosHogar";
+const connDB = connectedDB({ engine: "sqlite", name: dbName });
 
 export const insertExpense = (
   pictures,
@@ -22,34 +22,34 @@ export const insertExpense = (
         EXPENSE_QUERIES.INSERT_EXPENSE,
         [categoryId, subcategoryId, amount, description, date, userId],
         async (_, result) => {
-          const expenseId = result.insertId
+          const expenseId = result.insertId;
 
           if (pictures.length > 0) {
             insertExpenseImages(expenseId, pictures)
               .then(result => {
-                resolve(result)
+                resolve(result);
               })
               .catch(error => {
                 console.error(
                   "Error inserting Expense Image in Database: ",
                   error
-                )
+                );
 
-                reject(error)
-              })
-          } else resolve(result)
+                reject(error);
+              });
+          } else resolve(result);
         },
         error => {
-          console.error("Error inserting Expense in Database: ", error)
-          reject(error)
+          console.error("Error inserting Expense in Database: ", error);
+          reject(error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 const insertExpenseImages = (expenseId, pictures) => {
-  const variables = pictures.map(p => [expenseId, p]).flat()
+  const variables = pictures.map(p => [expenseId, p]).flat();
 
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
@@ -57,24 +57,24 @@ const insertExpenseImages = (expenseId, pictures) => {
         EXPENSE_QUERIES.INSERT_EXPENSE_IMAGES(pictures),
         [...variables],
         (_, s) => {
-          resolve(s)
+          resolve(s);
         },
         error => {
-          reject(error)
+          reject(error);
           // TODO: This must be a rollback
-          console.error("Error inserting Purchase Images in Database: ", error)
+          console.error("Error inserting Purchase Images in Database: ", error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const fetchTotalExpensesByCategory = ({ date, mode }) => {
   const filterDateByMode = date => ({
     day: date.getFullYear(),
     month: date.getMonth() + 1,
-    year: date.getFullYear()
-  })
+    year: date.getFullYear(),
+  });
 
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
@@ -82,8 +82,8 @@ export const fetchTotalExpensesByCategory = ({ date, mode }) => {
         EXPENSE_QUERIES.SELECT_TOTAL_EXPENSES_BY_CATEGORY,
         [
           formattedMonthNumber(filterDateByMode(date)[mode], {
-            inTwoDigits: true
-          })
+            inTwoDigits: true,
+          }),
         ],
         (_, { rows }) => {
           resolve(
@@ -93,26 +93,26 @@ export const fetchTotalExpensesByCategory = ({ date, mode }) => {
                 name: r.name,
                 extraInfo: {
                   currentAmount: r.amount,
-                  maximumStop: r.maxAmountPerMonth
-                }
-              }
+                  maximumStop: r.maxAmountPerMonth,
+                },
+              };
             })
-          )
+          );
         },
         error => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const fetchPurchasesByCategory = ({ date, mode, categoryId }) => {
   const filterDateByMode = date => ({
     day: date.getFullYear(),
     month: date.getMonth() + 1,
-    year: date.getFullYear()
-  })
+    year: date.getFullYear(),
+  });
 
   return new Promise(resolve => {
     connDB.transaction(tx => {
@@ -120,20 +120,20 @@ export const fetchPurchasesByCategory = ({ date, mode, categoryId }) => {
         EXPENSE_QUERIES.SELECT_EXPENSES_BY_CATEGORY,
         [
           formattedMonthNumber(filterDateByMode(date)[mode], {
-            inTwoDigits: true
+            inTwoDigits: true,
           }),
-          categoryId
+          categoryId,
         ],
         (_, { rows }) => {
-          resolve(rows._array)
+          resolve(rows._array);
         },
         error => {
-          console.error("Error fetching SELECT_EXPENSES_BY_CATEGORY: ", error)
+          console.error("Error fetching SELECT_EXPENSES_BY_CATEGORY: ", error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const fetchPurchaseById = purchaseId => {
   return new Promise(resolve => {
@@ -151,38 +151,38 @@ export const fetchPurchaseById = purchaseId => {
               .filter(({ imagePath }) => imagePath !== null)
               .map(({ imagePath }) => imagePath),
             subcategoryId: rows._array[0].subcategoryId,
-            description: rows._array[0].description
-          }
+            description: rows._array[0].description,
+          };
 
-          const resultWithProcessedIds = await processIds(result)
-          resolve(resultWithProcessedIds)
+          const resultWithProcessedIds = await processIds(result);
+          resolve(resultWithProcessedIds);
         },
         error => {
-          console.error("Error fetching PURCHASE_BY_ID: ", error)
+          console.error("Error fetching PURCHASE_BY_ID: ", error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 const processIds = async result => {
-  const categoryData = await fetchCategoryById(result.categoryId)
-  const subcategoryData = await fetchSubcategoryById(result.subcategoryId)
+  const categoryData = await fetchCategoryById(result.categoryId);
+  const subcategoryData = await fetchSubcategoryById(result.subcategoryId);
 
-  const dataProcesed = result
+  const dataProcesed = result;
   dataProcesed.category = {
     id: dataProcesed.categoryId,
-    name: categoryData ? categoryData.name : undefined
-  }
+    name: categoryData ? categoryData.name : undefined,
+  };
   dataProcesed.subcategory = {
     id: dataProcesed.subcategoryId,
-    name: subcategoryData ? subcategoryData.name : undefined
-  }
-  delete dataProcesed.categoryId
-  delete dataProcesed.subcategoryId
+    name: subcategoryData ? subcategoryData.name : undefined,
+  };
+  delete dataProcesed.categoryId;
+  delete dataProcesed.subcategoryId;
 
-  return dataProcesed
-}
+  return dataProcesed;
+};
 
 export const updateExpense = (
   expenseId,
@@ -199,32 +199,32 @@ export const updateExpense = (
           description,
           date,
           userId,
-          expenseId
+          expenseId,
         ],
         (_, s) => {
           if (pictures.length > 0) {
             insertExpenseImages(expenseId, pictures)
               .then(result => {
-                resolve(result)
+                resolve(result);
               })
               .catch(error => {
                 console.error(
                   "Error inserting Expense Image in Database: ",
                   error
-                )
+                );
 
-                reject(error)
-              })
-          } else resolve(s)
+                reject(error);
+              });
+          } else resolve(s);
         },
         (_, error) => {
-          reject(error)
-          console.error("Error fetching UPDATE_PURCHASE_AMOUNT: ", error)
+          reject(error);
+          console.error("Error fetching UPDATE_PURCHASE_AMOUNT: ", error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const patchPurchaseAmount = (purchaseId, amount) => {
   return new Promise(resolve => {
@@ -233,15 +233,15 @@ export const patchPurchaseAmount = (purchaseId, amount) => {
         EXPENSE_QUERIES.UPDATE_PURCHASE_AMOUNT,
         [parseInt(amount, 10), purchaseId],
         (_, s) => {
-          resolve(s)
+          resolve(s);
         },
         (_, error) => {
-          console.error("Error fetching UPDATE_PURCHASE_AMOUNT: ", error)
+          console.error("Error fetching UPDATE_PURCHASE_AMOUNT: ", error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const patchPurchaseCategory = (purchaseId, categoryId) => {
   return new Promise(resolve => {
@@ -250,32 +250,32 @@ export const patchPurchaseCategory = (purchaseId, categoryId) => {
         EXPENSE_QUERIES.UPDATE_PURCHASE_CATEGORY,
         [categoryId, purchaseId],
         (_, s) => {
-          resolve(s)
+          resolve(s);
         },
         (_, error) => {
-          console.error("Error fetching UPDATE_PURCHASE_CATEGORY: ", error)
+          console.error("Error fetching UPDATE_PURCHASE_CATEGORY: ", error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const fetchTotalAmountByDateCriteria = ({ ...dateOptions }) => {
   const queryStatementByDateMode = {
     day: "TOTAL_AMOUNT_BY_DAY",
     month: "TOTAL_AMOUNT_BY_MONTH",
-    year: "TOTAL_AMOUNT_BY_YEAR"
-  }
+    year: "TOTAL_AMOUNT_BY_YEAR",
+  };
 
   const params = {
     day: [
       "" + dateOptions.date.day,
       dateOptions.date.month,
-      "" + dateOptions.date.year
+      "" + dateOptions.date.year,
     ],
     month: [dateOptions.date.month, "" + dateOptions.date.year],
-    year: ["" + dateOptions.date.year]
-  }
+    year: ["" + dateOptions.date.year],
+  };
 
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
@@ -283,16 +283,16 @@ export const fetchTotalAmountByDateCriteria = ({ ...dateOptions }) => {
         EXPENSE_QUERIES[queryStatementByDateMode[dateOptions.mode]],
         params[dateOptions.mode],
         (_, { rows }) => {
-          if (rows._array.length === 1) resolve(rows._array[0])
-          else reject("Result has no 1 rows")
+          if (rows._array.length === 1) resolve(rows._array[0]);
+          else reject("Result has no 1 rows");
         },
         (_, error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const fetchTotalAmountByDateCriteriaPerCategory = ({
   ...dateOptions
@@ -300,18 +300,18 @@ export const fetchTotalAmountByDateCriteriaPerCategory = ({
   const queryStatementByDateMode = {
     day: "TOTAL_AMOUNT_BY_DAY_PER_CATEGORY",
     month: "TOTAL_AMOUNT_BY_MONTH_PER_CATEGORY",
-    year: "TOTAL_AMOUNT_BY_YEAR_PER_CATEGORY"
-  }
+    year: "TOTAL_AMOUNT_BY_YEAR_PER_CATEGORY",
+  };
 
   const params = {
     day: [
       "" + dateOptions.date.day,
       dateOptions.date.month,
-      "" + dateOptions.date.year
+      "" + dateOptions.date.year,
     ],
     month: [dateOptions.date.month, "" + dateOptions.date.year],
-    year: ["" + dateOptions.date.year]
-  }
+    year: ["" + dateOptions.date.year],
+  };
 
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
@@ -321,34 +321,34 @@ export const fetchTotalAmountByDateCriteriaPerCategory = ({
         (_, { rows }) => {
           const parsed = rows._array.map(r => ({
             category: r.name,
-            totalAmount: r.totalAmount
-          }))
+            totalAmount: r.totalAmount,
+          }));
 
-          resolve(parsed)
+          resolve(parsed);
         },
         (_, error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const fetchAmountsByDateCriteria = ({ ...dateOptions }) => {
   const queryStatementByDateMode = {
     month: "TOTAL_AMOUNT_BY_MONTH_PER_DAY",
-    year: "TOTAL_AMOUNT_BY_YEAR_PER_MONTH"
-  }
+    year: "TOTAL_AMOUNT_BY_YEAR_PER_MONTH",
+  };
 
   const params = {
     month: [dateOptions.date.month, "" + dateOptions.date.year],
-    year: ["" + dateOptions.date.year]
-  }
+    year: ["" + dateOptions.date.year],
+  };
 
   if (dateOptions.mode === "day")
     return new Promise(resolve => {
-      resolve([])
-    })
+      resolve([]);
+    });
 
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
@@ -356,15 +356,15 @@ export const fetchAmountsByDateCriteria = ({ ...dateOptions }) => {
         EXPENSE_QUERIES[queryStatementByDateMode[dateOptions.mode]],
         params[dateOptions.mode],
         (_, { rows }) => {
-          resolve(rows._array)
+          resolve(rows._array);
         },
         (_, error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const deleteExpense = expenseId => {
   return new Promise((resolve, reject) => {
@@ -373,13 +373,13 @@ export const deleteExpense = expenseId => {
         EXPENSE_QUERIES.DELETE_EXPENSE,
         [expenseId],
         (_, result) => {
-          if (result.rowsAffected === 1) resolve()
-          else reject("no hay filas actualizadas")
+          if (result.rowsAffected === 1) resolve();
+          else reject("no hay filas actualizadas");
         },
         (_, error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};

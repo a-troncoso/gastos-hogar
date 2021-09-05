@@ -1,34 +1,34 @@
-import React, { useContext } from "react"
-import { View, Text } from "react-native"
-import { NavigationContainer, DrawerActions } from "@react-navigation/native"
-import { createStackNavigator } from "@react-navigation/stack"
+import React, { useContext } from "react";
+import { View, Text } from "react-native";
+import { NavigationContainer, DrawerActions } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
-  DrawerItemList
-} from "@react-navigation/drawer"
+  DrawerItemList,
+} from "@react-navigation/drawer";
 
-import MenuButton from "../components/atoms/MenuButton/MenuButton"
-import ExpenseCategoryGate from "../pages/RegistryExpenseGate"
-import ExpenseDetail from "../pages/ExpenseDetail"
-import ScanExpense from "../pages/Scan"
-import HistoryGate from "../pages/HistoryGate"
-import Expenses from "../pages/Expenses"
-import CategoriesAdminGate from "../pages/CategoriesAdminGate"
-// import DashbhoardGate from "../pages/DashbhoardGate"
-import CategoryDetail from "../pages/CategoryDetail"
+import MenuButton from "../components/atoms/MenuButton/MenuButton";
+import ExpenseCategoryGate from "../pages/RegistryExpenseGate";
+import ExpenseDetail from "../pages/ExpenseDetail";
+import ScanExpense from "../pages/Scan";
+import HistoryGate from "../pages/HistoryGate";
+import Expenses from "../pages/Expenses";
+import CategoriesAdminGate from "../pages/CategoriesAdminGate";
+import DashbhoardGate from "../pages/DashbhoardGate";
+import CategoryDetail from "../pages/CategoryDetail";
 
-import ScreenNames from "./screenNames"
-import { EXPENSE_DETAIL_MODES } from "../domain/expense/expenseDetailModes"
-import color from "../assets/colors"
+import ScreenNames from "./screenNames";
+import { EXPENSE_DETAIL_MODES } from "../domain/expense/expenseDetailModes";
+import color from "../assets/colors";
 // import AppContext from "../state"
 
-const RootStack = createStackNavigator()
-const RegistryExpenseStack = createStackNavigator()
-const SummaryStack = createStackNavigator()
-const CategoryManagementStack = createStackNavigator()
-const DashboardStack = createStackNavigator()
-const Drawer = createDrawerNavigator()
+const RootStack = createStackNavigator();
+const RegistryExpenseStack = createStackNavigator();
+const SummaryStack = createStackNavigator();
+const CategoryManagementStack = createStackNavigator();
+const DashboardStack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
 const screenOptionsBase = navigation => ({
   title: "",
@@ -36,11 +36,11 @@ const screenOptionsBase = navigation => ({
     height: 80,
     backgroundColor: color.blue["50"],
     elevation: 0, // Android
-    shadowOpacity: 0 // iOS
+    shadowOpacity: 0, // iOS
   },
   headerTitleStyle: {
     fontSize: 20,
-    textAlign: "center"
+    textAlign: "center",
   },
   headerLeft: () => (
     <MenuButton
@@ -48,8 +48,8 @@ const screenOptionsBase = navigation => ({
       onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
     />
   ),
-  headerRight: () => <View></View>
-})
+  headerRight: () => <View></View>,
+});
 
 const Navigation = () => {
   // const appContext = useContext(AppContext)
@@ -63,8 +63,8 @@ const Navigation = () => {
           options={{ headerShown: false }}
         />
       </RootStack.Navigator>
-    )
-  }
+    );
+  };
 
   const MainStackScreenNavigator = () => {
     return (
@@ -72,11 +72,11 @@ const Navigation = () => {
         initialRouteName={ScreenNames.MainStackScreenNavigator.RegistryExpense}
         drawerContent={props => <DrawerContent {...props} />}
       >
-        {/* <Drawer.Screen
+        <Drawer.Screen
           name={ScreenNames.MainStackScreenNavigator.Dashboard}
           component={DashboardStackScreenNavigator}
           options={{ title: "Dashboard" }}
-        /> */}
+        />
         <Drawer.Screen
           name={ScreenNames.MainStackScreenNavigator.RegistryExpense}
           component={RegistryExpenseStackNavigator}
@@ -93,8 +93,8 @@ const Navigation = () => {
           options={{ title: "Administrar Categorías" }}
         />
       </Drawer.Navigator>
-    )
-  }
+    );
+  };
 
   const DrawerContent = props => {
     return (
@@ -105,20 +105,23 @@ const Navigation = () => {
         </Text> */}
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
-    )
-  }
+    );
+  };
 
-  // const DashboardStackScreenNavigator = () => {
-  //   return (
-  //     <DashboardStack.Navigator>
-  //       <DashboardStack.Screen
-  //         name={ScreenNames.DashboardStackScreenNavigator.DashbhoardGate}
-  //         component={DashbhoardGate}
-  //         options={{ ...screenOptionsBase, title: "Dashboard" }}
-  //       />
-  //     </DashboardStack.Navigator>
-  //   )
-  // }
+  const DashboardStackScreenNavigator = () => {
+    return (
+      <DashboardStack.Navigator>
+        <DashboardStack.Screen
+          name={ScreenNames.DashboardStackScreenNavigator.DashbhoardGate}
+          component={DashbhoardGate}
+          options={({ navigation }) => ({
+            ...screenOptionsBase(navigation),
+            title: "Dashboard",
+          })}
+        />
+      </DashboardStack.Navigator>
+    );
+  };
 
   const RegistryExpenseStackNavigator = () => {
     return (
@@ -128,7 +131,7 @@ const Navigation = () => {
           component={ExpenseCategoryGate}
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
-            title: "Registrar egreso"
+            title: "Registrar egreso",
           })}
         />
         <RegistryExpenseStack.Screen
@@ -136,7 +139,7 @@ const Navigation = () => {
           component={ExpenseDetail}
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
-            title: "Detalles de egreso"
+            title: "Detalles de egreso",
           })}
           initialParams={{ mode: EXPENSE_DETAIL_MODES.NEW_EXPENSE }}
         />
@@ -146,8 +149,8 @@ const Navigation = () => {
           options={{ headerShown: false }}
         />
       </RegistryExpenseStack.Navigator>
-    )
-  }
+    );
+  };
 
   const SummaryStackScreenNavigator = () => {
     return (
@@ -157,7 +160,7 @@ const Navigation = () => {
           component={HistoryGate}
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
-            title: "Historial"
+            title: "Historial",
           })}
         />
         <SummaryStack.Screen
@@ -165,7 +168,7 @@ const Navigation = () => {
           component={Expenses}
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
-            title: "Compras este Mes"
+            title: "Compras este Mes",
           })}
         />
         <RegistryExpenseStack.Screen
@@ -173,7 +176,7 @@ const Navigation = () => {
           component={ExpenseDetail}
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
-            title: "Detalles del egreso"
+            title: "Detalles del egreso",
           })}
           initialParams={{ mode: "EXISTING_EXPENSE" }}
         />
@@ -183,8 +186,8 @@ const Navigation = () => {
           options={{ headerShown: false }}
         />
       </SummaryStack.Navigator>
-    )
-  }
+    );
+  };
 
   const CategoryManagementStackScreenNavigator = () => {
     return (
@@ -197,7 +200,7 @@ const Navigation = () => {
           component={CategoriesAdminGate}
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
-            title: "Administrar Categorías"
+            title: "Administrar Categorías",
           })}
         />
         <CategoryManagementStack.Screen
@@ -207,18 +210,18 @@ const Navigation = () => {
           component={CategoryDetail}
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
-            title: "Detalle de la categoría"
+            title: "Detalle de la categoría",
           })}
         />
       </CategoryManagementStack.Navigator>
-    )
-  }
+    );
+  };
 
   return (
     <NavigationContainer>
       <RootStackScreenNavigator />
     </NavigationContainer>
-  )
-}
+  );
+};
 
-export default Navigation
+export default Navigation;

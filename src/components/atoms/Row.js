@@ -2,11 +2,20 @@ import React from "react";
 import PropTypes from "prop-types";
 import { StyleSheet, View, Text } from "react-native";
 
+import color from "../../assets/colors";
+
 const Row = props => {
-  const { labels, isLastRow } = props;
+  const { labels, isLastRow, cellBackgroundColor, cellBorderColor } = props;
+  console.log("labels", labels);
 
   const Cell = props => {
-    const { data, isLastCell } = props;
+    const {
+      data,
+      isFirstCell,
+      isLastCell,
+      cellBackgroundColor,
+      cellBorderColor,
+    } = props;
 
     if (typeof data === "object")
       return (
@@ -15,7 +24,13 @@ const Row = props => {
             styles.cell,
             data.score ? styles[`cellScore${data.score}`] : {},
             isLastCell ? styles.borderRight : {},
-            isLastRow ? styles.borderBottom : {}
+            isLastRow ? styles.borderBottom : {},
+            {
+              backgroundColor: cellBackgroundColor || "#fff",
+              borderColor: cellBorderColor,
+            },
+            isLastRow && isLastCell && { borderBottomEndRadius: 16 },
+            isLastRow && isFirstCell && { borderBottomStartRadius: 16 },
           ]}
         >
           <Text style={styles.cellLabel}>{data.label}</Text>
@@ -27,7 +42,12 @@ const Row = props => {
           style={[
             styles.cell,
             isLastCell ? styles.borderRight : {},
-            isLastRow ? styles.borderBottom : {}
+            isLastRow ? styles.borderBottom : {},
+            {
+              backgroundColor: cellBackgroundColor || "#fff",
+              borderColor: cellBorderColor,
+            },
+            isLastRow && isLastCell && { borderBottomEndRadius: 16 },
           ]}
         >
           <Text style={styles.cellLabel}>{data}</Text>
@@ -38,7 +58,14 @@ const Row = props => {
   return (
     <View style={styles.row}>
       {labels.map((l, i) => (
-        <Cell data={l} key={i} isLastCell={i === labels.length - 1} />
+        <Cell
+          data={l}
+          key={i}
+          cellBackgroundColor={cellBackgroundColor}
+          cellBorderColor={cellBorderColor}
+          isFirstCell={i === 0}
+          isLastCell={i === labels.length - 1}
+        />
       ))}
     </View>
   );
@@ -52,53 +79,52 @@ const styles = StyleSheet.create({
     flex: 0,
     height: "auto",
     alignSelf: "stretch",
-    flexDirection: "row"
+    flexDirection: "row",
   },
   cell: {
     flex: 1,
     padding: 4,
     justifyContent: "center",
     alignItems: "center",
-    borderColor: "black",
     borderStyle: "solid",
     borderTopWidth: 1,
     borderLeftWidth: 1,
     alignSelf: "stretch",
-    backgroundColor: "rgb(255, 255, 255)"
+    backgroundColor: "#fff",
   },
   fixedHeight: {
-    height: 40
+    height: 40,
   },
   cellScore1: {
-    backgroundColor: "rgba(0, 0, 0, 0.1)"
+    backgroundColor: color["green"][60],
   },
   cellScore2: {
-    backgroundColor: "rgba(0, 0, 0, 0.2)"
+    backgroundColor: color["green"][50],
   },
   cellScore3: {
-    backgroundColor: "rgba(0, 0, 0, 0.3)"
+    backgroundColor: color["green"][40],
   },
   cellScore4: {
-    backgroundColor: "rgba(0, 0, 0, 0.4)"
+    backgroundColor: color["yellow"][40],
   },
   cellScore5: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)"
+    backgroundColor: color["yellow"][30],
   },
   cellScore6: {
-    backgroundColor: "rgba(0, 0, 0, 0.6)"
+    backgroundColor: color["yellow"][20],
   },
   cellScore7: {
-    backgroundColor: "rgba(0, 0, 0, 0.7)"
+    backgroundColor: color["red"][20],
   },
   cellScore8: {
-    backgroundColor: "rgba(0, 0, 0, 0.8)"
+    backgroundColor: color["red"][10],
   },
   cellScore9: {
-    backgroundColor: "rgba(0, 0, 0, 0.9)"
+    backgroundColor: color["red"][0],
   },
   cellLabel: { color: "black" },
   borderRight: { borderRightWidth: 1 },
-  borderBottom: { borderBottomWidth: 1 }
+  borderBottom: { borderBottomWidth: 1 },
 });
 
 export default Row;

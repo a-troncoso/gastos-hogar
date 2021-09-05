@@ -5,22 +5,25 @@ import DateNavigator from "../components/molecules/date/DateNavigator";
 import DateFilterSelector from "../components/atoms/DateFilterSelector";
 import Chart from "../components/atoms/Chart";
 import Calendar from "../components/atoms/calendar/Calendar";
+import Hero from "../components/atoms/Hero";
+import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator";
 
 import alerts from "../components/atoms/Alerts";
+import color from "../assets/colors";
 
 import {
   fetchTotalAmountByDateCriteria,
   fetchTotalAmountByDateCriteriaPerCategory,
-  fetchAmountsByDateCriteria
+  fetchAmountsByDateCriteria,
 } from "../dbOperations/purchase/purchaseBDTransactions";
 
-import { currentDate, formattedMonth } from "../utils/date";
+import { currentDate, formattedMonthNumber } from "../utils/date";
 import { toCurrencyFormat } from "../utils/number";
 
 const dateTranslation = {
   day: "día",
   month: "mes",
-  year: "año"
+  year: "año",
 };
 
 const DashboardCard = props => {
@@ -31,9 +34,7 @@ const DashboardCard = props => {
         <Text style={dashboardCardStyles.dashboardCardValue}>
           {toCurrencyFormat(value)}
         </Text>
-        <Text style={dashboardCardStyles.dashboardCardDesc}>
-          {description.toUpperCase()}
-        </Text>
+        <Text style={dashboardCardStyles.dashboardCardDesc}>{description}</Text>
       </View>
     </View>
   );
@@ -45,20 +46,23 @@ const dashboardCardStyles = StyleSheet.create({
     // borderStyle: "solid",
     // borderWidth: 1,
     padding: 16,
-    backgroundColor: "gray"
+    backgroundColor: color["blue"][20],
+    borderRadius: 16,
   },
   dashboardCardContent: {
     // borderColor: "green",
     // borderStyle: "solid",
     // borderWidth: 1,
-    alignItems: "center"
+    alignItems: "center",
   },
   dashboardCardValue: {
-    fontSize: 24
+    fontSize: 32,
+    fontWeight: "bold",
   },
   dashboardCardDesc: {
-    fontSize: 16
-  }
+    fontSize: 16,
+    textTransform: "capitalize",
+  },
 });
 
 const DashbhoardGate = () => {
@@ -67,8 +71,10 @@ const DashbhoardGate = () => {
   // Almacena la fecha separada en mdía, mes, año como attrs. de objetos
   const [formatedDateSelected, setFormatedDateSelected] = useState({
     day: dateSelected.getDate(),
-    month: formattedMonth(dateSelected.getMonth(), true),
-    year: dateSelected.getFullYear()
+    month: formattedMonthNumber(dateSelected.getMonth() + 1, {
+      inTwoDigits: true,
+    }),
+    year: dateSelected.getFullYear(),
   });
   const [totalAmount, setTotalAmount] = useState(0);
   const [amountsPerCategory, setAmountsPerCategory] = useState([]);
@@ -84,8 +90,10 @@ const DashbhoardGate = () => {
   useEffect(() => {
     const _formatedDateSelected = {
       day: dateSelected.getDate(),
-      month: formattedMonth(dateSelected.getMonth(), true),
-      year: dateSelected.getFullYear()
+      month: formattedMonthNumber(dateSelected.getMonth() + 1, {
+        inTwoDigits: true,
+      }),
+      year: dateSelected.getFullYear(),
     };
     setFormatedDateSelected(_formatedDateSelected);
   }, [dateSelected]);
@@ -97,11 +105,11 @@ const DashbhoardGate = () => {
   useEffect(() => {
     _fetchTotalAmount({
       mode: viewMode,
-      date: formatedDateSelected
+      date: formatedDateSelected,
     });
     _fetchTotalAmountPerCategory({
       mode: viewMode,
-      date: formatedDateSelected
+      date: formatedDateSelected,
     });
     _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
   }, [viewMode]);
@@ -109,11 +117,11 @@ const DashbhoardGate = () => {
   const _fetchRequiredData = async () => {
     setIsRequiredDataRequested(true);
     await _fetchTotalAmount({ mode: viewMode, date: formatedDateSelected });
-    await _fetchTotalAmountPerCategory({
-      mode: viewMode,
-      date: formatedDateSelected
-    });
-    await _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
+    // await _fetchTotalAmountPerCategory({
+    //   mode: viewMode,
+    //   date: formatedDateSelected
+    // });
+    // await _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
     setIsRequiredDataRequested(false);
   };
 
@@ -124,7 +132,7 @@ const DashbhoardGate = () => {
   const _fetchTotalAmount = async dateOptions => {
     try {
       const totalAmountInfo = await fetchTotalAmountByDateCriteria({
-        ...dateOptions
+        ...dateOptions,
       });
       setTotalAmount(totalAmountInfo.totalAmount);
     } catch (err) {
@@ -134,23 +142,25 @@ const DashbhoardGate = () => {
 
   const _fetchTotalAmountPerCategory = async dateOptions => {
     try {
-      const amountsPerCategory = await fetchTotalAmountByDateCriteriaPerCategory(
-        {
-          ...dateOptions
-        }
-      );
+      const amountsPerCategory =
+        await fetchTotalAmountByDateCriteriaPerCategory({
+          ...dateOptions,
+        });
 
       const processedList = amountsPerCategory.filter(a => a.totalAmount > 0);
       setAmountsPerCategory(processedList);
     } catch (err) {
-      alerts.throwErrorAlert("calcular montos por categoría", JSON.stringify(err));
+      alerts.throwErrorAlert(
+        "calcular montos por categoría",
+        JSON.stringify(err)
+      );
     }
   };
 
   const _fetchAmounts = async dateOptions => {
     try {
       const amounts = await fetchAmountsByDateCriteria({
-        ...dateOptions
+        ...dateOptions,
       });
 
       const processedList = amounts.map(a => {
@@ -159,7 +169,7 @@ const DashbhoardGate = () => {
         return {
           day: new Date(date).getDate(),
           month: new Date(date).getMonth(),
-          relevance: a.totalAmount
+          relevance: a.totalAmount,
         };
       });
       setRelevantByDateCriteria(processedList);
@@ -168,29 +178,41 @@ const DashbhoardGate = () => {
     }
   };
 
+  const handleChangeDateNavigation = date => {
+    setDateSelected(date);
+  };
+
   return (
     <SafeAreaView style={styles.dashboardScrollViewContainer}>
+      <Hero
+        button={
+          <DateNavigatorActivator
+            mode={viewMode.toUpperCase()}
+            date={dateSelected}
+            onChange={date => handleChangeDateNavigation(date)}
+          />
+        }
+      />
       <ScrollView style={styles.dashboardScrollView}>
-        <DateNavigator
-          filter={viewMode}
-          date={dateSelected}
-          onChangeDate={date => setDateSelected(date)}
-        />
-        <DateFilterSelector onChangeMode={e => handeChangleMode(e)} />
-        <DashboardCard
-          value={totalAmount || 0}
-          description={`total ${dateTranslation[viewMode]}`}
-        />
-        {amountsPerCategory && amountsPerCategory.length > 0 && (
-          <Chart data={amountsPerCategory} />
-        )}
-        <Calendar
-          view={viewMode}
-          month={dateSelected.getMonth()}
-          year={dateSelected.getFullYear()}
-          relevantMonths={relevantByDateCriteria}
-          relevantDays={relevantByDateCriteria}
-        />
+        <View style={{ paddingHorizontal: 16, paddingBottom: 64 }}>
+          <View style={{ marginVertical: 16 }}>
+            <DateFilterSelector onChangeMode={e => handeChangleMode(e)} />
+          </View>
+          <DashboardCard
+            value={totalAmount || 0}
+            description={`total ${dateTranslation[viewMode]}`}
+          />
+          {amountsPerCategory && amountsPerCategory.length > 0 && (
+            <Chart data={amountsPerCategory} />
+          )}
+          <Calendar
+            view={viewMode}
+            month={dateSelected.getMonth()}
+            year={dateSelected.getFullYear()}
+            relevantMonths={relevantByDateCriteria}
+            relevantDays={relevantByDateCriteria}
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -198,6 +220,7 @@ const DashbhoardGate = () => {
 
 const styles = StyleSheet.create({
   dashboardScrollViewContainer: {
+    backgroundColor: color.blue["90"],
     // borderColor: "blue",
     // borderStyle: "solid",
     // borderWidth: 1
@@ -206,7 +229,7 @@ const styles = StyleSheet.create({
     // borderColor: "red",
     // borderStyle: "solid",
     // borderWidth: 1
-  }
+  },
 });
 
 export default DashbhoardGate;

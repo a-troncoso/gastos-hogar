@@ -1,53 +1,53 @@
-import React, { useEffect, useState, useCallback } from "react"
-import { StyleSheet, View, SafeAreaView } from "react-native"
-import { useFocusEffect } from "@react-navigation/native"
-import CategoriesList from "../components/molecules/category/CategoriesList"
-import Hero from "../components/atoms/Hero"
-import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator"
+import React, { useEffect, useState, useCallback } from "react";
+import { StyleSheet, View, SafeAreaView } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import CategoriesList from "../components/molecules/category/CategoriesList";
+import Hero from "../components/atoms/Hero";
+import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator";
 
-import { fetchTotalExpensesByCategory } from "../dbOperations/purchase/purchaseBDTransactions"
+import { fetchTotalExpensesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
 
-import { currentDate } from "../utils/date"
-import color from "../assets/colors"
+import { currentDate } from "../utils/date";
+import color from "../assets/colors";
 
 const HistoryGate = props => {
-  const { navigation } = props
+  const { navigation } = props;
 
-  const [categories, setCategories] = useState([])
-  const [dateSelected, setDateSelected] = useState(currentDate())
+  const [categories, setCategories] = useState([]);
+  const [dateSelected, setDateSelected] = useState(currentDate());
 
   useFocusEffect(
     useCallback(() => {
-      fetchTotalPurchases(dateSelected)
-      setDateSelected(currentDate())
+      fetchTotalPurchases(dateSelected);
+      setDateSelected(currentDate());
     }, [])
-  )
+  );
 
   useEffect(() => {
-    fetchTotalPurchases(dateSelected)
-  }, [dateSelected])
+    fetchTotalPurchases(dateSelected);
+  }, [dateSelected]);
 
   const fetchTotalPurchases = async date => {
     try {
       const categories = await fetchTotalExpensesByCategory({
         date,
-        mode: "month"
-      })
-      setCategories(categories)
+        mode: "month",
+      });
+      setCategories(categories);
     } catch (err) {}
-  }
+  };
 
   const handlePressCategory = id => {
     navigation.push("Expenses", {
       categoryId: id,
       date: dateSelected,
-      mode: "month"
-    })
-  }
+      mode: "month",
+    });
+  };
 
   const handleChangeDateNavigation = date => {
-    setDateSelected(date)
-  }
+    setDateSelected(date);
+  };
 
   return (
     <View style={styles.mainView}>
@@ -69,13 +69,13 @@ const HistoryGate = props => {
         </SafeAreaView>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   mainView: {
     flex: 1,
-    backgroundColor: color.blue["90"]
+    backgroundColor: color.blue["90"],
   },
 
   categoriesListView: {
@@ -83,9 +83,9 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderStyle: "solid",
     flex: 1,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
     // paddingTop: 8
-  }
-})
+  },
+});
 
-export default HistoryGate
+export default HistoryGate;

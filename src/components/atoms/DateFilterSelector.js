@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
+import color from "../../assets/colors";
+
 const DateFilterSelector = props => {
   const { filter, onChangeMode } = props;
 
@@ -52,45 +54,49 @@ const DateFilterSelector = props => {
 
 const styles = StyleSheet.create({
   dateFilterSelectorView: {
-    flexDirection: "row"
+    flexDirection: "row",
   },
   dateFilterSelectorDayView: {
     height: 40,
     justifyContent: "center",
     alignItems: "center",
-    borderColor: "black",
+    borderColor: color["blue"][40],
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderLeftWidth: 1,
-    borderStyle: "solid"
+    borderStyle: "solid",
+    borderTopStartRadius: 8,
+    borderBottomStartRadius: 8,
   },
   dateFilterSelectorMonthView: {
     height: 40,
     justifyContent: "center",
     alignItems: "center",
-    borderColor: "black",
+    borderColor: color["blue"][40],
     borderStyle: "solid",
     borderTopWidth: 1,
     borderRightWidth: 1,
     borderBottomWidth: 1,
-    borderLeftWidth: 1
+    borderLeftWidth: 1,
   },
   dateFilterSelectorYearView: {
     height: 40,
     justifyContent: "center",
     alignItems: "center",
-    borderColor: "black",
+    borderColor: color["blue"][40],
     borderTopWidth: 1,
     borderRightWidth: 1,
     borderBottomWidth: 1,
-    borderStyle: "solid"
+    borderStyle: "solid",
+    borderTopEndRadius: 8,
+    borderBottomEndRadius: 8,
   },
   activeBtn: {
-    backgroundColor: "gray"
+    backgroundColor: color["blue"][50],
   },
   btn: {
-    flex: 1
-  }
+    flex: 1,
+  },
 });
 
 export default DateFilterSelector;
