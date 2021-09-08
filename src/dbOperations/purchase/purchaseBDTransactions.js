@@ -269,7 +269,7 @@ export const fetchTotalAmountByDateCriteria = ({ ...dateOptions }) => {
 
   const params = {
     day: [
-      "" + dateOptions.date.day,
+      `0${dateOptions.date.day}`.slice(-2),
       dateOptions.date.month,
       "" + dateOptions.date.year,
     ],
@@ -284,7 +284,7 @@ export const fetchTotalAmountByDateCriteria = ({ ...dateOptions }) => {
         params[dateOptions.mode],
         (_, { rows }) => {
           if (rows._array.length === 1) resolve(rows._array[0]);
-          else reject("Result has no 1 rows");
+          else reject("Result has no one rows");
         },
         (_, error) => {
           reject(error);
@@ -305,7 +305,7 @@ export const fetchTotalAmountByDateCriteriaPerCategory = ({
 
   const params = {
     day: [
-      "" + dateOptions.date.day,
+      `0${dateOptions.date.day}`.slice(-2),
       dateOptions.date.month,
       "" + dateOptions.date.year,
     ],

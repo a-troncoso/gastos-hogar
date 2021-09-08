@@ -89,11 +89,11 @@ const DashbhoardGate = () => {
 
   useEffect(() => {
     const _formatedDateSelected = {
-      day: dateSelected.getDate(),
-      month: formattedMonthNumber(dateSelected.getMonth() + 1, {
+      day: dateSelected.getUTCDate(),
+      month: formattedMonthNumber(dateSelected.getUTCMonth() + 1, {
         inTwoDigits: true,
       }),
-      year: dateSelected.getFullYear(),
+      year: dateSelected.getUTCFullYear(),
     };
     setFormatedDateSelected(_formatedDateSelected);
   }, [dateSelected]);
@@ -146,6 +146,8 @@ const DashbhoardGate = () => {
         await fetchTotalAmountByDateCriteriaPerCategory({
           ...dateOptions,
         });
+
+      console.log("dateOptions", dateOptions);
 
       const processedList = amountsPerCategory.filter(a => a.totalAmount > 0);
       setAmountsPerCategory(processedList);

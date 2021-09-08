@@ -6,7 +6,6 @@ import color from "../../assets/colors";
 
 const Row = props => {
   const { labels, isLastRow, cellBackgroundColor, cellBorderColor } = props;
-  console.log("labels", labels);
 
   const Cell = props => {
     const {

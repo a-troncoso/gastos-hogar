@@ -22,11 +22,11 @@ const ChartLabel = ({ label }) => {
         // borderColor: "green",
         // borderStyle: "solid",
         // borderWidth: 1,
-
         alignItems: "center",
         position: "absolute",
         top: "50%",
         left: "50%",
+        maxWidth: 180,
         transform: [
           { translateX: -(width / 2) + 20 },
           { translateY: -(heigth / 2) },
@@ -34,29 +34,30 @@ const ChartLabel = ({ label }) => {
         justifyContent: "center",
       }}
     >
-      {label &&
-        label.map(text => (
-          <Text
-            key={text}
-            style={{
-              // borderColor: "yellow",
-              // borderStyle: "solid",
-              // borderWidth: 1,
-              fontSize: 24,
-              fontWeight: "bold",
-              textAlign: "center",
-            }}
-          >
-            {text}
-          </Text>
-        ))}
+      <Text
+        style={{
+          fontSize: 24,
+          fontWeight: "bold",
+          textAlign: "center",
+        }}
+      >
+        {label.value}
+      </Text>
+      <Text
+        style={{
+          fontSize: 16,
+          textAlign: "center",
+        }}
+      >
+        {label.text}
+      </Text>
     </View>
   );
 };
 
 const Chart = props => {
   const { data } = props;
-  const [label, setLabel] = useState([]);
+  const [label, setLabel] = useState({ value: 0, text: "" });
   const [externalMutation, setExternalMutation] = useState([]);
 
   const [parsedData, setParsedData] = useState(
@@ -66,7 +67,10 @@ const Chart = props => {
   useEffect(() => {
     setParsedData(data.map(d => ({ x: d.category, y: d.totalAmount })));
     setLabel(
-      data[0] && [toCurrencyFormat(data[0].totalAmount), `${data[0].category}`]
+      data[0] && {
+        value: toCurrencyFormat(data[0].totalAmount),
+        text: data[0].category,
+      }
     );
   }, [data]);
 
@@ -97,10 +101,10 @@ const Chart = props => {
                   return [
                     {
                       mutation: props => {
-                        setLabel([
-                          toCurrencyFormat(props.datum.y),
-                          ` ${props.datum.x}`,
-                        ]);
+                        setLabel({
+                          value: toCurrencyFormat(props.datum.y),
+                          text: props.datum.x,
+                        });
                       },
                     },
                     {
