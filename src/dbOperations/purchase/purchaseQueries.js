@@ -23,19 +23,19 @@ export const EXPENSE_QUERIES = {
   //TODO: Sólo esta trayendo la primera foto
   SELECT_EXPENSES_BY_CATEGORY: `
     SELECT
-    e.id,
-    e.date,
-    e.amount, 
-    e_i.imagePath
+      e.id,
+      e.date,
+      e.amount, 
+      e_i.imagePath
     FROM expense e INNER JOIN category c ON 
-    e.categoryId=c.id 
+      e.categoryId=c.id 
     LEFT JOIN expense_image e_i ON 
-    e.id=e_i.expenseId 
+      e.id=e_i.expenseId 
     WHERE 
-    strftime('%m', e.date) = ?
-    AND e.active = 1
-    AND c.id=?
-    AND c.active = 1
+      strftime('%m', e.date) = ?
+      AND e.active = 1
+      AND c.id=?
+      AND c.active = 1
     GROUP BY e.id;
   `,
 

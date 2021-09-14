@@ -88,6 +88,7 @@ const DashbhoardGate = () => {
   );
 
   useEffect(() => {
+    // FIXME: Al haber cambio de horario no calcula bien
     const _formatedDateSelected = {
       day: dateSelected.getUTCDate(),
       month: formattedMonthNumber(dateSelected.getUTCMonth() + 1, {
@@ -117,11 +118,11 @@ const DashbhoardGate = () => {
   const _fetchRequiredData = async () => {
     setIsRequiredDataRequested(true);
     await _fetchTotalAmount({ mode: viewMode, date: formatedDateSelected });
-    // await _fetchTotalAmountPerCategory({
-    //   mode: viewMode,
-    //   date: formatedDateSelected
-    // });
-    // await _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
+    await _fetchTotalAmountPerCategory({
+      mode: viewMode,
+      date: formatedDateSelected,
+    });
+    await _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
     setIsRequiredDataRequested(false);
   };
 
@@ -146,8 +147,6 @@ const DashbhoardGate = () => {
         await fetchTotalAmountByDateCriteriaPerCategory({
           ...dateOptions,
         });
-
-      console.log("dateOptions", dateOptions);
 
       const processedList = amountsPerCategory.filter(a => a.totalAmount > 0);
       setAmountsPerCategory(processedList);
@@ -204,9 +203,7 @@ const DashbhoardGate = () => {
             value={totalAmount || 0}
             description={`total ${dateTranslation[viewMode]}`}
           />
-          {amountsPerCategory && amountsPerCategory.length > 0 && (
-            <Chart data={amountsPerCategory} />
-          )}
+          <Chart data={amountsPerCategory} />
           <Calendar
             view={viewMode}
             month={dateSelected.getMonth()}
@@ -222,10 +219,11 @@ const DashbhoardGate = () => {
 
 const styles = StyleSheet.create({
   dashboardScrollViewContainer: {
-    backgroundColor: color.blue["90"],
     // borderColor: "blue",
     // borderStyle: "solid",
-    // borderWidth: 1
+    // borderWidth: 1,
+    height: "100%",
+    backgroundColor: color.blue["90"],
   },
   dashboardScrollView: {
     // borderColor: "red",

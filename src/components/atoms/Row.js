@@ -21,18 +21,20 @@ const Row = props => {
         <View
           style={[
             styles.cell,
-            data.score ? styles[`cellScore${data.score}`] : {},
-            isLastCell ? styles.borderRight : {},
-            isLastRow ? styles.borderBottom : {},
             {
               backgroundColor: cellBackgroundColor || "#fff",
               borderColor: cellBorderColor,
             },
+            data.score ? styles[`cellScore${data.score}`] : {},
+            isLastCell ? styles.borderRight : {},
+            isLastRow ? styles.borderBottom : {},
             isLastRow && isLastCell && { borderBottomEndRadius: 16 },
             isLastRow && isFirstCell && { borderBottomStartRadius: 16 },
           ]}
         >
-          <Text style={styles.cellLabel}>{data.label}</Text>
+          <Text style={[styles.cellLabel, styles[`cellScore${data.score}`]]}>
+            {data.label}
+          </Text>
         </View>
       );
     else if (typeof data === "string")

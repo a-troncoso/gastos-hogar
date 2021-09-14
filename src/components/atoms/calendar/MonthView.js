@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import Row from "../Row";
 
 import color from "../../../assets/colors";
@@ -31,8 +31,10 @@ const MonthView = props => {
                 rd.day
               );
 
-              if (relevantDayFormatted.getTime() === d.getTime())
+              if (relevantDayFormatted.getTime() === d.getTime()) {
                 d.score = rd.relevance;
+                d.date = d;
+              }
             });
         });
       });

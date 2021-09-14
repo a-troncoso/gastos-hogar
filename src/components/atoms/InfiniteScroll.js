@@ -1,48 +1,47 @@
-import React, { useState, useEffect, useRef } from "react"
-import { StyleSheet, FlatList, View, Text } from "react-native"
-import PropTypes from "prop-types"
-import shortid from "shortid"
+import React, { useState, useEffect, useRef } from "react";
+import { StyleSheet, FlatList, View, Text } from "react-native";
+import PropTypes from "prop-types";
+import shortid from "shortid";
 
 const InfiniteScroll = props => {
-  const { items, offset } = props
-  const infListRef = useRef(null)
-  const [internalData, setInternalData] = useState([])
-  const [end, setEnd] = useState(true)
-  const length = items.length
-  const data2 = items.slice()
+  const { items, offset } = props;
+  const infListRef = useRef(null);
+  const [internalData, setInternalData] = useState([]);
+  const [end, setEnd] = useState(true);
+  const length = items.length;
+  const data2 = items.slice();
 
   useEffect(() => {
-    setInternalData([...items, ...items])
-  }, [items])
+    setInternalData([...items, ...items]);
+  }, [items]);
 
   const checkScroll = ({ layoutMeasurement, contentOffset, contentSize }) => {
     // FIXME: Revisar por qué no genera scroll infinito
     if (internalData.length >= length * 3)
-      setInternalData(prevState => prevState.slice(length * 2))
+      setInternalData(prevState => prevState.slice(length * 2));
     if (contentOffset.y <= offset) {
-      setInternalData(prevState => [...prevState, ...data2])
-      setIsContentOffsetYMoreThanOfsset(true)
+      setInternalData(prevState => [...prevState, ...data2]);
+      setIsContentOffsetYMoreThanOfsset(true);
     }
     if (
       layoutMeasurement.height + contentOffset.y >=
         contentSize.height - offset &&
       end
     ) {
-      setInternalData(prevState => [...prevState.data, ...data2])
-      setEnd(false)
+      setInternalData(prevState => [...prevState.data, ...data2]);
+      setEnd(false);
     } else {
-      setEnd(true)
+      setEnd(true);
     }
-  }
+  };
 
   const viewabilityConfig = useRef({
     // minimumViewTime: 2000,
     // waitForInteraction: true,
-    viewAreaCoveragePercentThreshold: 50
-  })
+    viewAreaCoveragePercentThreshold: 50,
+  });
 
   // const onViewableItemsChanged = useRef(({ viewableItems }) => {
-  //   console.log("onViewableItemsChanged", viewableItems)
   //   // FIXME: Por alguna razón no llama al onViewableItemsChanged
   //   if (viewableItems[1] && viewableItems[1].item) {
   //     const { item } = viewableItems[1]
@@ -50,9 +49,7 @@ const InfiniteScroll = props => {
   //   }
   // })
 
-  const onViewableItemsChanged = useRef(viewableItems => {
-    // console.log("onViewableItemsChanged", viewableItems)
-  })
+  const onViewableItemsChanged = useRef(viewableItems => {});
 
   return (
     <FlatList
@@ -71,8 +68,8 @@ const InfiniteScroll = props => {
       onViewableItemsChanged={onViewableItemsChanged.current}
       // onScroll={({ nativeEvent }) => checkScroll(nativeEvent)}
     />
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   viewItem: {
@@ -84,19 +81,19 @@ const styles = StyleSheet.create({
     height: 50,
     paddingHorizontal: 32,
     justifyContent: "center",
-    alignItems: "center"
-  }
-})
+    alignItems: "center",
+  },
+});
 
 InfiniteScroll.defaultProps = {
   offset: 20,
-  onChange: () => null
-}
+  onChange: () => null,
+};
 
 InfiniteScroll.propTypes = {
   offset: PropTypes.number,
   onChange: PropTypes.func,
-  items: PropTypes.array.isRequired
-}
+  items: PropTypes.array.isRequired,
+};
 
-export default InfiniteScroll
+export default InfiniteScroll;

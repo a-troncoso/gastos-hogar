@@ -15,6 +15,7 @@ const ChartLabel = ({ label }) => {
     setWidth(event.nativeEvent.layout.width);
     setHeight(event.nativeEvent.layout.height);
   };
+
   return (
     <View
       onLayout={meassure}
@@ -41,7 +42,7 @@ const ChartLabel = ({ label }) => {
           textAlign: "center",
         }}
       >
-        {label.value}
+        {label && label.value}
       </Text>
       <Text
         style={{
@@ -49,7 +50,7 @@ const ChartLabel = ({ label }) => {
           textAlign: "center",
         }}
       >
-        {label.text}
+        {label && label.text}
       </Text>
     </View>
   );

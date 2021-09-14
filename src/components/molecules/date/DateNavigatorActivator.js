@@ -8,7 +8,7 @@ import { monthName } from "../../../utils/date";
 const DayText = ({ date }) => {
   return (
     <>
-      <Text>{date.getDate()}</Text>
+      <Text style={{ fontWeight: "bold" }}>{date.getDate()}</Text>
       <View style={{ flexDirection: "row" }}>
         <Text
           style={{ textTransform: "capitalize", marginRight: 4, fontSize: 12 }}

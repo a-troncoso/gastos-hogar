@@ -24,29 +24,35 @@ const DateFilterSelector = props => {
     <View style={styles.dateFilterSelectorView}>
       <TouchableOpacity
         onPress={() => handlePressBtn("day")}
-        style={[styles.btn, filterBy === "day" && styles.activeBtn]}
+        style={[
+          styles.btn,
+          styles.dateFilterSelectorDayView,
+          filterBy === "day" && styles.activeBtn,
+        ]}
       >
-        <View style={styles.dateFilterSelectorDayView}>
-          <Text>DÍA</Text>
-        </View>
+        <Text>DÍA</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => handlePressBtn("month")}
-        style={[styles.btn, filterBy === "month" && styles.activeBtn]}
+        style={[
+          styles.btn,
+          styles.dateFilterSelectorMonthView,
+          filterBy === "month" && styles.activeBtn,
+        ]}
       >
-        <View style={styles.dateFilterSelectorMonthView}>
-          <Text>MES</Text>
-        </View>
+        <Text>MES</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => handlePressBtn("year")}
-        style={[styles.btn, filterBy === "year" && styles.activeBtn]}
+        style={[
+          styles.btn,
+          styles.dateFilterSelectorYearView,
+          filterBy === "year" && styles.activeBtn,
+        ]}
       >
-        <View style={styles.dateFilterSelectorYearView}>
-          <Text>AÑO</Text>
-        </View>
+        <Text>AÑO</Text>
       </TouchableOpacity>
     </View>
   );
@@ -96,6 +102,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     flex: 1,
+    backgroundColor: color["gray"][0],
   },
 });
 

@@ -109,9 +109,9 @@ export const fetchTotalExpensesByCategory = ({ date, mode }) => {
 
 export const fetchPurchasesByCategory = ({ date, mode, categoryId }) => {
   const filterDateByMode = date => ({
-    day: date.getFullYear(),
-    month: date.getMonth() + 1,
-    year: date.getFullYear(),
+    day: date.getUTCDate(),
+    month: date.getUTCMonth() + 1,
+    year: date.getUTCFullYear(),
   });
 
   return new Promise(resolve => {

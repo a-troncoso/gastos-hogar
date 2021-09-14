@@ -41,12 +41,10 @@ const YearView = props => {
       ms.forEach(r => {
         r.forEach(m => {
           relevantMonths.forEach(rm => {
-            // TODO: Revisar esto
             if (rm.month === m.month) m.score = rm.relevance;
           });
         });
       });
-      console.log("ms", ms);
       return ms;
     };
 
