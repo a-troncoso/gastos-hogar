@@ -1,59 +1,65 @@
 import React, { useState, useCallback, useEffect } from "react"
-import { StyleSheet, View, SafeAreaView, ToastAndroid } from "react-native"
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  ToastAndroid,
+  Button,
+} from "react-native";
 import {
   useFocusEffect,
   useRoute,
-  useNavigation
-} from "@react-navigation/native"
+  useNavigation,
+} from "@react-navigation/native";
 
-import CategoriesList from "../components/molecules/category/CategoriesList"
+import CategoriesList from "../components/molecules/category/CategoriesList";
 
-import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions"
-import apiDomain from '../utils/apiDomain'
+import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
+import apiDomain from "../utils/apiDomain";
 
-import color from "../assets/colors"
+import color from "../assets/colors";
 
 const Toast = ({ visible, message }) => {
   if (visible) {
-    ToastAndroid.show(message, ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50)
-    return null
+    ToastAndroid.show(message, ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50);
+    return null;
   }
-  return null
-}
+  return null;
+};
 
 const RegistryExpenseGate = props => {
-  const route = useRoute()
-  const navigation = useNavigation()
-  const [categories, setCategories] = useState([])
-  const [visibleToast, setVisibleToast] = useState(false)
-  const apiCategories = apiDomain("category")
+  const route = useRoute();
+  const navigation = useNavigation();
+  const [categories, setCategories] = useState([]);
+  const [visibleToast, setVisibleToast] = useState(false);
+  const apiCategories = apiDomain("category");
 
   useFocusEffect(
     useCallback(() => {
-      fetchCategories()
+      fetchCategories();
     }, [])
-  )
+  );
 
   useEffect(() => {
     if (route.params && route.params.evt === "PURCHASE_SAVED") {
-      setVisibleToast(true)
-      navigation.setParams({ evt: "" })
+      setVisibleToast(true);
+      navigation.setParams({ evt: "" });
     }
-  }, [route.params])
+  }, [route.params]);
 
-  useEffect(() => setVisibleToast(false), [visibleToast])
+  useEffect(() => setVisibleToast(false), [visibleToast]);
 
   const fetchCategories = async () => {
-    const categories = await apiCategories.fetch()
-    setCategories(categories)
-  }
+    const categories = await apiCategories.fetch();
+    setCategories(categories);
+  };
 
   const handlePressCategory = id => {
     navigation.push("ExpenseDetail", {
       categoryId: id,
-      mode: "NEW_EXPENSE"
-    })
-  }
+      mode: "NEW_EXPENSE",
+    });
+  };
 
   return (
     <View style={styles.mainView}>
@@ -67,8 +73,8 @@ const RegistryExpenseGate = props => {
         <Toast visible={visibleToast} message="Egreso ingresado" />
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   mainView: {

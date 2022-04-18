@@ -18,6 +18,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
+    "scheme": "gastos-hogar-redirect",
     "ios": {
       "supportsTablet": true
     },
