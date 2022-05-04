@@ -13,15 +13,18 @@ import * as FileSystem from "expo-file-system";
 import alerts from "./src/components/atoms/Alerts";
 import AppContext from "./src/state";
 import { initialContext } from "./src/state";
-import useGooglePermission from "./src/hooks/useGooglePermission";
-import { GOOGLE_OAUTH_CLIENT_ID } from "./src/constants";
+import useGoogleDrive from "./src/hooks/useGoogleDrive";
+
 start();
 
 const App = () => {
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false);
-  const { accessToken } = useGooglePermission(GOOGLE_OAUTH_CLIENT_ID);
+  const { files } = useGoogleDrive();
 
-  console.log(accessToken);
+  console.log(
+    "finded",
+    files.find(f => f.name === "cartola.xls")
+  );
 
   useEffect(() => {
     _createInitialTables({ overrideTables: false });
@@ -105,6 +108,6 @@ const App = () => {
       </AppContext.Provider>
     )
   );
-};;;
+};
 
 export default App;
