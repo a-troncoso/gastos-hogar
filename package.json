@@ -44,7 +44,8 @@
     "react-native-svg": "12.1.0",
     "react-native-wheel-scrollview-picker": "^1.0.2",
     "shortid": "^2.2.16",
-    "victory-native": "^34.3.0"
+    "victory-native": "^34.3.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

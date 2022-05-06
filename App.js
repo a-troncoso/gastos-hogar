@@ -19,12 +19,49 @@ start();
 
 const App = () => {
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false);
-  const { files } = useGoogleDrive();
+  const { files, fetchFileBinary, fetchMetadata, fetchContent } =
+    useGoogleDrive();
 
-  console.log(
-    "finded",
-    files.find(f => f.name === "cartola.xls")
-  );
+  // const cartolaFileId = files.find(f => {
+  //   if (f.name === "cartola.xls") return f.id;
+  // });
+
+  const cartolaFile = files.find(f => f.name === "cartola.xls");
+
+  const obtainBinary = async () => {
+    try {
+      console.log("cartolaFile", cartolaFile);
+      const cartola = await fetchFileBinary(cartolaFile.id);
+      // console.log("cartolaBinary", cartolaBinary);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const obtainMetadata = async () => {
+    try {
+      console.log("cartolaFile", cartolaFile);
+      const cartola = await fetchMetadata(cartolaFile.id);
+      // console.log("cartolaBinary", cartolaBinary);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const obtainContent = async () => {
+    try {
+      console.log("cartolaFile", cartolaFile);
+      const cartola = await fetchContent(cartolaFile.id);
+      // console.log("cartolaBinary", cartolaBinary);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  if (cartolaFile) {
+    console.log("[VAMOS A OBTENER EL ARCHIVO]");
+    obtainContent();
+  }
 
   useEffect(() => {
     _createInitialTables({ overrideTables: false });

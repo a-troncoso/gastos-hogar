@@ -26,7 +26,47 @@ export default () => {
     setFiles(filesData.files);
   };
 
+  const fetchFileBinary = async id => {
+    // console.log("gDrive.accessToken", gDrive.accessToken);
+    // console.log("id", id);
+    // console.log(
+    //   "gDrive.files.getBinary().then()",
+    //   gDrive.files.getBinary().then(r => alert(JSON.stringify(r)))
+    // );
+    gDrive.files
+      .getBinary("60B2DFFF-49F1-4F35-A14A-1D6D33909D33")
+      .then(res => console.log("res", JSON.stringify(res)))
+      .catch(err => console.log("err", err));
+
+    // console.log("gDrive.files", gDrive.files);
+    // const a = await gDrive.files.getBinary(id);
+    // console.log(a);
+  };
+
+  const fetchMetadata = async id => {
+    console.log("VAMOS A EJECUTAR fetchMetadata()");
+    console.log("id", id);
+    gDrive.files
+      .get(id)
+      .then(res => console.log("res", JSON.stringify(res)))
+      .catch(err => console.log("err", err));
+
+    // const a = await gDrive.files.get(id, { alt: "media" }, "1-1");
+    // console.log("gDrive.files.get()", a);
+  };
+
+  const fetchContent = async id => {
+    console.log("VAMOS A EJECUTAR fetchContent()");
+    console.log("id", id);
+
+    const a = await gDrive.files.getContent(id);
+    console.log("aaaaa", JSON.stringify(a.url));
+  };
+
   return {
     files,
+    fetchFileBinary,
+    fetchMetadata,
+    fetchContent,
   };
 };

@@ -4,16 +4,19 @@ import * as Google from "expo-auth-session/providers/google";
 export default clientId => {
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId: clientId,
-    scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+    scopes: ["https://www.googleapis.com/auth/drive"],
   });
   const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
+    console.log("REQUEST CAMBIÓ!!!", request);
+
     if (request) promptAsync();
   }, [request]);
 
   useEffect(() => {
-    if (response) setAccessToken(response.authentication.accessToken);
+    if (response?.authentication)
+      setAccessToken(response.authentication.accessToken);
   }, [response]);
 
   return {
