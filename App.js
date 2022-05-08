@@ -60,7 +60,7 @@ const App = () => {
 
   if (cartolaFile) {
     console.log("[VAMOS A OBTENER EL ARCHIVO]");
-    obtainContent();
+    obtainMetadata();
   }
 
   useEffect(() => {
