@@ -20,7 +20,6 @@ export default clientId => {
   }, [request]);
 
   useEffect(() => {
-    console.log("response authentication", response);
     if (response?.authentication)
       setAccessToken(response.authentication.accessToken);
   }, [response]);
