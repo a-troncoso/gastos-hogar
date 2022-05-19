@@ -25,6 +25,8 @@ export const MAIN_QUERIES = {
       "description"	TEXT DEFAULT "",
       "date"	TEXT,
       "userId"	INTEGER,
+      "extOperationNumber" TEXT DEFAULT "",
+      "source" TEXT DEFAULT "",
       "active"	INTEGER DEFAULT 1,
       FOREIGN KEY("categoryId") REFERENCES "category"("id"),
       FOREIGN KEY("subcategoryId") REFERENCES "subcategory"("id"),
@@ -41,6 +43,8 @@ export const MAIN_QUERIES = {
       "description"	TEXT DEFAULT "",
       "date"	TEXT,
       "userId"	INTEGER,
+      "extOperationNumber" TEXT DEFAULT "",
+      "source" TEXT DEFAULT "",
       "active"	INTEGER DEFAULT 1,
       FOREIGN KEY("categoryId") REFERENCES "category"("id"),
       FOREIGN KEY("subcategoryId") REFERENCES "subcategory"("id"),
@@ -104,5 +108,22 @@ export const MAIN_QUERIES = {
       FOREIGN KEY("expenseId") REFERENCES "expense"("id"),
       PRIMARY KEY("id")
     );
-  `
-}
+  `,
+  CREATE_TABLE_EXTERNAL_SOURCE: `
+  CREATE TABLE IF NOT EXISTS "external_source" (
+    "id"	INTEGER,
+    "fileId"	TEXT NOT NULL,
+    "fileName"	TEXT NOT NULL,
+    PRIMARY KEY("id")
+  );
+`,
+  OVERRIDE_TABLE_EXTERNAL_SOURCE: `
+  DROP TABLE IF EXISTS "external_source";
+  CREATE TABLE IF NOT EXISTS "external_source" (
+    "id"	INTEGER,
+    "fileId"	TEXT NOT NULL,
+    "fileName"	TEXT NOT NULL,
+    PRIMARY KEY("id")
+  );
+`,
+};

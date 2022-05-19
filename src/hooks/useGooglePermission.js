@@ -15,7 +15,6 @@ export default clientId => {
 
   useEffect(() => {
     console.log("REQUEST CAMBIÓ!!!", request);
-
     if (request) promptAsync();
   }, [request]);
 

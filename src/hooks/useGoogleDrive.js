@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {
   GDrive,
   MimeTypes,
+  ListQueryBuilder,
 } from "@robinbobin/react-native-google-drive-api-wrapper";
 import useGooglePermission from "./useGooglePermission";
 import { GOOGLE_OAUTH_CLIENT_ID } from "../constants";
@@ -10,7 +11,6 @@ import * as FileSystem from "expo-file-system";
 export default () => {
   const { accessToken } = useGooglePermission(GOOGLE_OAUTH_CLIENT_ID);
   const [gDrive, setGDrive] = useState({});
-  const [files, setFiles] = useState([]);
 
   useEffect(() => {
     const gdrive = new GDrive();
@@ -18,18 +18,22 @@ export default () => {
     setGDrive(gdrive);
   }, [accessToken]);
 
-  useEffect(() => {
-    if (gDrive.accessToken) fetchFiles();
-  }, [gDrive]);
+  const findFileByName = async fileName => {
+    const fileData = await gDrive.files.list({
+      q: new ListQueryBuilder()
+        .contains("name", fileName)
+        .and()
+        .e("mimeType", "application/vnd.ms-excel"),
+    });
+    if (fileData.files.length > 0) return fileData?.files[0];
+    else throw new Error({ msg: "No se encontró el archivo " + fileName });
+  };
 
-  const fetchFiles = async () => {
-    const filesData = await gDrive.files.list();
-    setFiles(filesData.files);
+  const findAllFiles = async () => {
+    return await gDrive.files.list();
   };
 
   const downloadFile = async id => {
-    console.log("VAMOS A EJECUTAR fetchMetadata()");
-
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${accessToken}`);
 
@@ -51,22 +55,11 @@ export default () => {
       downloadFileOptions
     );
     return { uri };
-
-    // FileSystem.downloadAsync(
-    //   URI,
-    //   FileSystem.documentDirectory + "cartolita.xls",
-    //   downloadFileOptions
-    // )
-    //   .then(({ uri }) => {
-    //     readFile({ uri });
-    //   })
-    //   .catch(error => {
-    //     console.error(error);
-    //   });
   };
 
   return {
-    files,
+    findFileByName,
+    findAllFiles,
     downloadFile,
   };
 };

@@ -1,6 +1,9 @@
 export const EXPENSE_QUERIES = {
-  INSERT_EXPENSE:
-    "insert into expense (categoryId, subcategoryId, amount, description, date, userId) values (?, ?, ?, ?, ?, ?);",
+  INSERT_EXPENSE: `
+    INSERT INTO expense
+      (categoryId, subcategoryId, amount, description, date, userId, extOperationNumber, source)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+  `,
 
   INSERT_EXPENSE_IMAGE:
     "insert into expense_image (expenseId, imagePath) values (?, ?);",
@@ -142,4 +145,12 @@ export const EXPENSE_QUERIES = {
   `,
 
   DELETE_EXPENSE: `UPDATE expense SET active=0 WHERE id=?;`,
+
+  FETCH_EXPENSE_BY_EXT_OPERATION_NUMBER: `
+    SELECT e.id
+    FROM expense e
+    WHERE e.externalOperationNumber = ?
+    AND e.source = ?
+    AND e.active = 1;
+    `,
 };

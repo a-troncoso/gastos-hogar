@@ -14,13 +14,23 @@ export const insertExpense = (
   amount,
   description,
   date,
-  userId
+  userId,
+  { extOperationNumber, source }
 ) => {
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES.INSERT_EXPENSE,
-        [categoryId, subcategoryId, amount, description, date, userId],
+        [
+          categoryId,
+          subcategoryId,
+          amount,
+          description,
+          date,
+          userId,
+          extOperationNumber,
+          source,
+        ],
         async (_, result) => {
           const expenseId = result.insertId;
 
@@ -381,5 +391,47 @@ export const deleteExpense = expenseId => {
         }
       );
     });
+  });
+};
+
+const fetchExpenseByExtOperationNumber = ({ extOperationNumber, source }) => {
+  return new Promise((resolve, reject) => {
+    connDB.transaction(tx => {
+      tx.executeSql(
+        EXPENSE_QUERIES.FETCH_EXPENSE_BY_EXT_OPERATION_NUMBER,
+        [extOperationNumber, source],
+        (_, { rows }) => {
+          if (rows._array.length === 1) resolve(rows._array[0]);
+          else reject("Result has no one rows");
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+export const insertExpensesFromExternalSource = (expenses = []) => {
+  expenses.forEach(expense => {
+    const expense = fetchExpenseByExtOperationNumber({
+      extOperationNumber: expense.externalId,
+      source: "external",
+    });
+    if (!expense) {
+      const result = insertExpense(
+        null,
+        null,
+        null,
+        e.amount,
+        e.description,
+        e.date,
+        1,
+        {
+          extOperationNumber: e.operationNumber,
+          source: "external",
+        }
+      );
+    }
   });
 };

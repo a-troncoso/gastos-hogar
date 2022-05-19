@@ -1,10 +1,10 @@
-import { MAIN_QUERIES } from "./appQueries"
-import * as SQLite from "expo-sqlite"
-import * as FileSystem from "expo-file-system"
-import { connectedDB } from "../utils/database"
+import { MAIN_QUERIES } from "./appQueries";
+import * as SQLite from "expo-sqlite";
+import * as FileSystem from "expo-file-system";
+import { connectedDB } from "../utils/database";
 
-const dbName = "db.GastosHogar"
-const connDB = connectedDB({ engine: "sqlite", name: dbName })
+const dbName = "db.GastosHogar";
+const connDB = connectedDB({ engine: "sqlite", name: dbName });
 
 const _createUserTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
@@ -15,15 +15,15 @@ const _createUserTable = ({ ...opts }) => {
           : MAIN_QUERIES.CREATE_TABLE_USER,
         [],
         (_, s) => {
-          resolve(s)
+          resolve(s);
         },
         (_, error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 const _createExpenseTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
@@ -34,15 +34,15 @@ const _createExpenseTable = ({ ...opts }) => {
           : MAIN_QUERIES.CREATE_TABLE_EXPENSE,
         [],
         (_, s) => {
-          resolve(s)
+          resolve(s);
         },
         (_, error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 const _createCategoryTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
@@ -53,15 +53,15 @@ const _createCategoryTable = ({ ...opts }) => {
           : MAIN_QUERIES.CREATE_TABLE_CATEGORY,
         [],
         (_, s) => {
-          resolve(s)
+          resolve(s);
         },
         (_, error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 const _createSubcategoryTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
@@ -72,15 +72,15 @@ const _createSubcategoryTable = ({ ...opts }) => {
           : MAIN_QUERIES.CREATE_TABLE_SUBCATEGORY,
         [],
         (_, s) => {
-          resolve(s)
+          resolve(s);
         },
         (_, error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 const _createPurchaseImageTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
@@ -91,15 +91,34 @@ const _createPurchaseImageTable = ({ ...opts }) => {
           : MAIN_QUERIES.CREATE_TABLE_PURCHASE_IMAGE,
         [],
         (_, s) => {
-          resolve(s)
+          resolve(s);
         },
         (_, error) => {
-          reject(error)
+          reject(error);
         }
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
+
+const _createExternalSourcesTable = ({ ...opts }) => {
+  return new Promise((resolve, reject) => {
+    connDB.transaction(tx => {
+      tx.executeSql(
+        opts && opts.overrideTable
+          ? MAIN_QUERIES.CREATE_TABLE_EXTERNAL_SOURCE
+          : MAIN_QUERIES.OVERRIDE_TABLE_EXTERNAL_SOURCE,
+        [],
+        (_, s) => {
+          resolve(s);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
 
 export const createInitialTables = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
@@ -108,28 +127,24 @@ export const createInitialTables = ({ ...opts }) => {
       _createExpenseTable({ ...opts }),
       _createCategoryTable({ ...opts }),
       _createSubcategoryTable({ ...opts }),
-      _createPurchaseImageTable({ ...opts })
+      _createPurchaseImageTable({ ...opts }),
+      _createExternalSourcesTable({ ...opts }),
     ]).then(
       (_, s) => {
-        resolve(s)
+        resolve(s);
       },
       (_, error) => {
-        reject({ ...error, desc: "creating tables" })
+        reject({ ...error, desc: "creating tables" });
       }
-    )
-  })
-}
+    );
+  });
+};
 
 export const insertBasicData = () => {
   const querysInsert = [
     `INSERT INTO "user"("name", "imagePath") VALUES ("alvaro", "");`,
-    `INSERT INTO "subcategory"("name", "imagePath") VALUES ("Sin subcategoría", "");`
-    // `INSERT INTO "category" ("name","imagePath","active") VALUES ("comida","",1);`,
-    // `INSERT INTO "category" ("name","imagePath","active") VALUES ("salud","",1);`,
-    // `INSERT INTO "category" ("name","imagePath","active") VALUES ("aseo","",1);`,
-    // `INSERT INTO "category" ("name","imagePath","active") VALUES ("ropa","",1);`,
-    // `INSERT INTO "category" ("name","imagePath","active") VALUES ("entretención","",1);`
-  ]
+    `INSERT INTO "subcategory"("name", "imagePath") VALUES ("Sin subcategoría", "");`,
+  ];
 
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
@@ -139,14 +154,14 @@ export const insertBasicData = () => {
           [],
           (_, s) => resolve(s),
           (_, error) => reject({ ...error, desc: "inserting basic data" })
-        )
-      })
-    })
-  })
-}
+        );
+      });
+    });
+  });
+};
 
 export const selectBasicData = table => {
-  const querys = [`SELECT * FROM ${table};`]
+  const querys = [`SELECT * FROM ${table};`];
 
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
@@ -155,13 +170,13 @@ export const selectBasicData = table => {
         [],
         (_, s) => resolve(s),
         (_, error) => reject({ ...error, desc: "selecting basic data" })
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const describeTable = table => {
-  const querys = [`pragma table_info(${table});`]
+  const querys = [`pragma table_info(${table});`];
 
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
@@ -171,17 +186,17 @@ export const describeTable = table => {
         (_, { rows }) =>
           resolve(rows._array.map(r => ({ field: r.name, type: r.type }))),
         (_, error) => reject({ ...error, desc: `describing table ${table}` })
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const selectOldData = table => {
   const OLD_DB = SQLite.openDatabase(
     `${FileSystem.documentDirectory}/SQLite/db.GastosHogarDB`
-  )
+  );
 
-  const querys = [`SELECT * FROM ${table};`]
+  const querys = [`SELECT * FROM ${table};`];
 
   return new Promise((resolve, reject) => {
     OLD_connDB.transaction(tx => {
@@ -190,7 +205,7 @@ export const selectOldData = table => {
         [],
         (_, s) => resolve(s),
         (_, error) => reject({ ...error, desc: "selecting basic data" })
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};

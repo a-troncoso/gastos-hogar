@@ -13,54 +13,17 @@ import * as FileSystem from "expo-file-system";
 import alerts from "./src/components/atoms/Alerts";
 import AppContext from "./src/state";
 import { initialContext } from "./src/state";
-import useGoogleDrive from "./src/hooks/useGoogleDrive";
-import useFileSystem from "./src/hooks/useFileSystem";
-import useXLS from "./src/hooks/useXLS";
-import useCartolaBuilder from "./src/hooks/useCartolaBuilder";
+import useDataExtractor from "./src/hooks/useDataExtractor";
 
 start();
 
 const App = () => {
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false);
-  const { files, downloadFile } = useGoogleDrive();
-  const { readFile } = useFileSystem();
-  const { readXLS } = useXLS();
-  const { generateTable } = useCartolaBuilder();
-
-  // const cartolaFileId = files.find(f => {
-  //   if (f.name === "cartola.xls") return f.id;
-  // });
-
-  const cartolaFile = files.find(f => f.name === "cartola.xls");
-
-  const obtainContent = async () => {
-    try {
-      const { uri } = await downloadFile(cartolaFile.id);
-      const data = await readFile({ uri });
-      const { workbook } = readXLS({
-        data,
-        sheets: "cartolaChequeraElectrónica",
-      });
-      const { table } = generateTable({
-        data: workbook.Sheets["cartolaChequeraElectrónica"],
-      });
-      console.log("table", table);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-
-  if (cartolaFile) {
-    console.log("[VAMOS A OBTENER EL ARCHIVO]");
-    obtainContent();
-  }
+  const { chargeDataFromExternalSource } = useDataExtractor();
 
   useEffect(() => {
     _createInitialTables({ overrideTables: false });
-    // _describeTable({ table: "category" })
-    // _selectBasicData({ table: "expense", createOutputFile: false })
-    // _selectBasicData({ table: "category", createOutputFile: false })
-    // _selectBasicData({ table: "subcategory", createOutputFile: false })
+    chargeDataFromExternalSource();
   }, []);
 
   const _createInitialTables = async ({ overrideTables }) => {
