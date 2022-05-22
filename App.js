@@ -22,8 +22,9 @@ const App = () => {
   const { chargeDataFromExternalSource } = useDataExtractor();
 
   useEffect(() => {
-    _createInitialTables({ overrideTables: false });
-    chargeDataFromExternalSource();
+    console.log("se renderizó App");
+    // _createInitialTables({ overrideTables: false });
+    // chargeDataFromExternalSource();
   }, []);
 
   const _createInitialTables = async ({ overrideTables }) => {

@@ -14,19 +14,44 @@ export default () => {
 
   useEffect(() => {
     const gdrive = new GDrive();
-    if (accessToken) gdrive.accessToken = accessToken;
-    setGDrive(gdrive);
+    console.log("accessToken cambio!", accessToken);
+    if (accessToken) {
+      gdrive.accessToken = accessToken;
+      setGDrive(gdrive);
+    }
   }, [accessToken]);
 
   const findFileByName = async fileName => {
-    const fileData = await gDrive.files.list({
-      q: new ListQueryBuilder()
-        .contains("name", fileName)
-        .and()
-        .e("mimeType", "application/vnd.ms-excel"),
-    });
-    if (fileData.files.length > 0) return fileData?.files[0];
-    else throw new Error({ msg: "No se encontró el archivo " + fileName });
+    console.log("fileName", fileName);
+    console.log("accessToken", accessToken);
+    console.log("gDrive", gDrive);
+    console.log(
+      "Object.keys(gDrive).length === 0",
+      Object.keys(gDrive).length === 0
+    );
+    try {
+      // console.log("gDrive.files.list", gDrive.files.list);
+
+      if (Object.keys(gDrive).length === 0)
+        throw Error({ msg: "No está establecida conexión con GDrive" });
+
+      if (!accessToken) throw Error({ msg: "No posee token de autorización" });
+
+      const fileData = await gDrive.files.list({
+        q: new ListQueryBuilder()
+          .contains("name", fileName)
+          .and()
+          .e("mimeType", "application/vnd.ms-excel"),
+      });
+      console.log("fileData", fileData);
+
+      if (fileData?.files?.length === 0)
+        throw Error({ msg: "No existe el archivo " + fileName });
+
+      return fileData.files[0];
+    } catch (error) {
+      console.error("[findFileByName]", JSON.stringify(error));
+    }
   };
 
   const findAllFiles = async () => {

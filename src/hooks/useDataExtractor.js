@@ -19,14 +19,23 @@ export default () => {
   };
 
   const chargeDataFromExternalSource = async () => {
-    const file = await findFileByName(CARTOLA_FILENAME);
-    const isExternalSourceAlreadyCharged = () =>
-      !!fetchExternalSurceByFileId(file.id);
+    try {
+      const file = await findFileByName(CARTOLA_FILENAME);
+      console.log("file", file);
+      // const externalSourceData = fetchExternalSurceByFileId(file.id);
+      // console.log("externalSourceData", externalSourceData);
+      // const isExternalSourceAlreadyCharged = !!externalSourceData;
 
-    if (isExternalSourceAlreadyCharged) return;
+      // if (isExternalSourceAlreadyCharged) return;
 
-    const dataSheet = extactDataFromSheet();
-    saveDataOnDatabase({ data: dataSheet });
+      // const dataSheet = extactDataFromSheet();
+      // saveDataOnDatabase({ data: dataSheet });
+    } catch (error) {
+      console.log(
+        "Error al cargar data del fuente externa",
+        JSON.stringify(error)
+      );
+    }
   };
 
   const extactDataFromSheet = async () => {

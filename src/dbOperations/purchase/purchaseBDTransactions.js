@@ -413,9 +413,9 @@ const fetchExpenseByExtOperationNumber = ({ extOperationNumber, source }) => {
 };
 
 export const insertExpensesFromExternalSource = (expenses = []) => {
-  expenses.forEach(expense => {
+  expenses.forEach(e => {
     const expense = fetchExpenseByExtOperationNumber({
-      extOperationNumber: expense.externalId,
+      extOperationNumber: e.externalId,
       source: "external",
     });
     if (!expense) {
