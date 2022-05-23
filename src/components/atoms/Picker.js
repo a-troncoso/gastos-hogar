@@ -1,34 +1,34 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import {
   View,
   TouchableHighlight,
   TouchableNativeFeedback,
   StyleSheet,
   Text,
-  Button
-} from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
+  Button,
+  TouchableOpacity,
+} from "react-native";
 
-import MenuButton from "./MenuButton/MenuButton"
+import MenuButton from "./MenuButton/MenuButton";
 
 const Picker = props => {
-  const { onPressItem } = props
-  const [isContentVisible, setIsContentVisible] = useState(false)
-  const [removeState, setRemoveState] = useState(1)
+  const { onPressItem } = props;
+  const [isContentVisible, setIsContentVisible] = useState(false);
+  const [removeState, setRemoveState] = useState(1);
 
   const handlePressMenu = () => {
-    setIsContentVisible(!isContentVisible)
-    setRemoveState(1)
-  }
+    setIsContentVisible(!isContentVisible);
+    setRemoveState(1);
+  };
 
   const handlePressItem = (action, conf) => {
     if (conf.withConfirmation) {
       if (conf.confirmationState === 2) {
-        onPressItem(action)
-        setIsContentVisible(false)
-      } else if (conf.confirmationState === 1) setRemoveState(2)
+        onPressItem(action);
+        setIsContentVisible(false);
+      } else if (conf.confirmationState === 1) setRemoveState(2);
     }
-  }
+  };
 
   return (
     <>
@@ -41,7 +41,7 @@ const Picker = props => {
             onPress={() =>
               handlePressItem("REMOVE_EXPENSE", {
                 withConfirmation: true,
-                confirmationState: removeState
+                confirmationState: removeState,
               })
             }
           >
@@ -54,12 +54,12 @@ const Picker = props => {
         </View>
       )}
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   pickerView: {
-    position: "relative"
+    position: "relative",
   },
   contentView: {
     // borderColor: "blue",
@@ -73,15 +73,15 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 24,
     backgroundColor: "#fff",
-    borderRadius: 4
+    borderRadius: 4,
   },
   removeState1: {
     // backgroundColor: "#fff",
     // borderColor: "blue",
     // borderWidth: 1,
-    borderStyle: "solid"
+    borderStyle: "solid",
   },
-  removeState2: { backgroundColor: "red", color: "#fff" }
-})
+  removeState2: { backgroundColor: "red", color: "#fff" },
+});
 
-export default Picker
+export default Picker;

@@ -1,5 +1,6 @@
 import { start } from "./start";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Text } from "react-native";
 import {
   createInitialTables,
   insertBasicData,
@@ -8,8 +9,8 @@ import {
   describeTable,
 } from "./src/dbOperations/app/appBDTransactions";
 import Navigation from "./src/navigation";
-import * as SQLite from "expo-sqlite";
-import * as FileSystem from "expo-file-system";
+import { openDatabase } from "expo-sqlite";
+import { writeAsStringAsync } from "expo-file-system";
 import alerts from "./src/components/atoms/Alerts";
 import AppContext from "./src/state";
 import { initialContext } from "./src/state";
@@ -21,10 +22,6 @@ const App = () => {
 
   useEffect(() => {
     _createInitialTables({ overrideTables: false });
-    // _describeTable({ table: "category" })
-    // _selectBasicData({ table: "expense", createOutputFile: false })
-    // _selectBasicData({ table: "category", createOutputFile: false })
-    // _selectBasicData({ table: "subcategory", createOutputFile: false })
   }, []);
 
   const _createInitialTables = async ({ overrideTables }) => {
@@ -42,7 +39,7 @@ const App = () => {
       const oldData = await selectOldData("expense");
       console.h1("oldData", oldData);
 
-      FileSystem.writeAsStringAsync(
+      writeAsStringAsync(
         `${FileSystem.documentDirectory}/OLD_DATABASE.txt`,
         JSON.stringify(oldData.rows)
       );
@@ -85,7 +82,7 @@ const App = () => {
   };
 
   const _makeSQLiteDirAsync = async () => {
-    const dbTest = SQLite.openDatabase("dummy.db");
+    const dbTest = openDatabase("dummy.db");
 
     try {
       await dbTest.transaction(tx => tx.executeSql(""));
