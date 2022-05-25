@@ -22,17 +22,22 @@ export default () => {
     try {
       const file = await findFileByName(CARTOLA_FILENAME);
       console.log("file", file);
-      // const externalSourceData = fetchExternalSurceByFileId(file.id);
-      // console.log("externalSourceData", externalSourceData);
-      // const isExternalSourceAlreadyCharged = !!externalSourceData;
+      const externalSourceData = await fetchExternalSurceByFileId(file.id);
+      console.log("externalSourceData", externalSourceData);
+      const isExternalSourceAlreadyCharged = !!externalSourceData;
+      console.log(
+        "isExternalSourceAlreadyCharged",
+        isExternalSourceAlreadyCharged
+      );
 
-      // if (isExternalSourceAlreadyCharged) return;
+      if (isExternalSourceAlreadyCharged) return;
 
-      // const dataSheet = extactDataFromSheet();
+      const dataSheet = await extactDataFromSheet();
+      console.log("dataSheet", dataSheet);
       // saveDataOnDatabase({ data: dataSheet });
     } catch (error) {
       console.log(
-        "Error al cargar data del fuente externa",
+        "Error al cargar data de la fuente externa",
         JSON.stringify(error)
       );
     }

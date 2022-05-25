@@ -101,13 +101,13 @@ const _createPurchaseImageTable = ({ ...opts }) => {
   });
 };
 
-const _createExternalSourcesTable = ({ ...opts }) => {
+const _createExternalSourceTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
       tx.executeSql(
         opts && opts.overrideTable
-          ? MAIN_QUERIES.CREATE_TABLE_EXTERNAL_SOURCE
-          : MAIN_QUERIES.OVERRIDE_TABLE_EXTERNAL_SOURCE,
+          ? MAIN_QUERIES.OVERRIDE_TABLE_EXTERNAL_SOURCE
+          : MAIN_QUERIES.CREATE_TABLE_EXTERNAL_SOURCE,
         [],
         (_, s) => {
           resolve(s);
@@ -128,13 +128,13 @@ export const createInitialTables = ({ ...opts }) => {
       _createCategoryTable({ ...opts }),
       _createSubcategoryTable({ ...opts }),
       _createPurchaseImageTable({ ...opts }),
-      _createExternalSourcesTable({ ...opts }),
+      _createExternalSourceTable({ ...opts }),
     ]).then(
       (_, s) => {
         resolve(s);
       },
-      (_, error) => {
-        reject({ ...error, desc: "creating tables" });
+      _ => {
+        reject({ error: "Creating tables", desc: _ });
       }
     );
   });
@@ -185,7 +185,7 @@ export const describeTable = table => {
         [],
         (_, { rows }) =>
           resolve(rows._array.map(r => ({ field: r.name, type: r.type }))),
-        (_, error) => reject({ ...error, desc: `describing table ${table}` })
+        (_, error) => reject({ ...error, desc: `Describing table ${table}` })
       );
     });
   });

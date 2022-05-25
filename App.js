@@ -1,6 +1,5 @@
 import { start } from "./start";
 import { useEffect, useState } from "react";
-import { Text } from "react-native";
 import {
   createInitialTables,
   insertBasicData,
@@ -23,11 +22,14 @@ const App = () => {
   const { chargeDataFromExternalSource } = useDataExtractor();
 
   useEffect(() => {
-    console.log("se renderizó App");
-    // _createInitialTables({ overrideTables: false });
-    // chargeDataFromExternalSource();
-    _createInitialTables({ overrideTables: false });
+    setup();
   }, []);
+
+  const setup = async () => {
+    await _createInitialTables({ overrideTables: false });
+
+    chargeDataFromExternalSource();
+  };
 
   const _createInitialTables = async ({ overrideTables }) => {
     try {
@@ -72,18 +74,11 @@ const App = () => {
   const _describeTable = async ({ table }) => {
     try {
       const data = await describeTable(table);
-      console.h1(table);
+      console.h1(`Información de la tabla ${table}`);
       console.h1(data);
     } catch (err) {
       console.err(err);
     }
-  };
-
-  const _importSQLBase = async () => {
-    FileSystem.downloadAsync(
-      Expo.Asset.fromModule(require("./assets/db/db.mp4")).uri,
-      `${FileSystem.documentDirectory}/SQLite/db.GastosHogar_v002`
-    );
   };
 
   const _makeSQLiteDirAsync = async () => {

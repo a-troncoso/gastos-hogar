@@ -7,6 +7,7 @@ import {
 import useGooglePermission from "./useGooglePermission";
 import { GOOGLE_OAUTH_CLIENT_ID } from "../constants";
 import * as FileSystem from "expo-file-system";
+import { isObject } from "../utils/object";
 
 export default () => {
   const { accessToken } = useGooglePermission(GOOGLE_OAUTH_CLIENT_ID);
@@ -22,16 +23,7 @@ export default () => {
   }, [accessToken]);
 
   const findFileByName = async fileName => {
-    console.log("fileName", fileName);
-    console.log("accessToken", accessToken);
-    console.log("gDrive", gDrive);
-    console.log(
-      "Object.keys(gDrive).length === 0",
-      Object.keys(gDrive).length === 0
-    );
     try {
-      // console.log("gDrive.files.list", gDrive.files.list);
-
       if (Object.keys(gDrive).length === 0)
         throw Error({ msg: "No está establecida conexión con GDrive" });
 
@@ -43,14 +35,16 @@ export default () => {
           .and()
           .e("mimeType", "application/vnd.ms-excel"),
       });
-      console.log("fileData", fileData);
 
       if (fileData?.files?.length === 0)
         throw Error({ msg: "No existe el archivo " + fileName });
 
       return fileData.files[0];
     } catch (error) {
-      console.error("[findFileByName]", JSON.stringify(error));
+      console.error("error", error);
+
+      const err = isObject(error) ? JSON.stringify(error) : error;
+      console.error("[findFileByName]", err);
     }
   };
 
