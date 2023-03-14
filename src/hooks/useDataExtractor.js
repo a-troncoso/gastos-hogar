@@ -43,7 +43,7 @@ export default () => {
     }
   };
 
-  const extactDataFromSheet = async () => {
+  const extractDataFromSheet = async () => {
     try {
       const file = await findFileByName(CARTOLA_FILENAME);
       const { uri } = await downloadFile(file.id);
@@ -70,7 +70,7 @@ export default () => {
   };
 
   return {
-    extactDataFromSheet,
+    extractDataFromSheet,
     chargeDataFromExternalSource,
   };
 };
