@@ -21,7 +21,7 @@ import CategoryDetail from "../pages/CategoryDetail";
 import ScreenNames from "./screenNames";
 import { EXPENSE_DETAIL_MODES } from "../domain/expense/expenseDetailModes";
 import color from "../assets/colors";
-// import AppContext from "../state"
+import AppContext from "../state";
 
 const RootStack = createStackNavigator();
 const RegistryExpenseStack = createStackNavigator();
@@ -51,7 +51,7 @@ const screenOptionsBase = navigation => ({
   headerRight: () => <View></View>,
 });
 
-const Navigation = () => {
+const AppNavigation = () => {
   // const appContext = useContext(AppContext)
 
   const RootStackScreenNavigator = () => {
@@ -75,22 +75,22 @@ const Navigation = () => {
         <Drawer.Screen
           name={ScreenNames.MainStackScreenNavigator.Dashboard}
           component={DashboardStackScreenNavigator}
-          options={{ title: "Dashboard" }}
+          options={{ headerShown: false, title: "Dashboard" }}
         />
         <Drawer.Screen
           name={ScreenNames.MainStackScreenNavigator.RegistryExpense}
           component={RegistryExpenseStackNavigator}
-          options={{ title: "Registrar egreso" }}
+          options={{ headerShown: false, title: "Registrar egreso" }}
         />
         <Drawer.Screen
           name={ScreenNames.MainStackScreenNavigator.Summary}
           component={SummaryStackScreenNavigator}
-          options={{ title: "Historial" }}
+          options={{ headerShown: false, title: "Historial" }}
         />
         <Drawer.Screen
           name={ScreenNames.MainStackScreenNavigator.CategoryManagement}
           component={CategoryManagementStackScreenNavigator}
-          options={{ title: "Administrar Categorías" }}
+          options={{ headerShown: false, title: "Administrar Categorías" }}
         />
       </Drawer.Navigator>
     );
@@ -217,6 +217,8 @@ const Navigation = () => {
     );
   };
 
+  // return <Text>HELLO!</Text>;
+
   return (
     <NavigationContainer>
       <RootStackScreenNavigator />
@@ -224,4 +226,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation;
+export default AppNavigation;

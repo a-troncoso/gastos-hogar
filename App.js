@@ -1,5 +1,6 @@
 import { start } from "./start";
 import { useEffect, useState } from "react";
+import { Text } from "react-native";
 import {
   createInitialTables,
   insertBasicData,
@@ -7,19 +8,18 @@ import {
   selectOldData,
   describeTable,
 } from "./src/dbOperations/app/appBDTransactions";
-import Navigation from "./src/navigation";
+import AppNavigation from "./src/navigation";
 import { openDatabase } from "expo-sqlite";
 import { writeAsStringAsync } from "expo-file-system";
 import alerts from "./src/components/atoms/Alerts";
 import AppContext from "./src/state";
 import { initialContext } from "./src/state";
-import useDataExtractor from "./src/hooks/useDataExtractor";
+// import useDataExtractor from "./src/hooks/useDataExtractor";
 
-start();
-
+// start();
 const App = () => {
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false);
-  const { chargeDataFromExternalSource } = useDataExtractor();
+  // const { chargeDataFromExternalSource } = useDataExtractor();
 
   useEffect(() => {
     setup();
@@ -28,7 +28,7 @@ const App = () => {
   const setup = async () => {
     await _createInitialTables({ overrideTables: false });
 
-    chargeDataFromExternalSource();
+    // chargeDataFromExternalSource();
   };
 
   const _createInitialTables = async ({ overrideTables }) => {
@@ -94,7 +94,7 @@ const App = () => {
   return (
     isBasicTablesCreated && (
       <AppContext.Provider value={initialContext}>
-        <Navigation />
+        <AppNavigation />
       </AppContext.Provider>
     )
   );

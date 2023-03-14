@@ -11,7 +11,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import Hero from "../components/atoms/Hero";
-import ModalPicture from "../components/atoms/ModalPicture";
+// import ModalPicture from "../components/atoms/ModalPicture";
 import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator";
 
 import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
@@ -134,9 +134,9 @@ const Expenses = props => {
     }, [])
   );
 
-  // useEffect(() => {
-  //   navigation.setOptions({ title: "Updated!" })
-  // }, [])
+  useEffect(() => {
+    navigation.setOptions({ title: "Updated!" });
+  }, []);
 
   useEffect(() => {
     fetchCategoryDetail(categoryId);
