@@ -16,7 +16,8 @@ import AppContext from "./src/state";
 import { initialContext } from "./src/state";
 // import useDataExtractor from "./src/hooks/useDataExtractor";
 
-// start();
+start();
+
 const App = () => {
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false);
   // const { chargeDataFromExternalSource } = useDataExtractor();
