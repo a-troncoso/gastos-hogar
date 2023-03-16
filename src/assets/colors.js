@@ -75,8 +75,16 @@ const blueTransparent = {
   },
 };
 
+const grayTransparent = {
+  130: {
+    90: `${gray["130"]}E6`,
+    30: `${gray["90"]}4D`,
+  },
+};
+
 const transparent = {
   blue: blueTransparent,
+  gray: grayTransparent,
 };
 
 export default {
