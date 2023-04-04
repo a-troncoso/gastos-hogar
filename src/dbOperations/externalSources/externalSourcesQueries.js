@@ -4,4 +4,7 @@ export const EXTERNAL_SOURCE_QUERIES = {
     FROM external_source es
     WHERE es.fileId = ?;
   `,
+  INSERT_EXTERNAL_SOURCE: `
+    INSERT INTO external_source (fileId, fileName) VALUES (?, ?);
+  `,
 };

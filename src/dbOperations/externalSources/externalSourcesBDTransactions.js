@@ -20,3 +20,20 @@ export const fetchExternalSurceByFileId = async fileId => {
     });
   });
 };
+
+export const insertExternalSource = ({ fileId, fileName }) => {
+  return new Promise((resolve, reject) => {
+    connDB.transaction(tx => {
+      tx.executeSql(
+        EXTERNAL_SOURCE_QUERIES.INSERT_EXTERNAL_SOURCE,
+        [fileId, fileName],
+        (_, s) => {
+          resolve(s);
+        },
+        error => {
+          reject(error);
+        }
+      );
+    });
+  });
+};

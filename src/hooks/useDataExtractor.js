@@ -3,50 +3,58 @@ import useFileSystem from "./useFileSystem";
 import useXLS from "./useXLS";
 import useCartolaBuilder from "./useCartolaBuilder";
 import { insertExpensesFromExternalSource } from "../dbOperations/purchase/purchaseBDTransactions";
-import { fetchExternalSurceByFileId } from "../dbOperations/externalSources/externalSourcesBDTransactions";
+import {
+  fetchExternalSurceByFileId,
+  insertExternalSource,
+} from "../dbOperations/externalSources/externalSourcesBDTransactions";
 
 const CARTOLA_FILENAME = "Cartola_Chequera";
 
 export default () => {
-  const { findFileByName, downloadFile } = useGoogleDrive();
+  const { findFileByName, downloadFile } = useGoogleDrive({
+    onReadyGoogleDrive: gDriveInstance => {
+      console.log("Se ejecuta onReadyGoogleDrive desde useDataExtractor.js");
+      chargeDataFromExternalSource(gDriveInstance);
+    },
+  });
   const { readFile } = useFileSystem();
   const { readXLS } = useXLS();
   const { generateTable } = useCartolaBuilder();
 
-  const isExternalSourceAlreadyCharged = async fileId => {
-    const externalSource = await fetchExternalSurceByFileId(fileId);
-    fetchExternalSurceByFileId(fileId);
-  };
-
-  const chargeDataFromExternalSource = async () => {
+  const chargeDataFromExternalSource = async gDriveInstance => {
+    console.log("Ejecutamos chargeDataFromExternalSource");
     try {
-      const file = await findFileByName(CARTOLA_FILENAME);
+      const file = await findFileByName(CARTOLA_FILENAME, gDriveInstance);
       console.log("file", file);
       const externalSourceData = await fetchExternalSurceByFileId(file.id);
       console.log("externalSourceData", externalSourceData);
-      const isExternalSourceAlreadyCharged = !!externalSourceData;
-      console.log(
-        "isExternalSourceAlreadyCharged",
-        isExternalSourceAlreadyCharged
-      );
+      const externalSourceAlreadyExist = !!externalSourceData;
+      console.log("externalSourceAlreadyExist", externalSourceAlreadyExist);
 
-      if (isExternalSourceAlreadyCharged) return;
+      if (externalSourceAlreadyExist)
+        throw Error("No se puede guardar el external_source", {
+          cause: "Ya se encuentra cargado el archivo " + CARTOLA_FILENAME,
+        });
+      else
+        insertExternalSource({ fileId: file.id, fileName: CARTOLA_FILENAME });
 
-      const dataSheet = await extactDataFromSheet();
+      const dataSheet = await extractDataFromSheet(gDriveInstance);
       console.log("dataSheet", dataSheet);
       // saveDataOnDatabase({ data: dataSheet });
     } catch (error) {
       console.log(
         "Error al cargar data de la fuente externa",
-        JSON.stringify(error)
+        error,
+        error.cause
       );
     }
   };
 
-  const extractDataFromSheet = async () => {
+  const extractDataFromSheet = async gDriveInstance => {
     try {
-      const file = await findFileByName(CARTOLA_FILENAME);
-      const { uri } = await downloadFile(file.id);
+      const file = await findFileByName(CARTOLA_FILENAME, gDriveInstance);
+      const { uri } = await downloadFile(file.id, gDriveInstance.accessToken);
+      console.log("uri", uri);
       const data = await readFile({ uri });
       const { workbook } = readXLS({
         data,

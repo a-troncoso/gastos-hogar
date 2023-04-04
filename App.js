@@ -14,13 +14,17 @@ import { writeAsStringAsync } from "expo-file-system";
 import alerts from "./src/components/atoms/Alerts";
 import AppContext from "./src/state";
 import { initialContext } from "./src/state";
-// import useDataExtractor from "./src/hooks/useDataExtractor";
+import useDataExtractor from "./src/hooks/useDataExtractor";
+import useGoogleDrive from "./src/hooks/useGoogleDrive";
 
 start();
 
+console.log("Arranca App.js");
+
 const App = () => {
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false);
-  // const { chargeDataFromExternalSource } = useDataExtractor();
+
+  useDataExtractor();
 
   useEffect(() => {
     setup();
@@ -28,8 +32,6 @@ const App = () => {
 
   const setup = async () => {
     await _createInitialTables({ overrideTables: false });
-
-    // chargeDataFromExternalSource();
   };
 
   const _createInitialTables = async ({ overrideTables }) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   GDrive,
   MimeTypes,
@@ -9,32 +9,45 @@ import { GOOGLE_OAUTH_CLIENT_ID } from "../constants";
 import * as FileSystem from "expo-file-system";
 import { isObject } from "../utils/object";
 
-export default () => {
-  const { accessToken } = useGooglePermission(GOOGLE_OAUTH_CLIENT_ID);
-  const [gDrive, setGDrive] = useState({});
+export default ({ onReadyGoogleDrive = () => {} } = {}) => {
+  const { request, response, promptAsync } = useGooglePermission(
+    GOOGLE_OAUTH_CLIENT_ID
+  );
 
   useEffect(() => {
-    const gdrive = new GDrive();
-    console.log("accessToken cambio!", accessToken);
-    if (accessToken) {
-      gdrive.accessToken = accessToken;
-      setGDrive(gdrive);
-    }
-  }, [accessToken]);
+    if (request) promptAsync();
+  }, [request]);
 
-  const findFileByName = async fileName => {
+  useEffect(() => {
+    console.log("reponse cambiado", response);
+    if (response?.authentication) {
+      console.log(
+        "response?.authentication.accessToken:",
+        response?.authentication.accessToken
+      );
+
+      const gDriveInstance = new GDrive();
+      gDriveInstance.accessToken = response?.authentication.accessToken;
+      console.log("gDriveInstance", gDriveInstance);
+      onReadyGoogleDrive(gDriveInstance);
+    }
+  }, [response]);
+
+  const findFileByName = async (fileName, gDriveInstance) => {
+    console.log("Ejecutamos findFileByName");
+    console.log("fileName", fileName);
     try {
-      if (Object.keys(gDrive).length === 0)
+      if (Object.keys(gDriveInstance).length === 0)
         throw Error({ msg: "No está establecida conexión con GDrive" });
 
-      if (!accessToken) throw Error({ msg: "No posee token de autorización" });
-
-      const fileData = await gDrive.files.list({
+      const fileData = await gDriveInstance.files.list({
         q: new ListQueryBuilder()
           .contains("name", fileName)
           .and()
           .e("mimeType", "application/vnd.ms-excel"),
       });
+
+      console.log("fileData", fileData);
 
       if (fileData?.files?.length === 0)
         throw Error({ msg: "No existe el archivo " + fileName });
@@ -49,10 +62,10 @@ export default () => {
   };
 
   const findAllFiles = async () => {
-    return await gDrive.files.list();
+    return await gDriveConnection.files.list();
   };
 
-  const downloadFile = async id => {
+  const downloadFile = async (id, accessToken) => {
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${accessToken}`);
 
@@ -70,7 +83,7 @@ export default () => {
 
     const { uri } = await FileSystem.downloadAsync(
       URI,
-      FileSystem.documentDirectory + "cartolita.xls",
+      FileSystem.documentDirectory + "Cartola.xls",
       downloadFileOptions
     );
     return { uri };
