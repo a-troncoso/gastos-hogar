@@ -1,7 +1,6 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import {
   GDrive,
-  MimeTypes,
   ListQueryBuilder,
 } from "@robinbobin/react-native-google-drive-api-wrapper";
 import useGooglePermission from "./useGooglePermission";
@@ -21,21 +20,13 @@ export default ({ onReadyGoogleDrive = () => {} } = {}) => {
   useEffect(() => {
     console.log("reponse cambiado", response);
     if (response?.authentication) {
-      console.log(
-        "response?.authentication.accessToken:",
-        response?.authentication.accessToken
-      );
-
       const gDriveInstance = new GDrive();
       gDriveInstance.accessToken = response?.authentication.accessToken;
-      console.log("gDriveInstance", gDriveInstance);
       onReadyGoogleDrive(gDriveInstance);
     }
   }, [response]);
 
-  const findFileByName = async (fileName, gDriveInstance) => {
-    console.log("Ejecutamos findFileByName");
-    console.log("fileName", fileName);
+  const findFilesByName = async (fileName, gDriveInstance) => {
     try {
       if (Object.keys(gDriveInstance).length === 0)
         throw Error({ msg: "No está establecida conexión con GDrive" });
@@ -47,17 +38,15 @@ export default ({ onReadyGoogleDrive = () => {} } = {}) => {
           .e("mimeType", "application/vnd.ms-excel"),
       });
 
-      console.log("fileData", fileData);
-
       if (fileData?.files?.length === 0)
         throw Error({ msg: "No existe el archivo " + fileName });
 
-      return fileData.files[0];
+      return fileData.files;
     } catch (error) {
       console.error("error", error);
 
       const err = isObject(error) ? JSON.stringify(error) : error;
-      console.error("[findFileByName]", err);
+      console.error("[findFilesByName]", err);
     }
   };
 
@@ -90,7 +79,7 @@ export default ({ onReadyGoogleDrive = () => {} } = {}) => {
   };
 
   return {
-    findFileByName,
+    findFilesByName,
     findAllFiles,
     downloadFile,
   };

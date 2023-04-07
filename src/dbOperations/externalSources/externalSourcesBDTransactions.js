@@ -4,7 +4,7 @@ import { connectedDB } from "../utils/database";
 const dbName = "db.GastosHogar";
 const connDB = connectedDB({ engine: "sqlite", name: dbName });
 
-export const fetchExternalSurceByFileId = async fileId => {
+export const fetchExternalSourceByFileId = async fileId => {
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
       tx.executeSql(

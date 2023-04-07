@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useAuthRequest } from "expo-auth-session/providers/google";
 
 export default clientId => {
@@ -6,8 +5,7 @@ export default clientId => {
     expoClientId: clientId,
     scopes: [
       "https://www.googleapis.com/auth/drive",
-      // "https://www.googleapis.com/auth/drive.file",
-      // "https://www.googleapis.com/auth/drive.metadata",
+      "https://www.googleapis.com/auth/drive.file",
     ],
     offlineAccess: true,
   });

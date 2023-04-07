@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
-import { SimpleLineIcons } from "@expo/vector-icons"
-import Termometer from "./Termometer"
-import CategoryIcon from "./CategoryIcon/CategoryIcon"
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { SimpleLineIcons } from "@expo/vector-icons";
+import Thermometer from "./Termometer";
+import CategoryIcon from "./CategoryIcon/CategoryIcon";
 
-import color from "../../assets/colors"
+import color from "../../assets/colors";
 
 const CategoryItem = props => {
-  const { name, extraInfo, onPress } = props
+  const { name, extraInfo, onPress } = props;
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.category}>
@@ -18,7 +18,7 @@ const CategoryItem = props => {
           <Text style={styles.categoryCategoryName}>{name}</Text>
           {Object.keys(extraInfo).length > 0 && (
             <View style={{ marginTop: 8 }}>
-              <Termometer
+              <Thermometer
                 maxValue={extraInfo.maximumStop}
                 value={extraInfo.currentAmount}
               />
@@ -28,8 +28,8 @@ const CategoryItem = props => {
         <SimpleLineIcons name="arrow-right" size={24} color="black" />
       </View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   category: {
@@ -41,18 +41,18 @@ const styles = StyleSheet.create({
     borderColor: color.blue["60"],
     borderStyle: "solid",
     borderWidth: 1,
-    borderRadius: 16
+    borderRadius: 16,
   },
   categoryCategoryName: {
     fontSize: 24,
-    textTransform: "capitalize"
+    textTransform: "capitalize",
   },
   name: {
     // borderColor: "black",
     // borderWidth: 1,
     // borderStyle: "solid",
     marginRight: 12,
-    flex: 1
+    flex: 1,
   },
   categoryExtraInfo: {
     flex: 1,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     paddingVertical: 4,
     paddingHorizontal: 16,
-    backgroundColor: "#E8E8E8"
+    backgroundColor: "#E8E8E8",
   },
   rightSection: {
     // borderColor: "red",
@@ -71,20 +71,20 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 12,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
     // justifyContent: "space-between"
-  }
-})
+  },
+});
 
 CategoryItem.defaultProps = {
   extraInfo: {},
-  onPress: () => {}
-}
+  onPress: () => {},
+};
 
 CategoryItem.propTypes = {
   name: PropTypes.string.isRequired,
   extraInfo: PropTypes.object,
-  onPress: PropTypes.func
-}
+  onPress: PropTypes.func,
+};
 
-export default CategoryItem
+export default CategoryItem;

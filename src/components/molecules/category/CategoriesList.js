@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import {
   StyleSheet,
   FlatList,
   Text,
   View,
-  TouchableOpacity
-} from "react-native"
-import CategoryItem from "../../atoms/CategoryItem"
+  TouchableOpacity,
+} from "react-native";
+import CategoryItem from "../../atoms/CategoryItem";
 
 const AddCategoryButton = props => {
-  const { onPress } = props
+  const { onPress } = props;
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.addCategoryButton}>
@@ -18,20 +18,20 @@ const AddCategoryButton = props => {
         <Text style={styles.addCategoryButtonLabel}>+</Text>
       </View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const CategoriesList = props => {
-  const { categories, features, onPressCategory, onPressAddCategory } = props
+  const { categories, features, onPressCategory, onPressAddCategory } = props;
 
-  const [hasAddCategoryFeature] = useState(features.includes("add-category"))
+  const [hasAddCategoryFeature] = useState(features.includes("add-category"));
 
   const handlePressCategory = id => {
-    onPressCategory(id)
-  }
+    onPressCategory(id);
+  };
 
   const handlePressAddCategory = () =>
-    hasAddCategoryFeature && onPressAddCategory()
+    hasAddCategoryFeature && onPressAddCategory();
 
   return (
     <FlatList
@@ -54,12 +54,12 @@ const CategoriesList = props => {
         </View>
       )}
     ></FlatList>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   categoriesListViewCategory: {
-    paddingTop: 16
+    paddingTop: 16,
   },
   addCategoryButton: {
     height: 100,
@@ -68,32 +68,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderColor: "black",
     borderStyle: "solid",
-    borderWidth: 1
+    borderWidth: 1,
   },
   addCategoryButtonLabel: {
     fontSize: 24,
     textAlign: "center",
-    textTransform: "capitalize"
+    textTransform: "capitalize",
   },
   addCategoryButtonTextView: {
     flex: 1,
     padding: 16,
     alignSelf: "stretch",
-    justifyContent: "center"
-  }
-})
+    justifyContent: "center",
+  },
+});
 
 CategoriesList.defaultProps = {
   features: [],
   onPressCategory: () => {},
-  onPressAddCategory: () => {}
-}
+  onPressAddCategory: () => {},
+};
 
 CategoriesList.propTypes = {
   categories: PropTypes.array.isRequired,
   features: PropTypes.array,
   onPressCategory: PropTypes.func,
-  onPressAddCategory: PropTypes.func
-}
+  onPressAddCategory: PropTypes.func,
+};
 
-export default CategoriesList
+export default CategoriesList;

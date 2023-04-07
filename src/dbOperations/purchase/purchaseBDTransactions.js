@@ -402,7 +402,7 @@ const fetchExpenseByExtOperationNumber = ({ extOperationNumber, source }) => {
         [extOperationNumber, source],
         (_, { rows }) => {
           if (rows._array.length === 1) resolve(rows._array[0]);
-          else reject("Result has no one rows");
+          else resolve(null);
         },
         (_, error) => {
           reject(error);
@@ -413,25 +413,16 @@ const fetchExpenseByExtOperationNumber = ({ extOperationNumber, source }) => {
 };
 
 export const insertExpensesFromExternalSource = (expenses = []) => {
-  expenses.forEach(e => {
-    const expense = fetchExpenseByExtOperationNumber({
-      extOperationNumber: e.externalId,
+  expenses.forEach(async e => {
+    const expense = await fetchExpenseByExtOperationNumber({
+      extOperationNumber: e.operationNumber,
       source: "external",
     });
-    if (!expense) {
-      const result = insertExpense(
-        null,
-        null,
-        null,
-        e.amount,
-        e.description,
-        e.date,
-        1,
-        {
-          extOperationNumber: e.operationNumber,
-          source: "external",
-        }
-      );
-    }
+    const expenseAlreadyExists = Boolean(expense);
+    if (!expenseAlreadyExists)
+      insertExpense(null, 1, 1, e.amount, e.description, e.date, 1, {
+        extOperationNumber: e.operationNumber,
+        source: "external",
+      });
   });
 };

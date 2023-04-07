@@ -149,7 +149,7 @@ export const EXPENSE_QUERIES = {
   FETCH_EXPENSE_BY_EXT_OPERATION_NUMBER: `
     SELECT e.id
     FROM expense e
-    WHERE e.externalOperationNumber = ?
+    WHERE e.extOperationNumber = ?
     AND e.source = ?
     AND e.active = 1;
     `,

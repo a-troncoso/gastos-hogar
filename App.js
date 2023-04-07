@@ -15,11 +15,8 @@ import alerts from "./src/components/atoms/Alerts";
 import AppContext from "./src/state";
 import { initialContext } from "./src/state";
 import useDataExtractor from "./src/hooks/useDataExtractor";
-import useGoogleDrive from "./src/hooks/useGoogleDrive";
 
 start();
-
-console.log("Arranca App.js");
 
 const App = () => {
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false);
@@ -58,7 +55,7 @@ const App = () => {
     }
   };
 
-  const _selectBasicData = async ({ table, createOutputFile }) => {
+  const _selectBasicData = async ({ table, createOutputFile = false }) => {
     try {
       const data = await selectBasicData(table);
       console.h1(table);

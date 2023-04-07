@@ -1,6 +1,18 @@
-const extractNumbers = str => parseInt(str.replace(/^\D+/g, ""));
+import { extractNumbers } from "../utils/number";
+import { formatDate } from "../utils/date";
+// const extractNumbers = str => parseInt(str.replace(/^\D+/g, ""));
 const extractCharacters = str => String(str.replace(/\d+/g, ""));
 const isCellWithValue = cell => Boolean(cell && cell.v);
+
+const colNormalizer = {
+  date: date =>
+    formatDate(date, {
+      separator: "/",
+      isInISOFormat: false,
+      toISOFormat: true,
+    }),
+  amount: extractNumbers,
+};
 
 export default () => {
   const generateTable = ({ data }) => {
@@ -22,7 +34,12 @@ export default () => {
       let transaction = {};
       for (const col in colMap) {
         const cell = data[col + rowPointer];
-        if (cell && cell.v) transaction[colMap[col]] = cell.v;
+        if (cell && cell.v) {
+          const colHasNormalizer = Boolean(colNormalizer[colMap[col]]);
+          if (colHasNormalizer)
+            transaction[colMap[col]] = colNormalizer[colMap[col]](cell.v);
+          else transaction[colMap[col]] = cell.v;
+        }
       }
       table.push(transaction);
       rowPointer = rowPointer + 1;
@@ -54,7 +71,8 @@ export default () => {
     })[0][0];
 
     //TODO: aqui estamos encontrando el numero de la fila donde esta la cabecera de la tabla
-    // por ahora le sumamos 2 asumiendo que la primera fila de la tabla está dos posiciones más abajo (ya que bajo el titulo están las cabeceras de la tabla)
+    // por ahora le sumamos 2 asumiendo que la primera fila de la tabla está dos posiciones más abajo
+    // (ya que bajo el titulo están las cabeceras de la tabla)
     const firstTableRow = extractNumbers(cellOfTableTitle) + 2;
     return firstTableRow;
   };

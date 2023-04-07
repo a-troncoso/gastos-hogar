@@ -102,6 +102,7 @@ const PurchasesList = props => {
       data={purchases}
       style={styles.purchasesList}
       keyExtractor={item => item.id.toString()}
+      showsVerticalScrollIndicator={false}
       renderItem={({ item }) => (
         <View style={styles.purchasesListViewPurchase}>
           <PurchaseItem
@@ -133,10 +134,6 @@ const Expenses = props => {
       fetchPurchases(dateSelected, mode, categoryId);
     }, [])
   );
-
-  useEffect(() => {
-    navigation.setOptions({ title: "Updated!" });
-  }, []);
 
   useEffect(() => {
     fetchCategoryDetail(categoryId);

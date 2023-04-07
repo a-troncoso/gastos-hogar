@@ -142,8 +142,9 @@ export const createInitialTables = ({ ...opts }) => {
 
 export const insertBasicData = () => {
   const querysInsert = [
-    `INSERT INTO "user"("name", "imagePath") VALUES ("alvaro", "");`,
-    `INSERT INTO "subcategory"("name", "imagePath") VALUES ("Sin subcategoría", "");`,
+    `INSERT OR IGNORE INTO "user"("id", "name", "imagePath") VALUES (1, "alvaro", "");`,
+    `INSERT OR IGNORE INTO "category"("id", "name", "maxAmountPerMonth") VALUES (1, "Sin categoría", 0);`,
+    `INSERT OR IGNORE INTO "subcategory"("id", "name", "imagePath") VALUES (1, "Sin subcategoría", "");`,
   ];
 
   return new Promise((resolve, reject) => {
@@ -168,7 +169,7 @@ export const selectBasicData = table => {
       tx.executeSql(
         querys[0],
         [],
-        (_, s) => resolve(s),
+        (_, s) => resolve(JSON.stringify(s)),
         (_, error) => reject({ ...error, desc: "selecting basic data" })
       );
     });
