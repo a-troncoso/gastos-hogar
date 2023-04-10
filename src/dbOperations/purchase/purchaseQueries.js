@@ -39,7 +39,8 @@ export const EXPENSE_QUERIES = {
       AND e.active = 1
       AND c.id=?
       AND c.active = 1
-    GROUP BY e.id;
+    GROUP BY e.id
+    ORDER BY e.date ASC;
   `,
 
   SELECT_PURCHASE_IMAGE: "SELECT expenseId, image FROM expense_image",
@@ -146,10 +147,12 @@ export const EXPENSE_QUERIES = {
 
   DELETE_EXPENSE: `UPDATE expense SET active=0 WHERE id=?;`,
 
-  FETCH_EXPENSE_BY_EXT_OPERATION_NUMBER: `
+  FETCH_EXPENSE: `
     SELECT e.id
     FROM expense e
     WHERE e.extOperationNumber = ?
+    AND e.amount = ?
+    AND e.date = ?
     AND e.source = ?
     AND e.active = 1;
     `,
