@@ -77,67 +77,68 @@ const Chart = props => {
 
   return (
     <View style={styles.chart}>
-      <Svg
-        height="400"
-        width="100%"
-        style={{
-          // borderColor: "pink",
-          // borderStyle: "solid",
-          // borderWidth: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <VictoryPie
-          data={parsedData}
-          innerRadius={90}
-          padAngle={4}
-          labels={() => null}
-          externalEventMutations={externalMutation}
-          events={[
-            {
-              target: "data",
-              eventHandlers: {
-                onPress: () => {
-                  return [
-                    {
-                      mutation: props => {
-                        setLabel({
-                          value: toCurrencyFormat(props.datum.y),
-                          text: props.datum.x,
-                        });
-                      },
+      <VictoryPie
+        data={parsedData}
+        containerComponent={
+          <Svg
+            height="400"
+            width="100%"
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          />
+        }
+        innerRadius={90}
+        padAngle={4}
+        labels={() => null}
+        externalEventMutations={externalMutation}
+        events={[
+          {
+            target: "data",
+            eventHandlers: {
+              onPress: () => {
+                return [
+                  {
+                    mutation: props => {
+                      setLabel({
+                        value: toCurrencyFormat(props.datum.y),
+                        text: props.datum.x,
+                      });
                     },
-                    {
-                      target: "data",
-                      childName: ["pie"],
-                      mutation: () => {
-                        setExternalMutation([
-                          {
-                            target: "data",
-                            eventKey: "all",
-                            mutation: () => {
-                              return { innerRadius: 100 };
-                            },
-                            callback: setExternalMutation(undefined),
+                  },
+                  {
+                    target: "data",
+                    childName: ["pie"],
+                    mutation: () => {
+                      setExternalMutation([
+                        {
+                          target: "data",
+                          eventKey: "all",
+                          mutation: () => {
+                            return { innerRadius: 100 };
                           },
-                        ]);
-                      },
+                          callback: setExternalMutation(undefined),
+                        },
+                      ]);
                     },
-                  ];
-                },
+                  },
+                ];
               },
             },
-          ]}
-          colorScale={[
-            color["blue"][10],
-            color["blue"][30],
-            color["blue"][50],
-            color["blue"][70],
-          ]}
-        />
-        <ChartLabel label={label} />
-      </Svg>
+          },
+        ]}
+        colorScale={[
+          color["blue"][0],
+          color["blue"][10],
+          color["blue"][20],
+          color["blue"][30],
+          color["blue"][40],
+          color["blue"][50],
+          color["blue"][60],
+        ]}
+      />
+      <ChartLabel label={label} />
     </View>
   );
 };

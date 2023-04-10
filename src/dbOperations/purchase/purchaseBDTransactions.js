@@ -8,19 +8,29 @@ const dbName = "db.GastosHogar";
 const connDB = connectedDB({ engine: "sqlite", name: dbName });
 
 export const insertExpense = (
-  pictures,
+  pictures = [],
   categoryId,
   subcategoryId,
   amount,
   description,
   date,
-  userId
+  userId,
+  { extOperationNumber, source }
 ) => {
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
       tx.executeSql(
         EXPENSE_QUERIES.INSERT_EXPENSE,
-        [categoryId, subcategoryId, amount, description, date, userId],
+        [
+          categoryId,
+          subcategoryId,
+          amount,
+          description,
+          date,
+          userId,
+          extOperationNumber,
+          source,
+        ],
         async (_, result) => {
           const expenseId = result.insertId;
 
@@ -186,7 +196,15 @@ const processIds = async result => {
 
 export const updateExpense = (
   expenseId,
-  { pictures, categoryId, subcategoryId, amount, description, date, userId }
+  {
+    pictures = [],
+    categoryId,
+    subcategoryId,
+    amount,
+    description,
+    date,
+    userId,
+  }
 ) => {
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
@@ -381,5 +399,39 @@ export const deleteExpense = expenseId => {
         }
       );
     });
+  });
+};
+
+const fetchExpense = ({ extOperationNumber, source, amount, date }) => {
+  return new Promise((resolve, reject) => {
+    connDB.transaction(tx => {
+      tx.executeSql(
+        EXPENSE_QUERIES.FETCH_EXPENSE,
+        [extOperationNumber, amount, date, source],
+        (_, { rows }) => {
+          if (rows._array?.length === 1) resolve(rows._array[0]);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+export const insertExpensesFromExternalSource = (expenses = []) => {
+  expenses.forEach(async e => {
+    const expense = await fetchExpense({
+      extOperationNumber: e.operationNumber,
+      date: e.date,
+      amount: e.amount,
+      source: "external",
+    });
+    const expenseAlreadyExists = Boolean(expense);
+    if (!expenseAlreadyExists)
+      await insertExpense(null, 1, 1, e.amount, e.description, e.date, 1, {
+        extOperationNumber: e.operationNumber,
+        source: "external",
+      });
   });
 };

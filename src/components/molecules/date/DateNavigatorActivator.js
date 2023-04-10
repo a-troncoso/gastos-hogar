@@ -88,7 +88,10 @@ const DateNavigatorActivator = props => {
 };
 
 const styles = StyleSheet.create({
-  mainView: {},
+  mainView: {
+    // borderWidth: 1,
+    // borderColor: "blue",
+  },
   activator: {
     width: 150,
     alignItems: "center",

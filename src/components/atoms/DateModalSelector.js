@@ -1,30 +1,31 @@
-import React, { useEffect, useState } from "react"
-import { StyleSheet, View, Text } from "react-native"
-import Modal from "react-native-modal"
-import Button from "./Button"
-import DateRoller from "../molecules/date/DateRoller"
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, Text, Modal, Dimensions } from "react-native";
+import Button from "./Button";
+import DateRoller from "../molecules/date/DateRoller";
 
-import color from "../../assets/colors"
+import color from "../../assets/colors";
 
 const DateModalSelector = props => {
-  const { date, mode, isModalVisible, onChange, onBackdropPress } = props
+  const { date, mode, isModalVisible, onChange, onBackdropPress } = props;
 
-  const [selectedDate, setSelectedDate] = useState(date)
+  const [selectedDate, setSelectedDate] = useState(date);
 
   const handleChangeDate = date => {
-    setSelectedDate(date)
-  }
+    setSelectedDate(date);
+  };
 
   const handlePressOk = () => {
-    onChange(selectedDate)
-  }
+    onChange(selectedDate);
+  };
 
   return (
-    <View>
+    <View style={styles.centeredView}>
       <Modal
-        style={styles.modal}
         isVisible={isModalVisible}
-        onBackdropPress={onBackdropPress}
+        onRequestClose={onBackdropPress}
+        transparent={true}
+        statusBarTranslucent
+        animationType="fade"
       >
         <View style={styles.viewModal}>
           <DateRoller
@@ -40,31 +41,40 @@ const DateModalSelector = props => {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-  modal: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+  centeredView: {
+    // borderWidth: 1,
+    // borderColor: "red",
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
+    backgroundColor: color.transparent.gray["130"]["90"],
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    position: "absolute",
   },
   viewModal: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
+    // borderWidth: 1,
+    // borderColor: "yellow",
+    left: Dimensions.get("window").width / 2 - 150,
+    top: Dimensions.get("window").height / 2 - 125,
     width: 300,
     height: 250,
     padding: 16,
-    backgroundColor: color.blue["90"]
+    alignItems: "center",
+    backgroundColor: color.blue["90"],
   },
   modalViewFooter: {
     marginTop: 16,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   saveBtnText: {
-    fontWeight: "bold"
-  }
-})
+    fontWeight: "bold",
+  },
+});
 
-export default DateModalSelector
+export default DateModalSelector;

@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
     // borderStyle: "solid",
     flex: 1,
     paddingHorizontal: 16,
-    // paddingTop: 8
   },
 });
 

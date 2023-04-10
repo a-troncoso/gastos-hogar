@@ -1,5 +1,6 @@
 export default {
   logged: {
-    name: "alvaro"
-  }
-}
+    id: 1,
+    name: "alvaro",
+  },
+};

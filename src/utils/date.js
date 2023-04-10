@@ -74,9 +74,21 @@ export const availableYears = () => {
 
 export const formatDate = (
   _date,
-  { withMonthName = false, separator = " " }
+  {
+    withMonthName = false,
+    separator = " ",
+    isInISOFormat = true,
+    toISOFormat = false,
+  }
 ) => {
-  const date = new Date(_date);
+  let date;
+  if (isInISOFormat) date = new Date(_date);
+  else {
+    const [day, month, year] = _date.split(separator);
+    date = new Date(+year, +month - 1, +day);
+  }
+  if (toISOFormat) return date.toISOString(date);
+
   let day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();

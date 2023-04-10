@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react"
-import { TextInput, StyleSheet, Keyboard } from "react-native"
-import Feature from "../../atoms/Feature/Feature"
+import React, { useState, useEffect } from "react";
+import { TextInput, StyleSheet, Keyboard } from "react-native";
+import Feature from "../../atoms/Feature/Feature";
 
 const DescriptionFeature = props => {
   const {
@@ -8,75 +8,70 @@ const DescriptionFeature = props => {
     isUnsavedFeature,
     isFocusedInput,
     onChange,
-    onChageKeyboardVisibility
-  } = props
+    onChageKeyboardVisibility,
+  } = props;
 
-  const [_description, setDescription] = useState(description)
+  const [localDescription, setLocalDescription] = useState(description);
   const [editableElements, setEditatableElements] = useState({
-    description: { isVisible: false }
-  })
-  const [inputHeight, setInputHeight] = useState(0)
+    description: { isVisible: false },
+  });
+  const [inputHeight, setInputHeight] = useState(0);
 
-  useEffect(() => {}, [isUnsavedFeature])
+  useEffect(() => {}, [isUnsavedFeature]);
 
   useEffect(() => {
-    setDescription(description)
-  }, [description])
+    setLocalDescription(description);
+  }, [description]);
 
   const handleChangeDescription = descriptionText => {
-    setDescription(descriptionText)
-  }
+    setLocalDescription(descriptionText);
+  };
 
   const handleBlurInput = () => {
     setEditatableElements({
       ...editableElements,
-      description: { isVisible: false }
-    })
+      description: { isVisible: false },
+    });
 
-    onChange({ id: null, value: _description })
-  }
+    if (description !== localDescription)
+      onChange({ id: null, value: localDescription });
+  };
 
   const handlePressFeature = () => {
     setEditatableElements({
       ...editableElements,
-      description: { isVisible: true }
-    })
-  }
+      description: { isVisible: true },
+    });
+  };
 
   const _keyboardDidShow = () => {
-    onChageKeyboardVisibility({ isKeyboardVisible: true })
-  }
+    onChageKeyboardVisibility({ isKeyboardVisible: true });
+  };
 
   const _keyboardDidHide = () => {
-    onChageKeyboardVisibility({ isKeyboardVisible: false })
-  }
+    onChageKeyboardVisibility({ isKeyboardVisible: false });
+  };
 
   useEffect(() => {
-    Keyboard.addListener("keyboardDidShow", _keyboardDidShow)
-    Keyboard.addListener("keyboardDidHide", _keyboardDidHide)
-
-    // cleanup function
-    return () => {
-      Keyboard.removeListener("keyboardDidShow", _keyboardDidShow)
-      Keyboard.removeListener("keyboardDidHide", _keyboardDidHide)
-    }
-  }, [])
+    Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
+    Keyboard.addListener("keyboardDidHide", _keyboardDidHide);
+  }, []);
 
   return (
     <Feature
       name="descripción"
-      value={_description}
+      value={localDescription}
       voidValue="sin descripción"
       isVisibleEditableElm={editableElements.description.isVisible}
       editableElement={
         <TextInput
           style={{ ...styles.descTextInput, height: inputHeight }}
-          value={_description}
+          value={localDescription}
           onChangeText={handleChangeDescription}
           onBlur={handleBlurInput}
           onSubmitEditing={Keyboard.dismiss}
           onContentSizeChange={event => {
-            setInputHeight(event.nativeEvent.contentSize.height)
+            setInputHeight(event.nativeEvent.contentSize.height);
           }}
           multiline
           autoFocus
@@ -84,10 +79,9 @@ const DescriptionFeature = props => {
       }
       isUnsavedFeature={isUnsavedFeature}
       onPressFeature={handlePressFeature}
-      isVisibleEditableElm={editableElements.description.isVisible}
     />
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   descTextInput: {
@@ -100,8 +94,8 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
     fontSize: 14,
     fontWeight: "bold",
-    textAlign: "right"
-  }
-})
+    textAlign: "right",
+  },
+});
 
-export default DescriptionFeature
+export default DescriptionFeature;
