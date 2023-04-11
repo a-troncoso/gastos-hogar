@@ -96,7 +96,15 @@ const ExpenseDetail = () => {
     if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
       navigation.setOptions({
         headerRight: () => (
-          <Picker onPressItem={() => deleteExpense(expenseId)} />
+          <Picker
+            items={[
+              {
+                title: "Eliminar",
+                onPressItem: () => deleteExpense(expenseId),
+                withConfirmation: true,
+              },
+            ]}
+          />
         ),
       });
   }, [navigation]);

@@ -132,6 +132,7 @@ const AppNavigation = () => {
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
             title: "Registrar egreso",
+            headerRight: () => <MenuButton type="secondary" />,
           })}
         />
         <RegistryExpenseStack.Screen

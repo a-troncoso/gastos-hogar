@@ -21,10 +21,11 @@ start();
 const App = () => {
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false);
 
-  useDataExtractor();
+  // useDataExtractor();
 
   useEffect(() => {
     setup();
+    _selectBasicData({ table: "expense" });
   }, []);
 
   const setup = async () => {
