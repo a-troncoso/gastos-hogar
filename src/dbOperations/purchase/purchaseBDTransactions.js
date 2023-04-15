@@ -410,6 +410,7 @@ const fetchExpense = ({ extOperationNumber, source, amount, date }) => {
         [extOperationNumber, amount, date, source],
         (_, { rows }) => {
           if (rows._array?.length === 1) resolve(rows._array[0]);
+          else resolve(null);
         },
         (_, error) => {
           reject(error);
@@ -429,7 +430,7 @@ export const insertExpensesFromExternalSource = (expenses = []) => {
     });
     const expenseAlreadyExists = Boolean(expense);
     if (!expenseAlreadyExists)
-      await insertExpense(null, 1, 1, e.amount, e.description, e.date, 1, {
+      await insertExpense([], 1, 1, e.amount, e.description, e.date, 1, {
         extOperationNumber: e.operationNumber,
         source: "external",
       });

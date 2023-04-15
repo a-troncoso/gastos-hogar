@@ -25,6 +25,14 @@
     "android": {
       "package": "com.alvaro.gastoshogar",
       "versionCode": 4
-    }
+    },
+    "plugins": [
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ]
+    ]
   }
 }
