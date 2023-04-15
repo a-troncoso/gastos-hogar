@@ -16,6 +16,7 @@ import {
   fetchTotalAmountByDateCriteriaPerCategory,
   fetchAmountsByDateCriteria,
 } from "../dbOperations/purchase/purchaseBDTransactions";
+import { fetchTotalIncomesByDateCriteria } from "../dbOperations/income/incomeBDTransactions";
 
 import { currentDate, formattedMonthNumber } from "../utils/date";
 import { toCurrencyFormat } from "../utils/number";
@@ -27,14 +28,14 @@ const dateTranslation = {
 };
 
 const DashboardCard = props => {
-  const { value, description } = props;
+  const { backgroundColor, value, description } = props;
   return (
-    <View style={dashboardCardStyles.dashboardCard}>
+    <View style={[dashboardCardStyles.dashboardCard, { backgroundColor }]}>
       <View style={dashboardCardStyles.dashboardCardContent}>
+        <Text style={dashboardCardStyles.dashboardCardDesc}>{description}</Text>
         <Text style={dashboardCardStyles.dashboardCardValue}>
           {toCurrencyFormat(value)}
         </Text>
-        <Text style={dashboardCardStyles.dashboardCardDesc}>{description}</Text>
       </View>
     </View>
   );
@@ -48,12 +49,15 @@ const dashboardCardStyles = StyleSheet.create({
     padding: 16,
     backgroundColor: color["blue"][20],
     borderRadius: 16,
+    marginBottom: 8,
   },
   dashboardCardContent: {
     // borderColor: "green",
     // borderStyle: "solid",
     // borderWidth: 1,
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   dashboardCardValue: {
     fontSize: 32,
@@ -77,13 +81,16 @@ const DashbhoardGate = () => {
     year: dateSelected.getFullYear(),
   });
   const [totalAmount, setTotalAmount] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
   const [amountsPerCategory, setAmountsPerCategory] = useState([]);
   const [relevantByDateCriteria, setRelevantByDateCriteria] = useState([]);
-  const [isRequiredDataRequested, setIsRequiredDataRequested] = useState(false);
+  // const [isRequiredDataRequested, setIsRequiredDataRequested] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      if (!isRequiredDataRequested) _fetchRequiredData();
+      // console.log("[]", isRequiredDataRequested);
+      _fetchRequiredData();
+      // if (!isRequiredDataRequested) _fetchRequiredData();
     }, [])
   );
 
@@ -99,9 +106,9 @@ const DashbhoardGate = () => {
     setFormatedDateSelected(_formatedDateSelected);
   }, [dateSelected]);
 
-  useEffect(() => {
-    if (!isRequiredDataRequested) _fetchRequiredData();
-  }, [formatedDateSelected]);
+  // useEffect(() => {
+  //   if (!isRequiredDataRequested) _fetchRequiredData();
+  // }, [formatedDateSelected]);
 
   useEffect(() => {
     _fetchTotalAmount({
@@ -116,14 +123,15 @@ const DashbhoardGate = () => {
   }, [viewMode]);
 
   const _fetchRequiredData = async () => {
-    setIsRequiredDataRequested(true);
+    // setIsRequiredDataRequested(true);
+    _fetchTotalIncomes({ mode: viewMode, date: formatedDateSelected });
     await _fetchTotalAmount({ mode: viewMode, date: formatedDateSelected });
     await _fetchTotalAmountPerCategory({
       mode: viewMode,
       date: formatedDateSelected,
     });
     await _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
-    setIsRequiredDataRequested(false);
+    // setIsRequiredDataRequested(false);
   };
 
   const handeChangleMode = mode => {
@@ -136,6 +144,17 @@ const DashbhoardGate = () => {
         ...dateOptions,
       });
       setTotalAmount(totalAmountInfo.totalAmount);
+    } catch (err) {
+      alerts.throwErrorAlert("calcular el monto total", JSON.stringify(err));
+    }
+  };
+
+  const _fetchTotalIncomes = async dateOptions => {
+    try {
+      const totalAmountInfo = await fetchTotalIncomesByDateCriteria({
+        ...dateOptions,
+      });
+      setTotalIncome(totalAmountInfo.rows?._array[0]?.totalAmount);
     } catch (err) {
       alerts.throwErrorAlert("calcular el monto total", JSON.stringify(err));
     }
@@ -200,8 +219,19 @@ const DashbhoardGate = () => {
             <DateFilterSelector onChangeMode={e => handeChangleMode(e)} />
           </View>
           <DashboardCard
+            backgroundColor={color["green"][50]}
+            value={totalIncome || 0}
+            description={`ingresos ${dateTranslation[viewMode]}`}
+          />
+          <DashboardCard
+            backgroundColor={color["red"][60]}
             value={totalAmount || 0}
-            description={`total ${dateTranslation[viewMode]}`}
+            description={`egresos ${dateTranslation[viewMode]}`}
+          />
+          <DashboardCard
+            backgroundColor={color["green"][40]}
+            value={totalAmount || 0}
+            description={`disponible ${dateTranslation[viewMode]}`}
           />
           <Chart data={amountsPerCategory} />
           <Calendar

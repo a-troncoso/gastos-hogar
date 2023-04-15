@@ -67,7 +67,7 @@ Feature.defaultProps = {
 Feature.propTypes = {
   name: PropTypes.string.isRequired,
   isVisibleEditableElm: PropTypes.bool,
-  value: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   voidValue: PropTypes.string,
   aditionalValue: PropTypes.bool,
   editableElement: PropTypes.element,
