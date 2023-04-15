@@ -29,13 +29,14 @@ const dateTranslation = {
 
 const DashboardCard = props => {
   const { backgroundColor, value, description } = props;
+
   return (
     <View style={[dashboardCardStyles.dashboardCard, { backgroundColor }]}>
       <View style={dashboardCardStyles.dashboardCardContent}>
-        <Text style={dashboardCardStyles.dashboardCardDesc}>{description}</Text>
         <Text style={dashboardCardStyles.dashboardCardValue}>
           {toCurrencyFormat(value)}
         </Text>
+        <Text style={dashboardCardStyles.dashboardCardDesc}>{description}</Text>
       </View>
     </View>
   );
@@ -46,6 +47,7 @@ const dashboardCardStyles = StyleSheet.create({
     // borderColor: "red",
     // borderStyle: "solid",
     // borderWidth: 1,
+    flex: 1,
     padding: 16,
     backgroundColor: color["blue"][20],
     borderRadius: 16,
@@ -56,11 +58,11 @@ const dashboardCardStyles = StyleSheet.create({
     // borderStyle: "solid",
     // borderWidth: 1,
     alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    // flexDirection: "row",
+    // justifyContent: "space-between",
   },
   dashboardCardValue: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: "bold",
   },
   dashboardCardDesc: {
@@ -84,13 +86,10 @@ const DashbhoardGate = () => {
   const [totalIncome, setTotalIncome] = useState(0);
   const [amountsPerCategory, setAmountsPerCategory] = useState([]);
   const [relevantByDateCriteria, setRelevantByDateCriteria] = useState([]);
-  // const [isRequiredDataRequested, setIsRequiredDataRequested] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      // console.log("[]", isRequiredDataRequested);
       _fetchRequiredData();
-      // if (!isRequiredDataRequested) _fetchRequiredData();
     }, [])
   );
 
@@ -106,11 +105,8 @@ const DashbhoardGate = () => {
     setFormatedDateSelected(_formatedDateSelected);
   }, [dateSelected]);
 
-  // useEffect(() => {
-  //   if (!isRequiredDataRequested) _fetchRequiredData();
-  // }, [formatedDateSelected]);
-
   useEffect(() => {
+    _fetchTotalIncomes({ mode: viewMode, date: formatedDateSelected });
     _fetchTotalAmount({
       mode: viewMode,
       date: formatedDateSelected,
@@ -123,15 +119,13 @@ const DashbhoardGate = () => {
   }, [viewMode]);
 
   const _fetchRequiredData = async () => {
-    // setIsRequiredDataRequested(true);
     _fetchTotalIncomes({ mode: viewMode, date: formatedDateSelected });
-    await _fetchTotalAmount({ mode: viewMode, date: formatedDateSelected });
-    await _fetchTotalAmountPerCategory({
+    _fetchTotalAmount({ mode: viewMode, date: formatedDateSelected });
+    _fetchTotalAmountPerCategory({
       mode: viewMode,
       date: formatedDateSelected,
     });
-    await _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
-    // setIsRequiredDataRequested(false);
+    _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
   };
 
   const handeChangleMode = mode => {
@@ -218,19 +212,21 @@ const DashbhoardGate = () => {
           <View style={{ marginVertical: 16 }}>
             <DateFilterSelector onChangeMode={e => handeChangleMode(e)} />
           </View>
-          <DashboardCard
-            backgroundColor={color["green"][50]}
-            value={totalIncome || 0}
-            description={`ingresos ${dateTranslation[viewMode]}`}
-          />
-          <DashboardCard
-            backgroundColor={color["red"][60]}
-            value={totalAmount || 0}
-            description={`egresos ${dateTranslation[viewMode]}`}
-          />
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            <DashboardCard
+              backgroundColor={color["green"][50]}
+              value={totalIncome || 0}
+              description={`ingresos ${dateTranslation[viewMode]}`}
+            />
+            <DashboardCard
+              backgroundColor={color["red"][60]}
+              value={totalAmount || 0}
+              description={`egresos ${dateTranslation[viewMode]}`}
+            />
+          </View>
           <DashboardCard
             backgroundColor={color["green"][40]}
-            value={totalAmount || 0}
+            value={totalIncome - totalAmount || 0}
             description={`disponible ${dateTranslation[viewMode]}`}
           />
           <Chart data={amountsPerCategory} />

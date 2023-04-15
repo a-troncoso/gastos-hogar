@@ -46,12 +46,6 @@ const initialStateUnsavedFeature = {
   description: false,
 };
 
-const initialFeatureDataUI = {
-  date: new Date(),
-  amount: 0,
-  description: "",
-};
-
 const Toast = memo(({ visible, message }) => {
   if (visible) {
     ToastAndroid.show(message, ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50);
@@ -75,7 +69,9 @@ const IncomeDetail = props => {
   const incomeId = routeParams?.incomeId;
 
   const [featureDataUI, setFeatureDataUI] = useState({
-    ...initialFeatureDataUI,
+    date: new Date(),
+    amount: 0,
+    description: "",
   });
 
   useLayoutEffect(() => {
@@ -100,9 +96,15 @@ const IncomeDetail = props => {
       if (detailMode === INCOME_DETAIL_MODES.EXISTING_INCOME)
         fetchDetail(incomeId);
       if (detailMode === INCOME_DETAIL_MODES.NEW_INCOME) {
-        setFeatureDataUI({ ...initialFeatureDataUI });
       }
-      return () => {};
+      return () => {
+        setFeatureDataUI(prev => ({
+          ...prev,
+          date: new Date(),
+          amount: 0,
+          description: "",
+        }));
+      };
     }, [])
   );
 

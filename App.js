@@ -25,7 +25,7 @@ const App = () => {
 
   useEffect(() => {
     setup();
-    // _selectBasicData({ table: "income" });
+    _selectBasicData({ table: "income" });
   }, []);
 
   const setup = async () => {
