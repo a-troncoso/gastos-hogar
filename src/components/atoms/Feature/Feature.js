@@ -1,8 +1,8 @@
-import React, { Fragment } from "react"
-import PropTypes from "prop-types"
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
+import React, { Fragment } from "react";
+import PropTypes from "prop-types";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 
-import color from "../../../assets/colors"
+import color from "../../../assets/colors";
 
 const Feature = props => {
   const {
@@ -14,14 +14,14 @@ const Feature = props => {
     aditionalValue,
     isUnsavedFeature,
     prefix,
-    onPressFeature
-  } = props
+    onPressFeature,
+  } = props;
 
   const handlePressFeature = () => {
-    onPressFeature()
-  }
+    onPressFeature();
+  };
 
-  const ValueText = () => <Fragment>{value || voidValue}</Fragment>
+  const ValueText = () => <Fragment>{value || voidValue}</Fragment>;
 
   return (
     <TouchableOpacity testID="touchable" onPress={handlePressFeature}>
@@ -39,7 +39,7 @@ const Feature = props => {
             <Text
               style={[
                 styles.featureValue,
-                value ? styles.existValue : styles.notExistValue
+                value ? styles.existValue : styles.notExistValue,
               ]}
             >
               {<ValueText />}
@@ -52,8 +52,8 @@ const Feature = props => {
         {isVisibleEditableElm && <Fragment>{editableElement}</Fragment>}
       </View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 Feature.defaultProps = {
   isVisibleEditableElm: false,
@@ -61,18 +61,18 @@ Feature.defaultProps = {
   voidValue: "",
   aditionalValue: false,
   editableElement: <></>,
-  onPressFeature: () => undefined
-}
+  onPressFeature: () => undefined,
+};
 
 Feature.propTypes = {
   name: PropTypes.string.isRequired,
   isVisibleEditableElm: PropTypes.bool,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
   voidValue: PropTypes.string,
   aditionalValue: PropTypes.bool,
   editableElement: PropTypes.element,
-  onPressFeature: PropTypes.func
-}
+  onPressFeature: PropTypes.func,
+};
 
 const styles = StyleSheet.create({
   view: {
@@ -85,10 +85,10 @@ const styles = StyleSheet.create({
     borderColor: color.blue["60"],
     borderStyle: "solid",
     borderWidth: 1,
-    backgroundColor: color.gray["0"]
+    backgroundColor: color.gray["0"],
   },
   unsaveFeature: {
-    borderColor: color.yellow["30"]
+    borderColor: color.yellow["30"],
   },
   valueView: {
     // borderColor: "blue",
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "flex-end",
-    alignItems: "flex-end"
+    alignItems: "flex-end",
   },
   featureName: {
     // borderColor: "blue",
@@ -108,26 +108,26 @@ const styles = StyleSheet.create({
     marginRight: 8,
     color: color.gray["110"],
     fontWeight: "bold",
-    textTransform: "capitalize"
+    textTransform: "capitalize",
   },
   featureValue: {
     // borderColor: "blue",
     // borderWidth: 1,
     // borderStyle: "solid",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   aditionalValueText: {
     marginLeft: 4,
     fontSize: 12,
     fontWeight: "bold",
-    color: color.gray["110"]
+    color: color.gray["110"],
   },
   existValue: {
-    color: color.gray["140"]
+    color: color.gray["140"],
   },
   notExistValue: {
-    color: color.gray["80"]
-  }
-})
+    color: color.gray["80"],
+  },
+});
 
-export default Feature
+export default Feature;

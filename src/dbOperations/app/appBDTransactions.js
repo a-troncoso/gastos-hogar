@@ -124,7 +124,7 @@ const _createTable = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
       tx.executeSql(
-        opts?.overrideTable ? props.queryOverride : props.queryCreate,
+        opts?.overrideTable ? opts.queryOverride : opts.queryCreate,
         [],
         (_, s) => {
           resolve(s);

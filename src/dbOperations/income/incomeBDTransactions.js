@@ -28,12 +28,12 @@ export const insertIncome = ({ amount, description, date }) => {
   });
 };
 
-// export const fetchIncome = () => {
-//   return runTransaction({
-//     query: INCOME_QUERIES.SELECT_INCOME,
-//     params: [],
-//   });
-// };
+export const fetchIncomeById = id => {
+  return runTransaction({
+    query: INCOME_QUERIES.SELECT_INCOME_BY_ID,
+    params: [id],
+  });
+};
 
 export const fetchIncomeByDate = ({ date }) => {
   return runTransaction({
@@ -53,5 +53,12 @@ export const fetchIncomeByYear = ({ year }) => {
   return runTransaction({
     query: INCOME_QUERIES.SELECT_INCOME_BY_YEAR,
     params: [year],
+  });
+};
+
+export const updateIncome = (id, { amount, description, date }) => {
+  return runTransaction({
+    query: INCOME_QUERIES.UPDATE_INCOME,
+    params: [amount, description, date, id],
   });
 };

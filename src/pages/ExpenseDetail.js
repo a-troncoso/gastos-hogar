@@ -315,7 +315,7 @@ const ExpenseDetail = () => {
           saveFeatureIntoUI("description", value);
           onChangeFeature("description");
         }}
-        onChageKeyboardVisibility={e => {}}
+        onChangeKeyboardVisibility={e => {}}
       />
     ),
   };

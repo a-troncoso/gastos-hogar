@@ -52,7 +52,7 @@ const Toast = memo(({ visible, message }) => {
   return null;
 });
 
-const CategoryDetail = props => {
+const CategoryDetail = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const apiCategories = apiDomain("category");
@@ -209,11 +209,12 @@ const CategoryDetail = props => {
                   saveFeatureIntoUI("name", value);
                   onChangeFeature("name");
                 }}
-                onChageKeyboardVisibility={e =>
+                onChangeKeyboardVisibility={e =>
                   setIsFixedBottomAreaVisible(!e.isKeyboardVisible)
                 }
               />
               <AmountFeature
+                name="Monto máximo mensual"
                 value={featureDataUI.maxAmountPerMonth}
                 isUnsavedFeature={isUnsavedFeature.maxAmountPerMonth}
                 valuePrefix="$"
@@ -221,7 +222,7 @@ const CategoryDetail = props => {
                   saveFeatureIntoUI("maxAmountPerMonth", value);
                   onChangeFeature("maxAmountPerMonth");
                 }}
-                onChageKeyboardVisibility={e =>
+                onChangeKeyboardVisibility={e =>
                   setIsFixedBottomAreaVisible(!e.isKeyboardVisible)
                 }
               />

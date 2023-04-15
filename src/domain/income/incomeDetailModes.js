@@ -1,0 +1,3 @@
+export const INCOME_DETAIL_MODES = {
+  NEW_INCOME: "NEW_INCOME",
+};

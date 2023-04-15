@@ -1,62 +1,62 @@
-import React, { useState, useEffect } from "react"
-import { TextInput, StyleSheet, Keyboard } from "react-native"
-import Feature from "../../atoms/Feature/Feature"
+import React, { useState, useEffect } from "react";
+import { TextInput, StyleSheet, Keyboard } from "react-native";
+import Feature from "../../atoms/Feature/Feature";
 
 const NameFeature = props => {
   const {
     value,
     isUnsavedFeature,
     onChange,
-    onChageKeyboardVisibility = () => undefined
-  } = props
+    onChangeKeyboardVisibility = () => undefined,
+  } = props;
 
-  const [_value, _setValue] = useState(value)
+  const [_value, _setValue] = useState(value);
   const [editableElements, setEditatableElements] = useState({
-    value: { isVisible: false }
-  })
+    value: { isVisible: false },
+  });
 
   useEffect(() => {
-    _setValue(value)
-  }, [value])
+    _setValue(value);
+  }, [value]);
 
   const handleChangeValue = newValue => {
-    _setValue(newValue)
-  }
+    _setValue(newValue);
+  };
 
   const handleBlurInput = () => {
     setEditatableElements({
       ...editableElements,
-      value: { isVisible: false }
-    })
+      value: { isVisible: false },
+    });
 
-    onChange({ id: null, value: _value })
-  }
+    onChange({ id: null, value: _value });
+  };
 
   const handlePressFeature = () => {
     setEditatableElements({
       ...editableElements,
-      value: { isVisible: true }
-    })
-  }
+      value: { isVisible: true },
+    });
+  };
 
   const _keyboardDidShow = () => {
-    onChageKeyboardVisibility({ isKeyboardVisible: true })
-  }
+    onChangeKeyboardVisibility({ isKeyboardVisible: true });
+  };
 
   const _keyboardDidHide = () => {
-    onChageKeyboardVisibility({ isKeyboardVisible: false })
-  }
+    onChangeKeyboardVisibility({ isKeyboardVisible: false });
+  };
 
   useEffect(() => {
-    Keyboard.addListener("keyboardDidShow", _keyboardDidShow)
-    Keyboard.addListener("keyboardDidHide", _keyboardDidHide)
+    Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
+    Keyboard.addListener("keyboardDidHide", _keyboardDidHide);
 
     // cleanup function
     return () => {
-      Keyboard.removeListener("keyboardDidShow", _keyboardDidShow)
-      Keyboard.removeListener("keyboardDidHide", _keyboardDidHide)
-    }
-  }, [])
+      Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
+      Keyboard.removeListener("keyboardDidHide", _keyboardDidHide);
+    };
+  }, []);
 
   return (
     <Feature
@@ -78,16 +78,16 @@ const NameFeature = props => {
       isVisibleEditableElm={editableElements.value.isVisible}
       onPressFeature={handlePressFeature}
     />
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   textInput: {
     height: 20,
     fontSize: 14,
     fontWeight: "bold",
-    textAlign: "right"
-  }
-})
+    textAlign: "right",
+  },
+});
 
-export default NameFeature
+export default NameFeature;

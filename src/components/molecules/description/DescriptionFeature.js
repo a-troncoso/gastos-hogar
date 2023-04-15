@@ -8,7 +8,7 @@ const DescriptionFeature = props => {
     isUnsavedFeature,
     isFocusedInput,
     onChange,
-    onChageKeyboardVisibility,
+    onChangeKeyboardVisibility,
   } = props;
 
   const [localDescription, setLocalDescription] = useState(description);
@@ -45,11 +45,11 @@ const DescriptionFeature = props => {
   };
 
   const _keyboardDidShow = () => {
-    onChageKeyboardVisibility({ isKeyboardVisible: true });
+    onChangeKeyboardVisibility({ isKeyboardVisible: true });
   };
 
   const _keyboardDidHide = () => {
-    onChageKeyboardVisibility({ isKeyboardVisible: false });
+    onChangeKeyboardVisibility({ isKeyboardVisible: false });
   };
 
   useEffect(() => {

@@ -17,6 +17,7 @@ import Expenses from "../pages/Expenses";
 import CategoriesAdminGate from "../pages/CategoriesAdminGate";
 import DashbhoardGate from "../pages/DashbhoardGate";
 import CategoryDetail from "../pages/CategoryDetail";
+import IncomeDetail from "../pages/IncomeDetail";
 
 import ScreenNames from "./screenNames";
 import { EXPENSE_DETAIL_MODES } from "../domain/expense/expenseDetailModes";
@@ -27,6 +28,7 @@ const RootStack = createStackNavigator();
 const RegistryExpenseStack = createStackNavigator();
 const SummaryStack = createStackNavigator();
 const CategoryManagementStack = createStackNavigator();
+const IncomeManagementStack = createStackNavigator();
 const DashboardStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -91,6 +93,11 @@ const AppNavigation = () => {
           name={ScreenNames.MainStackScreenNavigator.CategoryManagement}
           component={CategoryManagementStackScreenNavigator}
           options={{ headerShown: false, title: "Administrar Categorías" }}
+        />
+        <Drawer.Screen
+          name={ScreenNames.MainStackScreenNavigator.RegistryIncome}
+          component={RegistryIncomeStackScreenNavigator}
+          options={{ headerShown: false, title: "Registrar Ingreso" }}
         />
       </Drawer.Navigator>
     );
@@ -218,7 +225,20 @@ const AppNavigation = () => {
     );
   };
 
-  // return <Text>HELLO!</Text>;
+  const RegistryIncomeStackScreenNavigator = () => {
+    return (
+      <IncomeManagementStack.Navigator>
+        <IncomeManagementStack.Screen
+          name={ScreenNames.RegistryIncomeStackScreenNavigator.IncomeDetail}
+          component={IncomeDetail}
+          options={({ navigation }) => ({
+            ...screenOptionsBase(navigation),
+            title: "Detalle del ingreso",
+          })}
+        />
+      </IncomeManagementStack.Navigator>
+    );
+  };
 
   return (
     <NavigationContainer>
