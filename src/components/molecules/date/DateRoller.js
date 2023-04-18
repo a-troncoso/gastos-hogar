@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useCallback } from "react"
-import { StyleSheet, View } from "react-native"
-import ScrollPicker from "react-native-wheel-scrollview-picker"
+import React, { useEffect, useState, useCallback } from "react";
+import { StyleSheet, View } from "react-native";
+import ScrollPicker from "react-native-wheel-scrollview-picker";
 
-import { daysInMonth, monthNames, availableYears } from "../../../utils/date"
+import { daysInMonth, monthNames, availableYears } from "../../../utils/date";
 
-import color from "../../../assets/colors"
+import color from "../../../assets/colors";
 
 const DateRoller = props => {
-  const { date, mode = "DAY", onChange } = props
+  const { date, mode = "DAY", onChange } = props;
 
-  const daysDataSource = daysInMonth()
-  const monthsDataSource = monthNames()("short")
-  const yearsDataSource = availableYears()
+  const daysDataSource = daysInMonth();
+  const monthsDataSource = monthNames()("short");
+  const yearsDataSource = availableYears();
 
   const scrollPickerProps = {
     wrapperHeight: 180,
@@ -22,28 +22,29 @@ const DateRoller = props => {
     itemHeight: 50,
     highlightColor: color.gray["100"],
     highlightBorderWidth: 1,
-    onPress: () => {}
-  }
+    wrapperColor: color.gray["0"],
+    onPress: () => {},
+  };
 
   const handleChangeScrollPicker = (scrollName, value) => {
-    let newSelectedDate = new Date(date)
+    let newSelectedDate = new Date(date);
 
     const updateDatebyScrollName = {
       day: () => newSelectedDate.setDate(value),
       month: () => newSelectedDate.setMonth(value),
-      year: () => newSelectedDate.setFullYear(value)
-    }
+      year: () => newSelectedDate.setFullYear(value),
+    };
 
-    updateDatebyScrollName[scrollName]()
-    onChange(newSelectedDate)
-  }
+    updateDatebyScrollName[scrollName]();
+    onChange(newSelectedDate);
+  };
 
   const indexInScroll = (scrollName, list) =>
     ({
       day: list.indexOf(date.getDate()),
       month: date.getMonth(),
-      year: list.indexOf(date.getFullYear())
-    }[scrollName])
+      year: list.indexOf(date.getFullYear()),
+    }[scrollName]);
 
   return (
     <View style={styles.viewLists}>
@@ -52,7 +53,7 @@ const DateRoller = props => {
           {...scrollPickerProps}
           dataSource={daysDataSource}
           onValueChange={data => {
-            handleChangeScrollPicker("day", data)
+            handleChangeScrollPicker("day", data);
           }}
           selectedIndex={indexInScroll("day", daysDataSource)}
         />
@@ -61,7 +62,7 @@ const DateRoller = props => {
         {...scrollPickerProps}
         dataSource={monthsDataSource}
         onValueChange={(data, selectedIndex) => {
-          handleChangeScrollPicker("month", selectedIndex)
+          handleChangeScrollPicker("month", selectedIndex);
         }}
         selectedIndex={indexInScroll("month", monthsDataSource)}
         onPress={() => undefined}
@@ -70,39 +71,41 @@ const DateRoller = props => {
         {...scrollPickerProps}
         dataSource={yearsDataSource}
         onValueChange={data => {
-          handleChangeScrollPicker("year", data)
+          handleChangeScrollPicker("year", data);
         }}
         selectedIndex={indexInScroll("year", yearsDataSource)}
         onPress={() => undefined}
       />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   viewLists: {
-    flex: 1,
-    flexDirection: "row"
+    // borderWidth: 1,
+    // borderColor: "red",
+    flexDirection: "row",
+    zIndex: 1,
   },
   topLinearGradient: {
     position: "absolute",
     height: "25%",
     width: "100%",
-    zIndex: 100
+    zIndex: 100,
   },
   viewItemText: {
-    color: color.gray["80"]
+    color: color.gray["80"],
   },
   viewItemSelectedText: {
-    color: color.gray["110"]
+    color: color.gray["110"],
   },
   bottomLinearGradient: {
     position: "absolute",
     height: "25%",
     width: "100%",
     zIndex: 100,
-    bottom: 0
-  }
-})
+    bottom: 0,
+  },
+});
 
-export default DateRoller
+export default DateRoller;

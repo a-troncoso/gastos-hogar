@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Modal, Dimensions } from "react-native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Modal,
+  Dimensions,
+} from "react-native";
 import Button from "./Button";
 import DateRoller from "../molecules/date/DateRoller";
 
@@ -18,25 +24,35 @@ const DateModalSelector = props => {
     onChange(selectedDate);
   };
 
+  const handleBackdropPress = () => {
+      onBackdropPress();
+  };
+
+
   return (
     <View style={styles.centeredView}>
       <Modal
         isVisible={isModalVisible}
-        onRequestClose={onBackdropPress}
-        transparent={true}
-        statusBarTranslucent
         animationType="fade"
+        transparent
+        statusBarTranslucent
+        onRequestClose={onBackdropPress}
       >
-        <View style={styles.viewModal}>
-          <DateRoller
-            date={selectedDate}
-            mode={mode}
-            onChange={handleChangeDate}
-          />
-          <View style={styles.modalViewFooter}>
-            <Button onPress={handlePressOk}>
-              <Text style={styles.saveBtnText}>OK</Text>
-            </Button>
+        <View
+          style={styles.viewModal}
+          onPress={handleBackdropPress}
+        >
+          <View style={styles.modalBox} >
+            <DateRoller
+              date={selectedDate}
+              mode={mode}
+              onChange={handleChangeDate}
+            />
+            <View style={styles.modalViewFooter}>
+              <Button onPress={handlePressOk}>
+                <Text style={styles.saveBtnText}>OK</Text>
+              </Button>
+            </View>
           </View>
         </View>
       </Modal>
@@ -45,32 +61,26 @@ const DateModalSelector = props => {
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    // borderWidth: 1,
-    // borderColor: "red",
-    height: Dimensions.get("window").height,
-    width: Dimensions.get("window").width,
-    backgroundColor: color.transparent.gray["130"]["90"],
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    position: "absolute",
-  },
+  centeredView: {},
   viewModal: {
     // borderWidth: 1,
     // borderColor: "yellow",
-    left: Dimensions.get("window").width / 2 - 150,
-    top: Dimensions.get("window").height / 2 - 125,
-    width: 300,
-    height: 250,
-    padding: 16,
+    height: Dimensions.get("window").height,
     alignItems: "center",
-    backgroundColor: color.blue["90"],
+    justifyContent: "center",
+    backgroundColor: color.transparent.gray["130"]["90"],
+  },
+  modalBox: {
+    // borderWidth: 1,
+    // borderColor: "red",
+    backgroundColor: color.gray["0"],
+    width: 300,
+    padding: 16,
   },
   modalViewFooter: {
     marginTop: 16,
     flexDirection: "row",
+    justifyContent: "center",
   },
   saveBtnText: {
     fontWeight: "bold",

@@ -11,11 +11,12 @@ import {
 
 const AmountFeature = props => {
   const {
+    name,
     value,
     isUnsavedFeature,
     valuePrefix,
     onChange = () => undefined,
-    onChageKeyboardVisibility = () => undefined,
+    onChangeKeyboardVisibility = () => undefined,
   } = props;
 
   const [_value, _setValue] = useState(value);
@@ -60,11 +61,11 @@ const AmountFeature = props => {
   };
 
   const _keyboardDidShow = () => {
-    onChageKeyboardVisibility({ isKeyboardVisible: true });
+    onChangeKeyboardVisibility({ isKeyboardVisible: true });
   };
 
   const _keyboardDidHide = () => {
-    onChageKeyboardVisibility({ isKeyboardVisible: false });
+    onChangeKeyboardVisibility({ isKeyboardVisible: false });
   };
 
   useEffect(() => {
@@ -80,14 +81,14 @@ const AmountFeature = props => {
 
   return (
     <Feature
-      name="cuota mensual"
+      name={name}
       value={_value}
       voidValue="0"
       isVisibleEditableElm={editableElements.value.isVisible}
       editableElement={
         <TextInput
           style={styles.textInput}
-          value={_value}
+          value={_value + ""}
           keyboardType="numeric"
           onChangeText={handleChangeValue}
           onBlur={handleBlurInput}
@@ -96,7 +97,6 @@ const AmountFeature = props => {
         />
       }
       isUnsavedFeature={isUnsavedFeature}
-      isVisibleEditableElm={editableElements.value.isVisible}
       prefix={valuePrefix}
       onPressFeature={handlePressFeature}
     />

@@ -122,4 +122,23 @@ export const MAIN_QUERIES = {
     "fileName" TEXT NOT NULL
   );
 `,
+  CREATE_TABLE_INCOME: `
+  CREATE TABLE IF NOT EXISTS "income" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    "amount" INTEGER NOT NULL,
+    "date" TEXT NOT NULL,
+    "description" TEXT,
+    "active" INTEGER DEFAULT 1
+  );
+`,
+  OVERRIDE_TABLE_INCOME: `
+  DROP TABLE IF EXISTS "income";
+  CREATE TABLE IF NOT EXISTS "income" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    "amount" INTEGER NOT NULL,
+    "date" TEXT NOT NULL,
+    "description" TEXT,
+    "active" INTEGER DEFAULT 1
+  );
+`,
 };

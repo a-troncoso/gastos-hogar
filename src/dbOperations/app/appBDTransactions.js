@@ -120,6 +120,23 @@ const _createExternalSourceTable = ({ ...opts }) => {
   });
 };
 
+const _createTable = ({ ...opts }) => {
+  return new Promise((resolve, reject) => {
+    connDB.transaction(tx => {
+      tx.executeSql(
+        opts?.overrideTable ? opts.queryOverride : opts.queryCreate,
+        [],
+        (_, s) => {
+          resolve(s);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
 export const createInitialTables = ({ ...opts }) => {
   return new Promise((resolve, reject) => {
     return new Promise.all([
@@ -129,6 +146,12 @@ export const createInitialTables = ({ ...opts }) => {
       _createSubcategoryTable({ ...opts }),
       _createPurchaseImageTable({ ...opts }),
       _createExternalSourceTable({ ...opts }),
+      _createExternalSourceTable({ ...opts }),
+      _createTable({
+        ...opts,
+        queryCreate: MAIN_QUERIES.CREATE_TABLE_INCOME,
+        queryOverride: MAIN_QUERIES.OVERRIDE_TABLE_INCOME,
+      }),
     ]).then(
       (_, s) => {
         resolve(s);

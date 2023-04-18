@@ -13,37 +13,42 @@ export const screenNames = {
   ExpenseDetail: "ExpenseDetail",
   Scan: "Scan",
   CategoriesAdminGate: "CategoriesAdminGate",
-  CategoryDetail: "CategoryDetail"
-}
+  CategoryDetail: "CategoryDetail",
+};
 
-const RootStackScreenNavigator = { Main: "Main" }
+const RootStackScreenNavigator = { Main: "Main" };
 
 const MainStackScreenNavigator = {
   Dashboard: "Dashboard",
   RegistryExpense: "RegistryExpense",
   Summary: "Summary",
-  CategoryManagement: "CategoryManagement"
-}
+  CategoryManagement: "CategoryManagement",
+  RegistryIncome: "RegistryIncome",
+};
 
-const DashboardStackScreenNavigator = { DashbhoardGate: "DashbhoardGate" }
+const DashboardStackScreenNavigator = { DashbhoardGate: "DashbhoardGate" };
 
 const RegistryExpenseStackNavigator = {
   ExpenseCategoryGate: "ExpenseCategoryGate",
   ExpenseDetail: "ExpenseDetail",
-  Scan: "Scan"
-}
+  Scan: "Scan",
+};
 
 const SummaryStackScreenNavigator = {
   HistoryGate: "HistoryGate",
   Expenses: "Expenses",
   ExpenseDetail: "ExpenseDetail",
-  Scan: "Scan"
-}
+  Scan: "Scan",
+};
 
 const CategoryManagementStackScreenNavigator = {
   CategoriesAdminGate: "CategoriesAdminGate",
-  CategoryDetail: "CategoryDetail"
-}
+  CategoryDetail: "CategoryDetail",
+};
+
+const RegistryIncomeStackScreenNavigator = {
+  IncomeDetail: "IncomeDetail",
+};
 
 export default {
   RootStackScreenNavigator,
@@ -51,5 +56,6 @@ export default {
   DashboardStackScreenNavigator,
   RegistryExpenseStackNavigator,
   SummaryStackScreenNavigator,
-  CategoryManagementStackScreenNavigator
-}
+  CategoryManagementStackScreenNavigator,
+  RegistryIncomeStackScreenNavigator,
+};

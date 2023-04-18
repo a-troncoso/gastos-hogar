@@ -16,6 +16,7 @@ import {
   fetchTotalAmountByDateCriteriaPerCategory,
   fetchAmountsByDateCriteria,
 } from "../dbOperations/purchase/purchaseBDTransactions";
+import { fetchTotalIncomesByDateCriteria } from "../dbOperations/income/incomeBDTransactions";
 
 import { currentDate, formattedMonthNumber } from "../utils/date";
 import { toCurrencyFormat } from "../utils/number";
@@ -27,9 +28,10 @@ const dateTranslation = {
 };
 
 const DashboardCard = props => {
-  const { value, description } = props;
+  const { backgroundColor, value, description } = props;
+
   return (
-    <View style={dashboardCardStyles.dashboardCard}>
+    <View style={[dashboardCardStyles.dashboardCard, { backgroundColor }]}>
       <View style={dashboardCardStyles.dashboardCardContent}>
         <Text style={dashboardCardStyles.dashboardCardValue}>
           {toCurrencyFormat(value)}
@@ -45,18 +47,22 @@ const dashboardCardStyles = StyleSheet.create({
     // borderColor: "red",
     // borderStyle: "solid",
     // borderWidth: 1,
+    flex: 1,
     padding: 16,
     backgroundColor: color["blue"][20],
     borderRadius: 16,
+    marginBottom: 8,
   },
   dashboardCardContent: {
     // borderColor: "green",
     // borderStyle: "solid",
     // borderWidth: 1,
     alignItems: "center",
+    // flexDirection: "row",
+    // justifyContent: "space-between",
   },
   dashboardCardValue: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: "bold",
   },
   dashboardCardDesc: {
@@ -77,13 +83,13 @@ const DashbhoardGate = () => {
     year: dateSelected.getFullYear(),
   });
   const [totalAmount, setTotalAmount] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
   const [amountsPerCategory, setAmountsPerCategory] = useState([]);
   const [relevantByDateCriteria, setRelevantByDateCriteria] = useState([]);
-  const [isRequiredDataRequested, setIsRequiredDataRequested] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      if (!isRequiredDataRequested) _fetchRequiredData();
+      _fetchRequiredData();
     }, [])
   );
 
@@ -100,10 +106,7 @@ const DashbhoardGate = () => {
   }, [dateSelected]);
 
   useEffect(() => {
-    if (!isRequiredDataRequested) _fetchRequiredData();
-  }, [formatedDateSelected]);
-
-  useEffect(() => {
+    _fetchTotalIncomes({ mode: viewMode, date: formatedDateSelected });
     _fetchTotalAmount({
       mode: viewMode,
       date: formatedDateSelected,
@@ -116,14 +119,13 @@ const DashbhoardGate = () => {
   }, [viewMode]);
 
   const _fetchRequiredData = async () => {
-    setIsRequiredDataRequested(true);
-    await _fetchTotalAmount({ mode: viewMode, date: formatedDateSelected });
-    await _fetchTotalAmountPerCategory({
+    _fetchTotalIncomes({ mode: viewMode, date: formatedDateSelected });
+    _fetchTotalAmount({ mode: viewMode, date: formatedDateSelected });
+    _fetchTotalAmountPerCategory({
       mode: viewMode,
       date: formatedDateSelected,
     });
-    await _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
-    setIsRequiredDataRequested(false);
+    _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
   };
 
   const handeChangleMode = mode => {
@@ -136,6 +138,17 @@ const DashbhoardGate = () => {
         ...dateOptions,
       });
       setTotalAmount(totalAmountInfo.totalAmount);
+    } catch (err) {
+      alerts.throwErrorAlert("calcular el monto total", JSON.stringify(err));
+    }
+  };
+
+  const _fetchTotalIncomes = async dateOptions => {
+    try {
+      const totalAmountInfo = await fetchTotalIncomesByDateCriteria({
+        ...dateOptions,
+      });
+      setTotalIncome(totalAmountInfo.rows?._array[0]?.totalAmount);
     } catch (err) {
       alerts.throwErrorAlert("calcular el monto total", JSON.stringify(err));
     }
@@ -183,6 +196,19 @@ const DashbhoardGate = () => {
     setDateSelected(date);
   };
 
+  const renderCalendarTitle = viewMode => {
+    const titles = {
+      month: "Detalle por día",
+      year: "Detalle por mes",
+    };
+
+    return (
+      titles[viewMode] && (
+        <Text style={styles.calendarTitle}>{titles[viewMode]}</Text>
+      )
+    );
+  };
+
   return (
     <SafeAreaView style={styles.dashboardScrollViewContainer}>
       <Hero
@@ -195,15 +221,29 @@ const DashbhoardGate = () => {
         }
       />
       <ScrollView style={styles.dashboardScrollView}>
-        <View style={{ paddingHorizontal: 16, paddingBottom: 64 }}>
-          <View style={{ marginVertical: 16 }}>
+        <View style={styles.dashboardView}>
+          <View style={styles.dateFilterSelectorContainer}>
             <DateFilterSelector onChangeMode={e => handeChangleMode(e)} />
           </View>
+          <View style={styles.incomesExpensesCardsContainer}>
+            <DashboardCard
+              backgroundColor={color["green"][50]}
+              value={totalIncome || 0}
+              description={`ingresos ${dateTranslation[viewMode]}`}
+            />
+            <DashboardCard
+              backgroundColor={color["red"][60]}
+              value={totalAmount || 0}
+              description={`egresos ${dateTranslation[viewMode]}`}
+            />
+          </View>
           <DashboardCard
-            value={totalAmount || 0}
-            description={`total ${dateTranslation[viewMode]}`}
+            backgroundColor={color["green"][40]}
+            value={totalIncome - totalAmount || 0}
+            description={`disponible ${dateTranslation[viewMode]}`}
           />
-          <Chart data={amountsPerCategory} />
+          {amountsPerCategory.length > 0 && <Chart data={amountsPerCategory} />}
+          {renderCalendarTitle(viewMode)}
           <Calendar
             view={viewMode}
             month={dateSelected.getMonth()}
@@ -220,15 +260,21 @@ const DashbhoardGate = () => {
 const styles = StyleSheet.create({
   dashboardScrollViewContainer: {
     // borderColor: "blue",
-    // borderStyle: "solid",
     // borderWidth: 1,
     height: "100%",
     backgroundColor: color.blue["90"],
   },
   dashboardScrollView: {
     // borderColor: "red",
-    // borderStyle: "solid",
     // borderWidth: 1
+  },
+  dashboardView: { paddingHorizontal: 16, paddingBottom: 64 },
+  dateFilterSelectorContainer: { marginVertical: 16 },
+  incomesExpensesCardsContainer: { flexDirection: "row", gap: 8 },
+  calendarTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginVertical: 16,
   },
 });
 
