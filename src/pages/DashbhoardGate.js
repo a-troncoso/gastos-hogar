@@ -196,6 +196,19 @@ const DashbhoardGate = () => {
     setDateSelected(date);
   };
 
+  const renderCalendarTitle = viewMode => {
+    const titles = {
+      month: "Detalle por día",
+      year: "Detalle por mes",
+    };
+
+    return (
+      titles[viewMode] && (
+        <Text style={styles.calendarTitle}>{titles[viewMode]}</Text>
+      )
+    );
+  };
+
   return (
     <SafeAreaView style={styles.dashboardScrollViewContainer}>
       <Hero
@@ -208,11 +221,11 @@ const DashbhoardGate = () => {
         }
       />
       <ScrollView style={styles.dashboardScrollView}>
-        <View style={{ paddingHorizontal: 16, paddingBottom: 64 }}>
-          <View style={{ marginVertical: 16 }}>
+        <View style={styles.dashboardView}>
+          <View style={styles.dateFilterSelectorContainer}>
             <DateFilterSelector onChangeMode={e => handeChangleMode(e)} />
           </View>
-          <View style={{ flexDirection: "row", gap: 8 }}>
+          <View style={styles.incomesExpensesCardsContainer}>
             <DashboardCard
               backgroundColor={color["green"][50]}
               value={totalIncome || 0}
@@ -229,7 +242,8 @@ const DashbhoardGate = () => {
             value={totalIncome - totalAmount || 0}
             description={`disponible ${dateTranslation[viewMode]}`}
           />
-          <Chart data={amountsPerCategory} />
+          {amountsPerCategory.length > 0 && <Chart data={amountsPerCategory} />}
+          {renderCalendarTitle(viewMode)}
           <Calendar
             view={viewMode}
             month={dateSelected.getMonth()}
@@ -246,15 +260,21 @@ const DashbhoardGate = () => {
 const styles = StyleSheet.create({
   dashboardScrollViewContainer: {
     // borderColor: "blue",
-    // borderStyle: "solid",
     // borderWidth: 1,
     height: "100%",
     backgroundColor: color.blue["90"],
   },
   dashboardScrollView: {
     // borderColor: "red",
-    // borderStyle: "solid",
     // borderWidth: 1
+  },
+  dashboardView: { paddingHorizontal: 16, paddingBottom: 64 },
+  dateFilterSelectorContainer: { marginVertical: 16 },
+  incomesExpensesCardsContainer: { flexDirection: "row", gap: 8 },
+  calendarTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginVertical: 16,
   },
 });
 

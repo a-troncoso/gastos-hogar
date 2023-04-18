@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react"
-import Feature from "../../atoms/Feature/Feature"
-import DateModalSelector from "../../atoms/DateModalSelector"
+import React, { useState } from "react";
+import Feature from "../../atoms/Feature/Feature";
+import DateModalSelector from "../../atoms/DateModalSelector";
 
-import { formatDate, formatHour } from "../../../utils/date"
+import { formatDate, formatHour } from "../../../utils/date";
 
 const DateFeature = props => {
-  const { date, isUnsavedFeature, onChange } = props
+  const { date, isUnsavedFeature, onChange } = props;
 
-  const [isEditableElementVisible, setIdEditatableElementVisible] = useState(
-    false
-  )
+  const [isEditableElementVisible, setIdEditatableElementVisible] =
+    useState(false);
 
   const handleSelectDate = date => {
-    setIdEditatableElementVisible(false)
-    onChange(date)
-  }
+    console.log("handleSelectDate", handleSelectDate);
+    setIdEditatableElementVisible(false);
+    onChange(date);
+  };
 
   return (
     <Feature
@@ -33,7 +33,7 @@ const DateFeature = props => {
       isUnsavedFeature={isUnsavedFeature}
       onPressFeature={() => setIdEditatableElementVisible(true)}
     />
-  )
-}
+  );
+};
 
-export default DateFeature
+export default DateFeature;
