@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text } from "react-native";
+import { View, StatusBar } from "react-native";
 import { NavigationContainer, DrawerActions } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
@@ -70,6 +70,12 @@ const AppNavigation = () => {
 
   const MainStackScreenNavigator = () => {
     return (
+      <>
+      <StatusBar
+        animated
+        backgroundColor={color.blue["30"]}
+        barStyle='dark-content'
+      />
       <Drawer.Navigator
         initialRouteName={ScreenNames.MainStackScreenNavigator.RegistryExpense}
         drawerContent={props => <DrawerContent {...props} />}
@@ -100,6 +106,7 @@ const AppNavigation = () => {
           options={{ headerShown: false, title: "Registrar Ingreso" }}
         />
       </Drawer.Navigator>
+      </>
     );
   };
 
