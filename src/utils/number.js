@@ -17,7 +17,10 @@ export const toCurrencyFormat = (amount, decimal) =>
   `$ ${_cleanFormat(amount, decimal)}`;
 
 export const extractNumbers = value => {
-  return value ? +value.toString().match(/\d+/g).join("") : 0;
+  const isNegative = value.toString().includes("-");
+  const multiplyBy = isNegative ? -1 : 1;
+  const onlyNumbers = value.toString().match(/\d+/g).join("");
+  return value ? parseInt(onlyNumbers) * multiplyBy : 0;
 };
 
 export const thousandFormat = (

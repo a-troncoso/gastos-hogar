@@ -64,11 +64,13 @@ export default () => {
         },
         incomes: transaction.amount > 0,
       };
-
       const tableTitle = getTableTitle({ data });
       const isTransactionValid =
         conditionsByMovementTypeByTableTitle[movementType][tableTitle];
-
+      console.log("transaction", transaction);
+      console.log("tableTitle", tableTitle);
+      console.log("isTransactionValid", isTransactionValid);
+      if (transaction.amount < 0) transaction.amount = transaction.amount * -1;
       if (isTransactionValid) table.push(transaction);
     }
     return table;
@@ -77,18 +79,19 @@ export default () => {
   const findColMap = ({ data }) => {
     const cellOfTableTitle = getTableTitle({ data });
 
-    // Para tabla titulada Detalle de Movimientos
-    const detailMovementsColMap = {
-      A: "date",
-      B: "description",
-      C: "operationNumber",
-      D: "amount",
-    };
     // Para tabla titulada Movimientos
     const movementsColMap = {
       A: "date",
       B: "operationNumber",
       C: "description",
+      D: "amount",
+    };
+
+    // Para tabla titulada Detalle de Movimientos
+    const detailMovementsColMap = {
+      A: "date",
+      B: "description",
+      C: "operationNumber",
       D: "amount",
     };
 
