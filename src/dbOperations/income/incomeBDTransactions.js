@@ -85,9 +85,9 @@ export const fetchTotalIncomesByDateCriteria = ({ ...dateOptions }) => {
 
   const params = {
     day: [
-      `0${dateOptions.dati.day}`.slice(-2),
-      dateOptions.dati.month,
-      "" + dateOptions.dati.year,
+      `0${dateOptions.date.day}`.slice(-2),
+      dateOptions.date.month,
+      "" + dateOptions.date.year,
     ],
     month: [dateOptions.date.month, "" + dateOptions.date.year],
     year: ["" + dateOptions.date.year],

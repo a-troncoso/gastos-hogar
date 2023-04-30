@@ -150,7 +150,10 @@ const DashbhoardGate = () => {
       });
       setTotalIncome(totalAmountInfo.rows?._array[0]?.totalAmount);
     } catch (err) {
-      alerts.throwErrorAlert("calcular el monto total", JSON.stringify(err));
+      alerts.throwErrorAlert(
+        "calcular el total de ingresos",
+        JSON.stringify(err)
+      );
     }
   };
 
