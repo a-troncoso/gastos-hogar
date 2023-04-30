@@ -15,7 +15,7 @@ import { getDocumentAsync } from "expo-document-picker";
 import CategoriesList from "../components/molecules/category/CategoriesList";
 import Picker from "../components/atoms/Picker";
 import apiDomain from "../utils/apiDomain";
-import useDataExtractor from "../hooks/useDataExtractor";
+import useDataExtractor from "../hooks/useDataExtractor/useDataExtractor";
 import color from "../assets/colors";
 
 const toastMessagesByEvent = {
@@ -45,6 +45,7 @@ const RegistryExpenseGate = props => {
       setToastMessage(toastMessagesByEvent[MSG_CODE]);
       setVisibleToast(true);
     },
+    movementType: "expenses",
   });
 
   const handleLoadSheet = async () => {

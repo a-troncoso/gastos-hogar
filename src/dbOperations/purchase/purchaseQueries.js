@@ -40,7 +40,7 @@ export const EXPENSE_QUERIES = {
       AND c.id=?
       AND c.active = 1
     GROUP BY e.id
-    ORDER BY e.date ASC;
+    ORDER BY e.date DESC;
   `,
 
   SELECT_PURCHASE_IMAGE: "SELECT expenseId, image FROM expense_image",

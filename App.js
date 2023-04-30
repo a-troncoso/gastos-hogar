@@ -14,7 +14,7 @@ import { writeAsStringAsync } from "expo-file-system";
 import alerts from "./src/components/atoms/Alerts";
 import AppContext from "./src/state";
 import { initialContext } from "./src/state";
-import useDataExtractor from "./src/hooks/useDataExtractor";
+// import useDataExtractor from "./src/hooks/useDataExtractor/useDataExtractor";
 
 start();
 

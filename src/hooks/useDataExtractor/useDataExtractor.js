@@ -1,16 +1,15 @@
-import useGoogleDrive from "./useGoogleDrive";
-import useFileSystem from "./useFileSystem";
-import useXLS from "./useXLS";
-import useCartolaBuilder from "./useCartolaBuilder";
-import { insertExpensesFromExternalSource } from "../dbOperations/purchase/purchaseBDTransactions";
+import useGoogleDrive from "../useGoogleDrive";
+import useFileSystem from "../useFileSystem";
+import useXLS from "../useXLS";
+import useCartolaBuilder from "../useCartolaBuilder";
+import { insertExpensesFromExternalSource } from "../../dbOperations/purchase/purchaseBDTransactions";
 import {
   fetchExternalSourceByFileId,
   insertExternalSource,
-} from "../dbOperations/externalSources/externalSourcesBDTransactions";
+} from "../../dbOperations/externalSources/externalSourcesBDTransactions";
+import { CARTOLA_FILENAME } from "./constants";
 
-const CARTOLA_FILENAME = "Cartola_Chequera";
-
-export default ({ onSendMessage = () => {} }) => {
+export default ({ movementType = "expenses", onSendMessage = () => {} }) => {
   // TODO: Si en el futuro necesito Google Drive habilitar esto
   // const { findFilesByName, downloadFile } = useGoogleDrive({
   //   onReadyGoogleDrive: gDriveInstance => {
@@ -25,19 +24,19 @@ export default ({ onSendMessage = () => {} }) => {
     try {
       const externalSourceData = await fetchExternalSourceByFileId(file.id);
       const externalSourceAlreadyExist = Boolean(externalSourceData);
+
       if (externalSourceAlreadyExist) {
         console.log(
           "No se agrega el external_source " + file.name + " porque ya existe"
         );
         onSendMessage({ MSG_CODE: "EXTERNAL_SOURCE_ALREADY_EXIST" });
       } else {
-        insertExternalSource({ fileId: file.id, fileName: file.name });
-        const dataSheet = await extractDataFromSheetFile("", file);
-        // const dataSheet = await extractDataFromSheetFile(
-        //   gDriveInstance?.accessToken,
-        //   file
-        // );
-        saveDataOnDatabase({ data: dataSheet });
+        // insertExternalSource({ fileId: file.id, fileName: file.name });
+        const dataSheet = await extractDataFromSheetFile({
+          file,
+          movementType,
+        });
+        saveDataOnDatabase({ data: dataSheet, movementType: movementType });
         onSendMessage({ MSG_CODE: "EXTERNAL_SOURCE_SAVED" });
       }
     } catch (error) {
@@ -77,7 +76,11 @@ export default ({ onSendMessage = () => {} }) => {
     }
   };
 
-  const extractDataFromSheetFile = async (accessToken = "", file) => {
+  const extractDataFromSheetFile = async ({
+    accessToken = "",
+    file,
+    movementType = "expenses",
+  }) => {
     try {
       let uri;
       if (accessToken) {
@@ -88,24 +91,33 @@ export default ({ onSendMessage = () => {} }) => {
       const data = await readFile({ uri });
       const { workbook } = readXLS({
         data,
-        sheets: "cartolaChequeraElectrónica",
       });
+
+      const sheetName = getSheetName(workbook);
+
+      if (!sheetName) throw new Error("No se encuentra la hoja de la cartola");
+
       const { table } = generateTable({
-        data: workbook.Sheets["cartolaChequeraElectrónica"],
+        data: workbook.Sheets[sheetName],
+        movementType,
       });
+      console.log("table", table);
 
       return table;
     } catch (error) {
-      console.log(
-        "Error al extraer datos desde la planilla: ",
-        JSON.stringify(error)
-      );
+      console.log("Error al extraer datos desde la planilla: ", error);
     }
   };
 
-  const saveDataOnDatabase = async ({ data }) => {
+  const getSheetName = xlsFile => Object.keys(xlsFile.Sheets)[0];
+
+  const saveDataOnDatabase = async ({ movementType, data }) => {
+    const actionByMovementType = {
+      expenses: () => insertExpensesFromExternalSource(data),
+    };
+
     try {
-      insertExpensesFromExternalSource(data);
+      actionByMovementType[movementType](data);
     } catch (e) {
       console.log("Error al guardar data en la base de datos");
     }
