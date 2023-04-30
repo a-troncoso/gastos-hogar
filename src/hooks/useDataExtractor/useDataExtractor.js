@@ -3,6 +3,7 @@ import useFileSystem from "../useFileSystem";
 import useXLS from "../useXLS";
 import useCartolaBuilder from "../useCartolaBuilder";
 import { insertExpensesFromExternalSource } from "../../dbOperations/purchase/purchaseBDTransactions";
+import { insertIncomesFromExternalSource } from "../../dbOperations/income/incomeBDTransactions";
 import {
   fetchExternalSourceByFileId,
   insertExternalSource,
@@ -36,7 +37,7 @@ export default ({ movementType = "expenses", onSendMessage = () => {} }) => {
           file,
           movementType,
         });
-        saveDataOnDatabase({ data: dataSheet, movementType: movementType });
+        saveDataOnDatabase({ data: dataSheet, movementType });
         onSendMessage({ MSG_CODE: "EXTERNAL_SOURCE_SAVED" });
       }
     } catch (error) {
@@ -101,7 +102,6 @@ export default ({ movementType = "expenses", onSendMessage = () => {} }) => {
         data: workbook.Sheets[sheetName],
         movementType,
       });
-      console.log("table", table);
 
       return table;
     } catch (error) {
@@ -114,6 +114,7 @@ export default ({ movementType = "expenses", onSendMessage = () => {} }) => {
   const saveDataOnDatabase = async ({ movementType, data }) => {
     const actionByMovementType = {
       expenses: () => insertExpensesFromExternalSource(data),
+      income: () => insertIncomesFromExternalSource(data),
     };
 
     try {

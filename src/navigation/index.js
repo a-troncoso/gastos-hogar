@@ -71,41 +71,43 @@ const AppNavigation = () => {
   const MainStackScreenNavigator = () => {
     return (
       <>
-      <StatusBar
-        animated
-        backgroundColor={color.blue["30"]}
-        barStyle='dark-content'
-      />
-      <Drawer.Navigator
-        initialRouteName={ScreenNames.MainStackScreenNavigator.RegistryExpense}
-        drawerContent={props => <DrawerContent {...props} />}
-      >
-        <Drawer.Screen
-          name={ScreenNames.MainStackScreenNavigator.Dashboard}
-          component={DashboardStackScreenNavigator}
-          options={{ headerShown: false, title: "Dashboard" }}
+        <StatusBar
+          animated
+          backgroundColor={color.blue["30"]}
+          barStyle="dark-content"
         />
-        <Drawer.Screen
-          name={ScreenNames.MainStackScreenNavigator.RegistryExpense}
-          component={RegistryExpenseStackNavigator}
-          options={{ headerShown: false, title: "Registrar egreso" }}
-        />
-        <Drawer.Screen
-          name={ScreenNames.MainStackScreenNavigator.Summary}
-          component={SummaryStackScreenNavigator}
-          options={{ headerShown: false, title: "Historial" }}
-        />
-        <Drawer.Screen
-          name={ScreenNames.MainStackScreenNavigator.CategoryManagement}
-          component={CategoryManagementStackScreenNavigator}
-          options={{ headerShown: false, title: "Administrar Categorías" }}
-        />
-        <Drawer.Screen
-          name={ScreenNames.MainStackScreenNavigator.RegistryIncome}
-          component={RegistryIncomeStackScreenNavigator}
-          options={{ headerShown: false, title: "Registrar Ingreso" }}
-        />
-      </Drawer.Navigator>
+        <Drawer.Navigator
+          initialRouteName={
+            ScreenNames.MainStackScreenNavigator.RegistryExpense
+          }
+          drawerContent={props => <DrawerContent {...props} />}
+        >
+          <Drawer.Screen
+            name={ScreenNames.MainStackScreenNavigator.Dashboard}
+            component={DashboardStackScreenNavigator}
+            options={{ headerShown: false, title: "Dashboard" }}
+          />
+          <Drawer.Screen
+            name={ScreenNames.MainStackScreenNavigator.RegistryExpense}
+            component={RegistryExpenseStackNavigator}
+            options={{ headerShown: false, title: "Registrar egreso" }}
+          />
+          <Drawer.Screen
+            name={ScreenNames.MainStackScreenNavigator.RegistryIncome}
+            component={RegistryIncomeStackScreenNavigator}
+            options={{ headerShown: false, title: "Registrar Ingreso" }}
+          />
+          <Drawer.Screen
+            name={ScreenNames.MainStackScreenNavigator.Summary}
+            component={SummaryStackScreenNavigator}
+            options={{ headerShown: false, title: "Historial" }}
+          />
+          <Drawer.Screen
+            name={ScreenNames.MainStackScreenNavigator.CategoryManagement}
+            component={CategoryManagementStackScreenNavigator}
+            options={{ headerShown: false, title: "Administrar Categorías" }}
+          />
+        </Drawer.Navigator>
       </>
     );
   };
@@ -241,6 +243,7 @@ const AppNavigation = () => {
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
             title: "Detalle del ingreso",
+            headerRight: () => <MenuButton type="secondary" />,
           })}
         />
       </IncomeManagementStack.Navigator>

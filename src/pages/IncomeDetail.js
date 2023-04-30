@@ -21,6 +21,7 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import shortid from "shortid";
+import { getDocumentAsync } from "expo-document-picker";
 
 import Button from "../components/atoms/Button";
 import DateFeature from "../components/molecules/date/DateFeature";
@@ -29,6 +30,7 @@ import DescriptionFeature from "../components/molecules/description/DescriptionF
 import Picker from "../components/atoms/Picker";
 
 import { INCOME_DETAIL_MODES } from "../domain/income/incomeDetailModes";
+import useDataExtractor from "../hooks/useDataExtractor/useDataExtractor";
 
 import {
   updateIncome,
@@ -54,9 +56,24 @@ const Toast = memo(({ visible, message }) => {
   return null;
 });
 
-const IncomeDetail = props => {
+const toastMessagesByEvent = {
+  INCOME_SAVED: "Ingreso ingresado",
+  EXTERNAL_SOURCE_ALREADY_EXIST: "No se ha cargado el archivo porque ya existe",
+  EXTERNAL_SOURCE_SAVED: "Archivo cargado correctamente",
+};
+
+const IncomeDetail = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const [isVisibleToast, setIsVisibleToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const { chargeDataFromDevice } = useDataExtractor({
+    onSendMessage: ({ MSG_CODE }) => {
+      setToastMessage(toastMessagesByEvent[MSG_CODE]);
+      setIsVisibleToast(true);
+    },
+    movementType: "income",
+  });
   const apiIncome = apiDomain("income");
   const { params: routeParams } = route;
   const detailMode = routeParams?.mode || INCOME_DETAIL_MODES.NEW_INCOME;
@@ -65,7 +82,6 @@ const IncomeDetail = props => {
   );
   const [isFixedBottomAreaVisible, setIsFixedBottomAreaVisible] =
     useState(true);
-  const [isVisibleToast, setIsVisibleToast] = useState(false);
   const incomeId = routeParams?.incomeId;
 
   const [featureDataUI, setFeatureDataUI] = useState({
@@ -108,6 +124,32 @@ const IncomeDetail = props => {
     }, [])
   );
 
+  useEffect(() => {
+    setPickerOnHeaderRight();
+  }, []);
+
+  const setPickerOnHeaderRight = useCallback(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Picker
+          items={[
+            {
+              title: "Cargar planilla",
+              onPressItem: handleLoadSheet,
+            },
+          ]}
+        />
+      ),
+    });
+  }, [navigation, handleLoadSheet]);
+
+  const handleLoadSheet = useCallback(async () => {
+    const { type, name, uri } = await getDocumentAsync();
+    if (type === "success") {
+      chargeDataFromDevice({ id: name, name, uri });
+    }
+  }, [chargeDataFromDevice]);
+
   const fetchDetail = async incomeId => {
     const detail = await fetchIncomeById(incomeId);
 
@@ -130,6 +172,8 @@ const IncomeDetail = props => {
         amount: extractNumbers(featureDataUI.amount),
         description: featureDataUI.description,
         date: featureDataUI.date.toISOString(),
+        source: "manual",
+        userId: 1,
       });
       if (insertResult.rowsAffected) navigation.goBack();
     } catch (err) {
@@ -146,6 +190,7 @@ const IncomeDetail = props => {
       });
       if (updateResult.rowsAffected) {
         setIsUnsavedFeature(initialStateUnsavedFeature);
+        setToastMessage(toastMessagesByEvent.INCOME_SAVED);
         setIsVisibleToast(true);
       }
     } catch (err) {
@@ -238,7 +283,7 @@ const IncomeDetail = props => {
           </SafeAreaView>
         </KeyboardAvoidingView>
       </ScrollView>
-      <Toast visible={isVisibleToast} message="Ingreso actualizado" />
+      <Toast visible={isVisibleToast} message={toastMessage} />
     </View>
   );
 };

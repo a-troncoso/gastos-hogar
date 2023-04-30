@@ -36,12 +36,11 @@ export default () => {
     let table = [];
     let rows = findTableRows({ data });
     let rowPointer = rows.first;
-    const colMap = findColMap({ data });
+    const colMap = findColMap({ data, movementType });
 
     while (rowPointer <= rows.last) {
       let transaction = {};
 
-      // TODO: Controlar que sólo se ingresen amounts con valor negativo si es Cartola -> Detalle de Movimientos
       for (const col in colMap) {
         const cell = data[col + rowPointer];
         if (Object.keys(cell).length > 0) {
@@ -62,25 +61,26 @@ export default () => {
           [TEXT_TITLE_TABLE_MOVEMENTS]: transaction.amount > 0,
           [TEXT_TITLE_TABLE_DETAIL_MOVEMENTS]: transaction.amount < 0,
         },
-        incomes: transaction.amount > 0,
+        income: {
+          [TEXT_TITLE_TABLE_MOVEMENTS]: transaction.amount > 0,
+          [TEXT_TITLE_TABLE_DETAIL_MOVEMENTS]: transaction.amount > 0,
+        },
       };
       const tableTitle = getTableTitle({ data });
       const isTransactionValid =
         conditionsByMovementTypeByTableTitle[movementType][tableTitle];
-      console.log("transaction", transaction);
-      console.log("tableTitle", tableTitle);
-      console.log("isTransactionValid", isTransactionValid);
+
       if (transaction.amount < 0) transaction.amount = transaction.amount * -1;
       if (isTransactionValid) table.push(transaction);
     }
     return table;
   };
 
-  const findColMap = ({ data }) => {
-    const cellOfTableTitle = getTableTitle({ data });
+  const findColMap = ({ data, movementType }) => {
+    const tableTitle = getTableTitle({ data });
 
-    // Para tabla titulada Movimientos
-    const movementsColMap = {
+    // Para expenses - tabla titulada Movimientos
+    const expensesMovementsTitle = {
       A: "date",
       B: "operationNumber",
       C: "description",
@@ -88,19 +88,32 @@ export default () => {
     };
 
     // Para tabla titulada Detalle de Movimientos
-    const detailMovementsColMap = {
+    const detailMovTitle = {
       A: "date",
       B: "description",
       C: "operationNumber",
       D: "amount",
     };
 
-    const colMapByTableTitle = {
-      [TEXT_TITLE_TABLE_DETAIL_MOVEMENTS]: detailMovementsColMap,
-      [TEXT_TITLE_TABLE_MOVEMENTS]: movementsColMap,
+    // Para income - tabla titulada Movimientos
+    const incomesMovementsTitle = {
+      A: "date",
+      B: "operationNumber",
+      C: "description",
+      E: "amount",
     };
 
-    return colMapByTableTitle[cellOfTableTitle];
+    const colMapByMovementTypeByTableTitle = {
+      expenses: {
+        [TEXT_TITLE_TABLE_MOVEMENTS]: expensesMovementsTitle,
+        [TEXT_TITLE_TABLE_DETAIL_MOVEMENTS]: detailMovTitle,
+      },
+      income: {
+        [TEXT_TITLE_TABLE_MOVEMENTS]: incomesMovementsTitle,
+        [TEXT_TITLE_TABLE_DETAIL_MOVEMENTS]: detailMovTitle,
+      },
+    };
+    return colMapByMovementTypeByTableTitle[movementType][tableTitle];
   };
 
   /*

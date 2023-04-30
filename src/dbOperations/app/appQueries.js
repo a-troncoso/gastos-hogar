@@ -128,6 +128,9 @@ export const MAIN_QUERIES = {
     "amount" INTEGER NOT NULL,
     "date" TEXT NOT NULL,
     "description" TEXT,
+    "userId" INTEGER,
+    "extOperationNumber" TEXT DEFAULT "",
+    "source" TEXT DEFAULT "",
     "active" INTEGER DEFAULT 1
   );
 `,
@@ -138,6 +141,9 @@ export const MAIN_QUERIES = {
     "amount" INTEGER NOT NULL,
     "date" TEXT NOT NULL,
     "description" TEXT,
+    "userId" INTEGER,
+    "extOperationNumber" TEXT DEFAULT "",
+    "source" TEXT DEFAULT "",
     "active" INTEGER DEFAULT 1
   );
 `,

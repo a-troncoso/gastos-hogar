@@ -1,5 +1,10 @@
 export const INCOME_QUERIES = {
-  INSERT_INCOME: `INSERT INTO "income" ("amount","description", "date", "active") VALUES (?,?,?,1);`,
+  INSERT_INCOME: `
+    INSERT INTO "income"
+      ("amount","description", "date", "userId", "extOperationNumber", "source", "active")
+    VALUES
+      (?,?,?,?,?,?,1);
+  `,
   SELECT_INCOME_BY_ID: `SELECT "amount","description", "date" FROM "income" WHERE id=? AND "active" = 1;`,
   TOTAL_AMOUNT_BY_DAY: `
     SELECT SUM(e.amount) AS 'totalAmount' FROM income e
@@ -40,4 +45,13 @@ export const INCOME_QUERIES = {
   //   AND i.active = 1
   //   AND e.active = 1;
   // `,
+  FETCH_INCOME: `
+    SELECT i.id
+    FROM income i
+    WHERE i.extOperationNumber = ?
+    AND i.amount = ?
+    AND i.date = ?
+    AND i.source = ?
+    AND i.active = 1;
+    `,
 };

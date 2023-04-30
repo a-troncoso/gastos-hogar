@@ -21,12 +21,25 @@ const runTransaction = ({ query, params }) => {
   });
 };
 
-export const insertIncome = ({ amount, description, date }) => {
+export const insertIncome = ({
+  amount,
+  description,
+  date,
+  source,
+  userId,
+  extOperationNumber,
+}) => {
   return runTransaction({
     query: INCOME_QUERIES.INSERT_INCOME,
-    params: [amount, description, date],
+    params: [amount, description, date, userId, extOperationNumber, source],
   });
 };
+
+const fetchIncome = ({ extOperationNumber, source, amount, date }) =>
+  runTransaction({
+    query: INCOME_QUERIES.FETCH_INCOME,
+    params: [extOperationNumber, amount, date, source],
+  });
 
 export const fetchIncomeById = id => {
   return runTransaction({
@@ -72,9 +85,9 @@ export const fetchTotalIncomesByDateCriteria = ({ ...dateOptions }) => {
 
   const params = {
     day: [
-      `0${dateOptions.date.day}`.slice(-2),
-      dateOptions.date.month,
-      "" + dateOptions.date.year,
+      `0${dateOptions.dati.day}`.slice(-2),
+      dateOptions.dati.month,
+      "" + dateOptions.dati.year,
     ],
     month: [dateOptions.date.month, "" + dateOptions.date.year],
     year: ["" + dateOptions.date.year],
@@ -83,5 +96,28 @@ export const fetchTotalIncomesByDateCriteria = ({ ...dateOptions }) => {
   return runTransaction({
     query: INCOME_QUERIES[queryStatementByDateMode[dateOptions.mode]],
     params: params[dateOptions.mode],
+  });
+};
+
+export const insertIncomesFromExternalSource = (incomes = []) => {
+  incomes.forEach(async i => {
+    const result = await fetchIncome({
+      extOperationNumber: i.operationNumber,
+      date: i.date,
+      amount: i.amount,
+      source: "external",
+    });
+    const income = result.rows._array[0];
+    const alreadyExists = Boolean(income);
+
+    if (!alreadyExists)
+      await insertIncome({
+        amount: i.amount,
+        description: i.description,
+        date: i.date,
+        source: "external",
+        userId: 1,
+        extOperationNumber: i.operationNumber,
+      });
   });
 };
