@@ -94,7 +94,6 @@ const DashbhoardGate = () => {
   );
 
   useEffect(() => {
-    // FIXME: Al haber cambio de horario no calcula bien
     const _formatedDateSelected = {
       day: dateSelected.getUTCDate(),
       month: formattedMonthNumber(dateSelected.getUTCMonth() + 1, {
@@ -116,7 +115,7 @@ const DashbhoardGate = () => {
       date: formatedDateSelected,
     });
     _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
-  }, [viewMode]);
+  }, [viewMode, formatedDateSelected]);
 
   const _fetchRequiredData = async () => {
     _fetchTotalIncomes({ mode: viewMode, date: formatedDateSelected });

@@ -80,7 +80,7 @@ export default () => {
     const tableTitle = getTableTitle({ data });
 
     // Para expenses - tabla titulada Movimientos
-    const expensesMovementsTitle = {
+    const expensesMovementsColMap = {
       A: "date",
       B: "operationNumber",
       C: "description",
@@ -88,7 +88,7 @@ export default () => {
     };
 
     // Para tabla titulada Detalle de Movimientos
-    const detailMovTitle = {
+    const detailMovColMap = {
       A: "date",
       B: "description",
       C: "operationNumber",
@@ -96,7 +96,7 @@ export default () => {
     };
 
     // Para income - tabla titulada Movimientos
-    const incomesMovementsTitle = {
+    const incomesMovementsColMap = {
       A: "date",
       B: "operationNumber",
       C: "description",
@@ -105,12 +105,12 @@ export default () => {
 
     const colMapByMovementTypeByTableTitle = {
       expenses: {
-        [TEXT_TITLE_TABLE_MOVEMENTS]: expensesMovementsTitle,
-        [TEXT_TITLE_TABLE_DETAIL_MOVEMENTS]: detailMovTitle,
+        [TEXT_TITLE_TABLE_MOVEMENTS]: expensesMovementsColMap,
+        [TEXT_TITLE_TABLE_DETAIL_MOVEMENTS]: detailMovColMap,
       },
       income: {
-        [TEXT_TITLE_TABLE_MOVEMENTS]: incomesMovementsTitle,
-        [TEXT_TITLE_TABLE_DETAIL_MOVEMENTS]: detailMovTitle,
+        [TEXT_TITLE_TABLE_MOVEMENTS]: incomesMovementsColMap,
+        [TEXT_TITLE_TABLE_DETAIL_MOVEMENTS]: detailMovColMap,
       },
     };
     return colMapByMovementTypeByTableTitle[movementType][tableTitle];
