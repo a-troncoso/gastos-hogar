@@ -18,7 +18,6 @@ export default ({ onReadyGoogleDrive = () => {} } = {}) => {
   }, [request]);
 
   useEffect(() => {
-    console.log("reponse cambiado", response);
     if (response?.authentication) {
       const gDriveInstance = new GDrive();
       gDriveInstance.accessToken = response?.authentication.accessToken;

@@ -77,9 +77,7 @@ const AppNavigation = () => {
           barStyle="dark-content"
         />
         <Drawer.Navigator
-          initialRouteName={
-            ScreenNames.MainStackScreenNavigator.RegistryExpense
-          }
+          initialRouteName={ScreenNames.MainStackScreenNavigator.Dashboard}
           drawerContent={props => <DrawerContent {...props} />}
         >
           <Drawer.Screen
@@ -90,7 +88,7 @@ const AppNavigation = () => {
           <Drawer.Screen
             name={ScreenNames.MainStackScreenNavigator.RegistryExpense}
             component={RegistryExpenseStackNavigator}
-            options={{ headerShown: false, title: "Registrar egreso" }}
+            options={{ headerShown: false, title: "Registrar Egreso" }}
           />
           <Drawer.Screen
             name={ScreenNames.MainStackScreenNavigator.RegistryIncome}
@@ -141,7 +139,11 @@ const AppNavigation = () => {
 
   const RegistryExpenseStackNavigator = () => {
     return (
-      <RegistryExpenseStack.Navigator>
+      <RegistryExpenseStack.Navigator
+        initialRouteName={
+          ScreenNames.RegistryExpenseStackNavigator.ExpenseCategoryGate
+        }
+      >
         <RegistryExpenseStack.Screen
           name={ScreenNames.RegistryExpenseStackNavigator.ExpenseCategoryGate}
           component={ExpenseCategoryGate}

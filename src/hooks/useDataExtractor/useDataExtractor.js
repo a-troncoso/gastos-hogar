@@ -27,12 +27,8 @@ export default ({ movementType = "expenses", onSendMessage = () => {} }) => {
       const externalSourceAlreadyExist = Boolean(externalSourceData);
 
       if (externalSourceAlreadyExist) {
-        console.log(
-          "No se agrega el external_source " + file.name + " porque ya existe"
-        );
         onSendMessage({ MSG_CODE: "EXTERNAL_SOURCE_ALREADY_EXIST" });
       } else {
-        // insertExternalSource({ fileId: file.id, fileName: file.name });
         const dataSheet = await extractDataFromSheetFile({
           file,
           movementType,
@@ -41,7 +37,7 @@ export default ({ movementType = "expenses", onSendMessage = () => {} }) => {
         onSendMessage({ MSG_CODE: "EXTERNAL_SOURCE_SAVED" });
       }
     } catch (error) {
-      console.log(
+      console.error(
         "Error al cargar data de la fuente externa",
         error,
         error.cause
@@ -55,11 +51,7 @@ export default ({ movementType = "expenses", onSendMessage = () => {} }) => {
       files.forEach(async file => {
         const externalSourceData = await fetchExternalSourceByFileId(file.id);
         const externalSourceAlreadyExist = Boolean(externalSourceData);
-        if (externalSourceAlreadyExist) {
-          console.log(
-            "No se agrega el external_source " + file.name + " porque ya existe"
-          );
-        } else {
+        if (!externalSourceAlreadyExist) {
           insertExternalSource({ fileId: file.id, fileName: file.name });
           const dataSheet = await extractDataFromSheetFile(
             gDriveInstance.accessToken,
@@ -69,7 +61,7 @@ export default ({ movementType = "expenses", onSendMessage = () => {} }) => {
         }
       });
     } catch (error) {
-      console.log(
+      console.error(
         "Error al cargar data de la fuente externa",
         error,
         error.cause
@@ -105,7 +97,7 @@ export default ({ movementType = "expenses", onSendMessage = () => {} }) => {
 
       return table;
     } catch (error) {
-      console.log("Error al extraer datos desde la planilla: ", error);
+      console.error("Error al extraer datos desde la planilla: ", error);
     }
   };
 
@@ -120,7 +112,7 @@ export default ({ movementType = "expenses", onSendMessage = () => {} }) => {
     try {
       actionByMovementType[movementType](data);
     } catch (e) {
-      console.log("Error al guardar data en la base de datos");
+      console.error("Error al guardar data en la base de datos");
     }
   };
 
