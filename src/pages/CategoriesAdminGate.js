@@ -1,53 +1,54 @@
-import React, { useState, useCallback } from "react"
-import { StyleSheet, View, SafeAreaView, Text } from "react-native"
-import { useFocusEffect } from "@react-navigation/native"
+import React, { useState, useCallback } from "react";
+import { StyleSheet, View, SafeAreaView, Text } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
-import CategoriesList from "../components/molecules/category/CategoriesList"
-import Button from "../components/atoms/Button"
+import CategoriesList from "../components/molecules/category/CategoriesList";
+import Button from "../components/atoms/Button";
 
-import { CATEGORY_DETAIL_MODES } from "../domain/category/categoryDetailModes"
-import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions"
+import { CATEGORY_DETAIL_MODES } from "../domain/category/categoryDetailModes";
+import { fetchAllCategories } from "../dbOperations/category/categoryBDTransactions";
 
-import screenNames from "../navigation/screenNames"
+import screenNames from "../navigation/screenNames";
 
 const CategoriesAdminGate = props => {
-  const { navigation } = props
+  const { navigation } = props;
 
-  const [categories, setCategories] = useState([])
+  const [categories, setCategories] = useState([]);
 
   useFocusEffect(
     useCallback(() => {
-      fetchCategories()
+      fetchCategories();
     }, [])
-  )
+  );
 
   const fetchCategories = async () => {
-    const categories = await fetchAllCategories()
-    setCategories(categories)
-  }
+    const categories = await fetchAllCategories();
+    console.log("categories", categories);
+    setCategories(categories);
+  };
 
   const handlePressCategory = id => {
     pushCategoryDetailScreen({
       categoryId: id,
-      mode: CATEGORY_DETAIL_MODES.EXISTING_CATEGORY
-    })
-  }
+      mode: CATEGORY_DETAIL_MODES.EXISTING_CATEGORY,
+    });
+  };
 
   const handlePressAddCategory = () => {
     pushCategoryDetailScreen({
-      mode: CATEGORY_DETAIL_MODES.NEW_CATEGORY
-    })
-  }
+      mode: CATEGORY_DETAIL_MODES.NEW_CATEGORY,
+    });
+  };
 
   const pushCategoryDetailScreen = ({
     categoryId,
-    mode = CATEGORY_DETAIL_MODES.NEW_CATEGORY
+    mode = CATEGORY_DETAIL_MODES.NEW_CATEGORY,
   }) => {
     navigation.push(
       screenNames.CategoryManagementStackScreenNavigator.CategoryDetail,
       { categoryId, mode }
-    )
-  }
+    );
+  };
 
   return (
     <View style={styles.categories}>
@@ -66,32 +67,32 @@ const CategoriesAdminGate = props => {
         </Button>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   categories: {
     flex: 1,
     justifyContent: "center",
     backgroundColor: "#fff",
-    alignSelf: "stretch"
+    alignSelf: "stretch",
   },
   categoriesListView: {
     flex: 1,
     alignSelf: "stretch",
     // paddingTop: 16,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   fixedBottomArea: {
     // borderColor: "red",
     // borderWidth: 1,
     // borderStyle: "solid",
     paddingVertical: 16,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   mainBtnText: {
-    fontWeight: "bold"
-  }
-})
+    fontWeight: "bold",
+  },
+});
 
-export default CategoriesAdminGate
+export default CategoriesAdminGate;
