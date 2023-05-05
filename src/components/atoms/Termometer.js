@@ -1,9 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet, View, Text } from "react-native";
 
 import color from "../../assets/colors";
 
-const Termometer = ({ maxValue, value }) => {
+const termConfig = [
+  {
+    min: 0,
+    max: 39,
+    color: color.green[0],
+  },
+  {
+    min: 40,
+    max: 79,
+    color: color.yellow[0],
+  },
+  {
+    min: 80,
+    max: 100,
+    color: color.red[0],
+  },
+];
+
+const Thermometer = ({ maxValue, value }) => {
   const [temperature, setTemperature] = useState({
     value: 0,
     color: "green",
@@ -11,29 +29,11 @@ const Termometer = ({ maxValue, value }) => {
   });
 
   useEffect(() => {
-    getTermometerStyles();
-  }, [value]);
+    getThermometerStyles(value, maxValue);
+  }, [value, maxValue]);
 
-  const termConfig = [
-    {
-      min: 0,
-      max: 39,
-      color: color.green[0],
-    },
-    {
-      min: 40,
-      max: 79,
-      color: color.yellow[0],
-    },
-    {
-      min: 80,
-      max: 100,
-      color: color.red[0],
-    },
-  ];
-
-  const getTermometerStyles = () => {
-    const division = ((value * 100) / maxValue).toFixed();
+  const getThermometerStyles = useCallback((value, maxValue) => {
+    const division = parseInt(((value * 100) / maxValue).toFixed());
     const percentage = Number.isFinite(division) ? division : 0;
 
     const config = termConfig.find(
@@ -46,22 +46,22 @@ const Termometer = ({ maxValue, value }) => {
       overValue: percentage - 100,
       color: config ? config.color : "red",
     }));
-  };
+  }, []);
 
   return (
-    <View style={termometerStyles.termometer}>
+    <View style={thermometerStyles.thermometer}>
       <View
         style={[
-          termometerStyles.temperature,
+          thermometerStyles.temperature,
           {
             width: `${temperature.value}%`,
             backgroundColor: temperature.color,
           },
         ]}
-      ></View>
+      />
 
       {temperature.overValue > 0 && (
-        <Text style={termometerStyles.overValue}>
+        <Text style={thermometerStyles.overValue}>
           +{temperature.overValue}%
         </Text>
       )}
@@ -69,8 +69,8 @@ const Termometer = ({ maxValue, value }) => {
   );
 };
 
-const termometerStyles = StyleSheet.create({
-  termometer: {
+const thermometerStyles = StyleSheet.create({
+  thermometer: {
     height: 8,
     width: "95%",
     borderColor: "black",
@@ -92,4 +92,4 @@ const termometerStyles = StyleSheet.create({
   },
 });
 
-export default Termometer;
+export default Thermometer;
