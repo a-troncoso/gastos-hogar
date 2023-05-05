@@ -41,7 +41,7 @@ const ModalSelector = props => {
                     style={styles.viewCategoryName}
                     onPress={() => handlePressItem(item)}
                   >
-                    <Text>{item.name}</Text>
+                    <Text style={styles.itemName}>{item.name}</Text>
                   </TouchableOpacity>
                 )}
               ></FlatList>
@@ -77,6 +77,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   viewModal: {
+    // borderWidth: 1,
+    // borderStyle: "solid",
+    // borderColor: "red",
+    paddingVertical: 64,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -88,8 +92,8 @@ const styles = StyleSheet.create({
     // borderColor: "blue",
     justifyContent: "center",
     width: 300,
-    height: 250,
     backgroundColor: color.blue["90"],
+    borderRadius: 8,
   },
   viewCategoryName: {
     flex: 1,
@@ -97,6 +101,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     justifyContent: "center",
     alignItems: "center",
+  },
+  itemName: {
+    textTransform: "capitalize",
   },
   placeholder: {
     // borderWidth: 1,
