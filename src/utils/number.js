@@ -1,11 +1,5 @@
 const _regExp = new RegExp(/(\d)(?=(\d{3})+(?!\d))/, "g");
-
-// TODO: Canditate to deprecate
-// export const _formatInt = amount =>
-//   parseFloat(amount.toString().replace(",", "."))
-//     .toFixed()
-//     .replace(".", ",")
-//     .replace(_regExp, "$1.")
+const _onlyNumbersRegExp = new RegExp(/\d+/g);
 
 const _formatFloat = amount =>
   String(amount).replace(".", ",").replace(_regExp, "$1.");
@@ -17,10 +11,14 @@ export const toCurrencyFormat = (amount, decimal) =>
   `$ ${_cleanFormat(amount, decimal)}`;
 
 export const extractNumbers = value => {
+  if (!value) return null;
+
   const isNegative = value.toString().includes("-");
   const multiplyBy = isNegative ? -1 : 1;
-  const onlyNumbers = value.toString().match(/\d+/g).join("");
-  return value ? parseInt(onlyNumbers) * multiplyBy : 0;
+  const arrayOnlyNumbers = value.toString().match(_onlyNumbersRegExp);
+  const stringOnlyNumbers = arrayOnlyNumbers ? arrayOnlyNumbers.join("") : "";
+
+  return value ? parseInt(stringOnlyNumbers) * multiplyBy : 0;
 };
 
 export const thousandFormat = (
