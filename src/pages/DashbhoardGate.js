@@ -200,8 +200,8 @@ const DashbhoardGate = () => {
 
   const renderCalendarTitle = viewMode => {
     const titles = {
-      month: "Detalle por día",
-      year: "Detalle por mes",
+      month: "Egresos por día",
+      year: "Egresos por año",
     };
 
     return (

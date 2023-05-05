@@ -98,7 +98,7 @@ const AppNavigation = () => {
           <Drawer.Screen
             name={ScreenNames.MainStackScreenNavigator.Summary}
             component={SummaryStackScreenNavigator}
-            options={{ headerShown: false, title: "Historial" }}
+            options={{ headerShown: false, title: "Movimientos" }}
           />
           <Drawer.Screen
             name={ScreenNames.MainStackScreenNavigator.CategoryManagement}
@@ -179,7 +179,7 @@ const AppNavigation = () => {
           component={HistoryGate}
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
-            title: "Historial",
+            title: "Movimientos por categoría",
           })}
         />
         <SummaryStack.Screen
