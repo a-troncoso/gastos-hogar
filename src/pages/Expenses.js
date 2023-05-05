@@ -132,7 +132,7 @@ const Expenses = props => {
   useFocusEffect(
     useCallback(() => {
       fetchPurchases(dateSelected, mode, categoryId);
-    }, [])
+    }, [dateSelected, mode, categoryId, fetchPurchases])
   );
 
   useEffect(() => {
@@ -141,90 +141,79 @@ const Expenses = props => {
 
   useEffect(() => {
     fetchPurchases(dateSelected, mode, categoryId);
-  }, [dateSelected]);
+  }, [dateSelected, mode, categoryId]);
 
-  const fetchCategoryDetail = async categoryId => {
-    const categoryDetail = await fetchCategoryById(categoryId);
+  const fetchCategoryDetail = useCallback(
+    async categoryId => {
+      const categoryDetail = await fetchCategoryById(categoryId);
 
-    setCategory(prev => ({
-      ...prev,
-      name: categoryDetail.name,
-    }));
-  };
+      setCategory(prev => ({
+        ...prev,
+        name: categoryDetail.name,
+      }));
+    },
+    [fetchCategoryById]
+  );
 
-  const fetchPurchases = async (date, mode, categoryId) => {
-    const purchases = await fetchPurchasesByCategory({
-      date,
-      mode,
-      categoryId,
-    });
-    setPurchases(purchases);
-  };
+  const fetchPurchases = useCallback(
+    async (date, mode, categoryId) => {
+      const purchases = await fetchPurchasesByCategory({
+        date,
+        mode,
+        categoryId,
+      });
+      setPurchases(purchases);
+    },
+    [fetchPurchasesByCategory]
+  );
 
-  const handlePressPurchase = id => {
-    navigation.push("ExpenseDetail", {
-      expenseId: id,
-      mode: "EXISTING_EXPENSE",
-    });
-  };
+  const handlePressPurchase = useCallback(
+    id => {
+      navigation.push("ExpenseDetail", {
+        expenseId: id,
+        mode: "EXISTING_EXPENSE",
+      });
+    },
+    [navigation]
+  );
 
-  const handleChangeDateNavigation = date => {
+  const handleChangeDateNavigation = useCallback(date => {
     setDateSelected(date);
-  };
-
-  const [isVisibleModalPicture, setIsVisibleModalPicture] = useState(false);
-  const [imageModal, setImageModal] = useState(null);
-
-  const handleBackdropPressModalPic = () => {
-    setIsVisibleModalPicture(false);
-  };
-
-  const handlePressImage = ({ image }) => {
-    setImageModal(image);
-    setIsVisibleModalPicture(true);
-  };
+  }, []);
 
   return (
-    <>
-      <View style={styles.purchases}>
-        <Text
-          style={{
-            paddingBottom: 8,
-            backgroundColor: color.blue["50"],
-            textAlign: "center",
-            fontSize: 18,
-            fontWeight: "bold",
-            lineHeight: 18,
-          }}
-        >
-          {category.name}
-        </Text>
-        <Hero
-          childStyles={styles.hero}
-          button={
-            <DateNavigatorActivator
-              mode={mode.toUpperCase()}
-              date={dateSelected}
-              onChange={date => handleChangeDateNavigation(date)}
-            />
-          }
-        />
-        <View style={styles.purchasesListView}>
-          <SafeAreaView>
-            <PurchasesList
-              purchases={purchases}
-              onPressPurchase={handlePressPurchase}
-              onPressImage={handlePressImage}
-            />
-          </SafeAreaView>
-        </View>
+    <View style={styles.purchases}>
+      <Text
+        style={{
+          paddingBottom: 8,
+          backgroundColor: color.blue["50"],
+          textAlign: "center",
+          fontSize: 18,
+          fontWeight: "bold",
+          lineHeight: 18,
+        }}
+      >
+        {category.name}
+      </Text>
+      <Hero
+        childStyles={styles.hero}
+        button={
+          <DateNavigatorActivator
+            mode={mode.toUpperCase()}
+            date={dateSelected}
+            onChange={date => handleChangeDateNavigation(date)}
+          />
+        }
+      />
+      <View style={styles.purchasesListView}>
+        <SafeAreaView>
+          <PurchasesList
+            purchases={purchases}
+            onPressPurchase={handlePressPurchase}
+          />
+        </SafeAreaView>
       </View>
-      {/* <ModalPicture
-        source={{ uri: imageModal }}
-        isModalVisible={isVisibleModalPicture}
-        onBackdropPress={handleBackdropPressModalPic}
-      /> */}
-    </>
+    </View>
   );
 };
 
