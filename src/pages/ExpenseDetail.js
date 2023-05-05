@@ -330,12 +330,6 @@ const ExpenseDetail = () => {
                 <ExpenseMainFeature
                   pictures={featureDataUI.pictures}
                   amount={featureDataUI.amount}
-                  // amount={numberFormat(
-                  //   extractNumbers(featureDataUI.amount),
-                  //   0,
-                  //   ",",
-                  //   "."
-                  // )}
                   isUnsavedFeature={
                     isUnsavedFeature.amount || isUnsavedFeature.pictures
                   }

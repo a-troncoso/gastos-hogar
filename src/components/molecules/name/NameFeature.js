@@ -4,9 +4,10 @@ import Feature from "../../atoms/Feature/Feature";
 
 const NameFeature = props => {
   const {
+    capitalizeValue = false,
     value,
     isUnsavedFeature,
-    onChange,
+    onChange = () => {},
     onChangeKeyboardVisibility = () => undefined,
   } = props;
 
@@ -14,6 +15,10 @@ const NameFeature = props => {
   const [editableElements, setEditatableElements] = useState({
     value: { isVisible: false },
   });
+
+  useEffect(() => {
+    if (value !== _value) onChange({ value: _value });
+  }, [_value]);
 
   useEffect(() => {
     _setValue(value);
@@ -29,7 +34,7 @@ const NameFeature = props => {
       value: { isVisible: false },
     });
 
-    onChange({ id: null, value: _value });
+    if (value !== _value) onChange({ value: _value });
   };
 
   const handlePressFeature = () => {
@@ -50,12 +55,6 @@ const NameFeature = props => {
   useEffect(() => {
     Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
     Keyboard.addListener("keyboardDidHide", _keyboardDidHide);
-
-    // cleanup function
-    return () => {
-      Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
-      Keyboard.removeListener("keyboardDidHide", _keyboardDidHide);
-    };
   }, []);
 
   return (
@@ -66,7 +65,7 @@ const NameFeature = props => {
       isVisibleEditableElm={editableElements.value.isVisible}
       editableElement={
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, capitalizeValue && styles.capitalizeValue]}
           value={_value}
           onChangeText={handleChangeValue}
           onBlur={handleBlurInput}
@@ -75,8 +74,8 @@ const NameFeature = props => {
         />
       }
       isUnsavedFeature={isUnsavedFeature}
-      isVisibleEditableElm={editableElements.value.isVisible}
       onPressFeature={handlePressFeature}
+      capitalizeValue={capitalizeValue}
     />
   );
 };
@@ -87,6 +86,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "right",
+  },
+  capitalizeValue: {
+    textTransform: "capitalize",
   },
 });
 

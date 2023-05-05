@@ -38,7 +38,7 @@ import { extractNumbers } from "../utils/number";
 import color from "../assets/colors";
 import alerts from "../components/atoms/Alerts";
 
-const initialStateunsavedFeature = {
+const initialStateUnsavedFeature = {
   image: false,
   name: false,
   maxAmountPerMonth: false,
@@ -59,7 +59,7 @@ const CategoryDetail = () => {
   const { params: routeParams } = route;
   const detailMode = routeParams.mode || CATEGORY_DETAIL_MODES.NEW_CATEGORY;
   const [isUnsavedFeature, setIsUnsavedFeature] = useState(
-    initialStateunsavedFeature
+    initialStateUnsavedFeature
   );
   const [isCategoryInserted, setIsCategoryInserted] = useState(false);
   const [isCategoryUpdated, setIsCategoryUpdated] = useState(false);
@@ -117,7 +117,7 @@ const CategoryDetail = () => {
     setFeatureDataUI(prev => ({
       ...prev,
       name: categoryDetail.name,
-      maxAmountPerMonth: categoryDetail.maxAmountPerMonth.toString(),
+      maxAmountPerMonth: categoryDetail.maxAmountPerMonth?.toString(),
       image: categoryDetail.imagePath,
     }));
   };
@@ -129,11 +129,12 @@ const CategoryDetail = () => {
   };
 
   const addCategory = async () => {
+    console.log("featureDataUI.name", featureDataUI.name);
     try {
       const insertResult = await apiCategories.add({
         name: featureDataUI.name,
         imagePath: featureDataUI.image,
-        maxAmountPerMonth: extractNumbers(featureDataUI.maxAmountPerMonth),
+        maxAmountPerMonth: extractNumbers(featureDataUI.maxAmountPerMonth) ?? 0,
       });
       if (insertResult.rowsAffected) setIsCategoryInserted(true);
     } catch (err) {
@@ -146,10 +147,10 @@ const CategoryDetail = () => {
       const updateResult = await updateCategory(categoryId, {
         name: featureDataUI.name,
         imagePath: featureDataUI.image,
-        maxAmountPerMonth: extractNumbers(featureDataUI.maxAmountPerMonth),
+        maxAmountPerMonth: extractNumbers(featureDataUI.maxAmountPerMonth) ?? 0,
       });
       if (updateResult.rowsAffected) {
-        setIsUnsavedFeature(initialStateunsavedFeature);
+        setIsUnsavedFeature(initialStateUnsavedFeature);
         setIsCategoryUpdated(true);
       }
     } catch (err) {
@@ -174,13 +175,16 @@ const CategoryDetail = () => {
     saveCategory();
   };
 
-  const onChangeFeature = field => {
-    if (detailMode === CATEGORY_DETAIL_MODES.EXISTING_CATEGORY)
-      setIsUnsavedFeature(prev => ({
-        ...prev,
-        [field]: true,
-      }));
-  };
+  const onChangeFeature = useCallback(
+    field => {
+      if (detailMode === CATEGORY_DETAIL_MODES.EXISTING_CATEGORY)
+        setIsUnsavedFeature(prev => ({
+          ...prev,
+          [field]: true,
+        }));
+    },
+    [detailMode]
+  );
 
   const saveFeatureIntoUI = (field, value) => {
     setFeatureDataUI(prev => ({ ...prev, [field]: value }));
@@ -212,6 +216,7 @@ const CategoryDetail = () => {
                 onChangeKeyboardVisibility={e =>
                   setIsFixedBottomAreaVisible(!e.isKeyboardVisible)
                 }
+                capitalizeValue
               />
               <AmountFeature
                 name="Monto máximo mensual"

@@ -8,6 +8,7 @@ const Feature = props => {
   const {
     name,
     value,
+    capitalizeValue = false,
     voidValue,
     editableElement,
     isVisibleEditableElm,
@@ -39,6 +40,7 @@ const Feature = props => {
             <Text
               style={[
                 styles.featureValue,
+                capitalizeValue && styles.capitalizeValue,
                 value ? styles.existValue : styles.notExistValue,
               ]}
             >
@@ -115,6 +117,9 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderStyle: "solid",
     fontWeight: "bold",
+  },
+  capitalizeValue: {
+    textTransform: "capitalize",
   },
   aditionalValueText: {
     marginLeft: 4,
