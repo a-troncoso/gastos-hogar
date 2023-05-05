@@ -23,7 +23,6 @@ const CategoriesAdminGate = props => {
 
   const fetchCategories = async () => {
     const categories = await fetchAllCategories();
-    console.log("categories", categories);
     setCategories(categories);
   };
 

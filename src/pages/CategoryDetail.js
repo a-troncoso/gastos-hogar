@@ -129,7 +129,6 @@ const CategoryDetail = () => {
   };
 
   const addCategory = async () => {
-    console.log("featureDataUI.name", featureDataUI.name);
     try {
       const insertResult = await apiCategories.add({
         name: featureDataUI.name,
