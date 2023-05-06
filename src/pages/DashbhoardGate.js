@@ -74,8 +74,8 @@ const dashboardCardStyles = StyleSheet.create({
 const DashbhoardGate = () => {
   const [viewMode, setViewMode] = useState("month");
   const [dateSelected, setDateSelected] = useState(currentDate);
-  // Almacena la fecha separada en mdía, mes, año como attrs. de objetos
-  const [formatedDateSelected, setFormatedDateSelected] = useState({
+  // Almacena la fecha separada en día, mes, año como attrs. de objetos
+  const [formattedDateSelected, setFormattedDateSelected] = useState({
     day: dateSelected.getDate(),
     month: formattedMonthNumber(dateSelected.getMonth() + 1, {
       inTwoDigits: true,
@@ -94,44 +94,44 @@ const DashbhoardGate = () => {
   );
 
   useEffect(() => {
-    const _formatedDateSelected = {
+    const _formattedDateSelected = {
       day: dateSelected.getUTCDate(),
       month: formattedMonthNumber(dateSelected.getUTCMonth() + 1, {
         inTwoDigits: true,
       }),
       year: dateSelected.getUTCFullYear(),
     };
-    setFormatedDateSelected(_formatedDateSelected);
+    setFormattedDateSelected(_formattedDateSelected);
   }, [dateSelected]);
 
   useEffect(() => {
-    _fetchTotalIncomes({ mode: viewMode, date: formatedDateSelected });
-    _fetchTotalAmount({
+    _fetchTotalIncomes({ mode: viewMode, date: formattedDateSelected });
+    _fetchTotalExpenses({
       mode: viewMode,
-      date: formatedDateSelected,
+      date: formattedDateSelected,
     });
-    _fetchTotalAmountPerCategory({
+    _fetchTotalExpensesByCategory({
       mode: viewMode,
-      date: formatedDateSelected,
+      date: formattedDateSelected,
     });
-    _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
-  }, [viewMode, formatedDateSelected]);
+    _fetchAmounts({ mode: viewMode, date: formattedDateSelected });
+  }, [viewMode, formattedDateSelected]);
 
   const _fetchRequiredData = async () => {
-    _fetchTotalIncomes({ mode: viewMode, date: formatedDateSelected });
-    _fetchTotalAmount({ mode: viewMode, date: formatedDateSelected });
-    _fetchTotalAmountPerCategory({
+    _fetchTotalIncomes({ mode: viewMode, date: formattedDateSelected });
+    _fetchTotalExpenses({ mode: viewMode, date: formattedDateSelected });
+    _fetchTotalExpensesByCategory({
       mode: viewMode,
-      date: formatedDateSelected,
+      date: formattedDateSelected,
     });
-    _fetchAmounts({ mode: viewMode, date: formatedDateSelected });
+    _fetchAmounts({ mode: viewMode, date: formattedDateSelected });
   };
 
-  const handeChangleMode = mode => {
+  const handleChangeMode = mode => {
     setViewMode(mode);
   };
 
-  const _fetchTotalAmount = async dateOptions => {
+  const _fetchTotalExpenses = async dateOptions => {
     try {
       const totalAmountInfo = await fetchTotalAmountByDateCriteria({
         ...dateOptions,
@@ -156,7 +156,7 @@ const DashbhoardGate = () => {
     }
   };
 
-  const _fetchTotalAmountPerCategory = async dateOptions => {
+  const _fetchTotalExpensesByCategory = async dateOptions => {
     try {
       const amountsPerCategory =
         await fetchTotalAmountByDateCriteriaPerCategory({
@@ -225,7 +225,7 @@ const DashbhoardGate = () => {
       <ScrollView style={styles.dashboardScrollView}>
         <View style={styles.dashboardView}>
           <View style={styles.dateFilterSelectorContainer}>
-            <DateFilterSelector onChangeMode={e => handeChangleMode(e)} />
+            <DateFilterSelector onChangeMode={e => handleChangeMode(e)} />
           </View>
           <View style={styles.incomesExpensesCardsContainer}>
             <DashboardCard
