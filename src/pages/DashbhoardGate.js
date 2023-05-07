@@ -71,9 +71,9 @@ const dashboardCardStyles = StyleSheet.create({
   },
 });
 
-const DashbhoardGate = () => {
+const DashboardGate = () => {
   const [viewMode, setViewMode] = useState("month");
-  const [dateSelected, setDateSelected] = useState(currentDate);
+  const [dateSelected, setDateSelected] = useState(currentDate());
   const [formattedDateSelected, setFormattedDateSelected] = useState({
     day: dateSelected.getDate(),
     month: formattedMonthNumber(dateSelected.getMonth() + 1, {
@@ -89,7 +89,7 @@ const DashbhoardGate = () => {
   useFocusEffect(
     useCallback(() => {
       _fetchRequiredData({ viewMode, formattedDateSelected });
-    }, [viewMode, formattedDateSelected])
+    }, [_fetchRequiredData, viewMode, formattedDateSelected])
   );
 
   useEffect(() => {
@@ -105,7 +105,7 @@ const DashbhoardGate = () => {
 
   useEffect(() => {
     _fetchRequiredData({ viewMode, formattedDateSelected });
-  }, [viewMode, formattedDateSelected]);
+  }, [_fetchRequiredData, viewMode, formattedDateSelected]);
 
   const _fetchRequiredData = useCallback(
     ({ viewMode, formattedDateSelected }) => {
@@ -117,7 +117,12 @@ const DashbhoardGate = () => {
       });
       _fetchAmounts({ mode: viewMode, date: formattedDateSelected });
     },
-    []
+    [
+      _fetchTotalIncomes,
+      _fetchTotalExpenses,
+      _fetchTotalExpensesByCategory,
+      _fetchAmounts,
+    ]
   );
 
   const handleChangeMode = useCallback(mode => {
@@ -285,4 +290,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DashbhoardGate;
+export default DashboardGate;

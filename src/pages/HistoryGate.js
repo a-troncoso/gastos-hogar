@@ -4,6 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import CategoriesList from "../components/molecules/category/CategoriesList";
 import Hero from "../components/atoms/Hero";
 import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator";
+import alerts from "../components/atoms/Alerts";
 
 import { fetchTotalExpensesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
 
@@ -19,35 +20,45 @@ const HistoryGate = props => {
   useFocusEffect(
     useCallback(() => {
       fetchTotalPurchases(dateSelected);
-      setDateSelected(currentDate());
-    }, [])
+    }, [fetchTotalPurchases, dateSelected])
   );
 
   useEffect(() => {
     fetchTotalPurchases(dateSelected);
-  }, [dateSelected]);
+  }, [fetchTotalPurchases, dateSelected]);
 
-  const fetchTotalPurchases = async date => {
-    try {
-      const categories = await fetchTotalExpensesByCategory({
-        date,
+  const fetchTotalPurchases = useCallback(
+    async date => {
+      try {
+        const categories = await fetchTotalExpensesByCategory({
+          date,
+          mode: "month",
+        });
+        setCategories(categories);
+      } catch (err) {
+        alerts.throwErrorAlert(
+          "calcular el total de egresos por categoría",
+          JSON.stringify(err)
+        );
+      }
+    },
+    [fetchTotalExpensesByCategory, alerts]
+  );
+
+  const handlePressCategory = useCallback(
+    id => {
+      navigation.push("Expenses", {
+        categoryId: id,
+        date: dateSelected,
         mode: "month",
       });
-      setCategories(categories);
-    } catch (err) {}
-  };
+    },
+    [navigation, dateSelected]
+  );
 
-  const handlePressCategory = id => {
-    navigation.push("Expenses", {
-      categoryId: id,
-      date: dateSelected,
-      mode: "month",
-    });
-  };
-
-  const handleChangeDateNavigation = date => {
+  const handleChangeDateNavigation = useCallback(date => {
     setDateSelected(date);
-  };
+  }, []);
 
   return (
     <View style={styles.mainView}>

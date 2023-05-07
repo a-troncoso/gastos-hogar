@@ -131,8 +131,8 @@ const Expenses = props => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchPurchases(dateSelected, mode, categoryId);
-    }, [dateSelected, mode, categoryId, fetchPurchases])
+      _fetchPurchasesByCategory(dateSelected, mode, categoryId);
+    }, [dateSelected, mode, categoryId, _fetchPurchasesByCategory])
   );
 
   useEffect(() => {
@@ -140,7 +140,7 @@ const Expenses = props => {
   }, [categoryId]);
 
   useEffect(() => {
-    fetchPurchases(dateSelected, mode, categoryId);
+    _fetchPurchasesByCategory(dateSelected, mode, categoryId);
   }, [dateSelected, mode, categoryId]);
 
   const fetchCategoryDetail = useCallback(
@@ -155,7 +155,7 @@ const Expenses = props => {
     [fetchCategoryById]
   );
 
-  const fetchPurchases = useCallback(
+  const _fetchPurchasesByCategory = useCallback(
     async (date, mode, categoryId) => {
       const purchases = await fetchPurchasesByCategory({
         date,

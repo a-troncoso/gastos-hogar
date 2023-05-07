@@ -179,7 +179,7 @@ const AppNavigation = () => {
           component={HistoryGate}
           options={({ navigation }) => ({
             ...screenOptionsBase(navigation),
-            title: "Movimientos por categoría",
+            title: "Movimientos",
           })}
         />
         <SummaryStack.Screen
