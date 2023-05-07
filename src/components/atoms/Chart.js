@@ -10,15 +10,15 @@ import color from "../../assets/colors";
 
 const ChartLabel = ({ label }) => {
   const [width, setWidth] = useState(0);
-  const [heigth, setHeight] = useState(0);
-  const meassure = event => {
+  const [height, setHeight] = useState(0);
+  const measure = event => {
     setWidth(event.nativeEvent.layout.width);
     setHeight(event.nativeEvent.layout.height);
   };
 
   return (
     <View
-      onLayout={meassure}
+      onLayout={measure}
       style={{
         // borderColor: "green",
         // borderStyle: "solid",
@@ -30,7 +30,7 @@ const ChartLabel = ({ label }) => {
         maxWidth: 180,
         transform: [
           { translateX: -(width / 2) + 20 },
-          { translateY: -(heigth / 2) },
+          { translateY: -(height / 2) },
         ],
         justifyContent: "center",
       }}
@@ -75,19 +75,39 @@ const Chart = props => {
     );
   }, [data]);
 
+  const handlePressChart = () => {
+    return [
+      {
+        mutation: props => {
+          setLabel({
+            value: toCurrencyFormat(props.datum.y),
+            text: props.datum.x,
+          });
+        },
+      },
+      {
+        target: "data",
+        childName: ["pie"],
+        mutation: () => {
+          setExternalMutation([
+            {
+              target: "data",
+              eventKey: "all",
+              mutation: () => ({ innerRadius: 105 }),
+              callback: setExternalMutation([]),
+            },
+          ]);
+        },
+      },
+    ];
+  };
+
   return (
     <View style={styles.chart}>
       <VictoryPie
         data={parsedData}
         containerComponent={
-          <Svg
-            height="400"
-            width="100%"
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          />
+          <Svg height="400" width="100%" style={styles.svgContainer} />
         }
         innerRadius={90}
         padAngle={4}
@@ -97,34 +117,7 @@ const Chart = props => {
           {
             target: "data",
             eventHandlers: {
-              onPress: () => {
-                return [
-                  {
-                    mutation: props => {
-                      setLabel({
-                        value: toCurrencyFormat(props.datum.y),
-                        text: props.datum.x,
-                      });
-                    },
-                  },
-                  {
-                    target: "data",
-                    childName: ["pie"],
-                    mutation: () => {
-                      setExternalMutation([
-                        {
-                          target: "data",
-                          eventKey: "all",
-                          mutation: () => {
-                            return { innerRadius: 100 };
-                          },
-                          callback: setExternalMutation(undefined),
-                        },
-                      ]);
-                    },
-                  },
-                ];
-              },
+              onPress: handlePressChart,
             },
           },
         ]}
@@ -149,6 +142,10 @@ const styles = StyleSheet.create({
     // borderStyle: "solid",
     // borderWidth: 1,
     // position: "relative",
+  },
+  svgContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

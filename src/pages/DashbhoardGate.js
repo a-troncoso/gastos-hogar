@@ -74,7 +74,6 @@ const dashboardCardStyles = StyleSheet.create({
 const DashbhoardGate = () => {
   const [viewMode, setViewMode] = useState("month");
   const [dateSelected, setDateSelected] = useState(currentDate);
-  // Almacena la fecha separada en día, mes, año como attrs. de objetos
   const [formattedDateSelected, setFormattedDateSelected] = useState({
     day: dateSelected.getDate(),
     month: formattedMonthNumber(dateSelected.getMonth() + 1, {
@@ -89,8 +88,8 @@ const DashbhoardGate = () => {
 
   useFocusEffect(
     useCallback(() => {
-      _fetchRequiredData();
-    }, [])
+      _fetchRequiredData({ viewMode, formattedDateSelected });
+    }, [viewMode, formattedDateSelected])
   );
 
   useEffect(() => {
@@ -105,100 +104,106 @@ const DashbhoardGate = () => {
   }, [dateSelected]);
 
   useEffect(() => {
-    _fetchTotalIncomes({ mode: viewMode, date: formattedDateSelected });
-    _fetchTotalExpenses({
-      mode: viewMode,
-      date: formattedDateSelected,
-    });
-    _fetchTotalExpensesByCategory({
-      mode: viewMode,
-      date: formattedDateSelected,
-    });
-    _fetchAmounts({ mode: viewMode, date: formattedDateSelected });
+    _fetchRequiredData({ viewMode, formattedDateSelected });
   }, [viewMode, formattedDateSelected]);
 
-  const _fetchRequiredData = async () => {
-    _fetchTotalIncomes({ mode: viewMode, date: formattedDateSelected });
-    _fetchTotalExpenses({ mode: viewMode, date: formattedDateSelected });
-    _fetchTotalExpensesByCategory({
-      mode: viewMode,
-      date: formattedDateSelected,
-    });
-    _fetchAmounts({ mode: viewMode, date: formattedDateSelected });
-  };
+  const _fetchRequiredData = useCallback(
+    ({ viewMode, formattedDateSelected }) => {
+      _fetchTotalIncomes({ mode: viewMode, date: formattedDateSelected });
+      _fetchTotalExpenses({ mode: viewMode, date: formattedDateSelected });
+      _fetchTotalExpensesByCategory({
+        mode: viewMode,
+        date: formattedDateSelected,
+      });
+      _fetchAmounts({ mode: viewMode, date: formattedDateSelected });
+    },
+    []
+  );
 
-  const handleChangeMode = mode => {
+  const handleChangeMode = useCallback(mode => {
     setViewMode(mode);
-  };
+  }, []);
 
-  const _fetchTotalExpenses = async dateOptions => {
-    try {
-      const totalAmountInfo = await fetchTotalAmountByDateCriteria({
-        ...dateOptions,
-      });
-      setTotalAmount(totalAmountInfo.totalAmount);
-    } catch (err) {
-      alerts.throwErrorAlert("calcular el monto total", JSON.stringify(err));
-    }
-  };
+  const _fetchTotalExpenses = useCallback(
+    async dateOptions => {
+      try {
+        const totalAmountInfo = await fetchTotalAmountByDateCriteria({
+          ...dateOptions,
+        });
+        setTotalAmount(totalAmountInfo.totalAmount);
+      } catch (err) {
+        alerts.throwErrorAlert("calcular el monto total", JSON.stringify(err));
+      }
+    },
+    [fetchTotalAmountByDateCriteria, alerts]
+  );
 
-  const _fetchTotalIncomes = async dateOptions => {
-    try {
-      const totalAmountInfo = await fetchTotalIncomesByDateCriteria({
-        ...dateOptions,
-      });
-      setTotalIncome(totalAmountInfo.rows?._array[0]?.totalAmount);
-    } catch (err) {
-      alerts.throwErrorAlert(
-        "calcular el total de ingresos",
-        JSON.stringify(err)
-      );
-    }
-  };
+  const _fetchTotalIncomes = useCallback(
+    async dateOptions => {
+      try {
+        const totalAmountInfo = await fetchTotalIncomesByDateCriteria({
+          ...dateOptions,
+        });
+        setTotalIncome(totalAmountInfo.rows?._array[0]?.totalAmount);
+      } catch (err) {
+        alerts.throwErrorAlert(
+          "calcular el total de ingresos",
+          JSON.stringify(err)
+        );
+      }
+    },
+    [fetchTotalIncomesByDateCriteria, alerts]
+  );
 
-  const _fetchTotalExpensesByCategory = async dateOptions => {
-    try {
-      const amountsPerCategory =
-        await fetchTotalAmountByDateCriteriaPerCategory({
+  const _fetchTotalExpensesByCategory = useCallback(
+    async dateOptions => {
+      try {
+        const amountsPerCategory =
+          await fetchTotalAmountByDateCriteriaPerCategory({
+            ...dateOptions,
+          });
+
+        const processedList = amountsPerCategory.filter(a => a.totalAmount > 0);
+        setAmountsPerCategory(processedList);
+      } catch (err) {
+        alerts.throwErrorAlert(
+          "calcular montos por categoría",
+          JSON.stringify(err)
+        );
+      }
+    },
+    [fetchTotalAmountByDateCriteriaPerCategory, alerts]
+  );
+
+  const _fetchAmounts = useCallback(
+    async dateOptions => {
+      try {
+        const amounts = await fetchAmountsByDateCriteria({
           ...dateOptions,
         });
 
-      const processedList = amountsPerCategory.filter(a => a.totalAmount > 0);
-      setAmountsPerCategory(processedList);
-    } catch (err) {
-      alerts.throwErrorAlert(
-        "calcular montos por categoría",
-        JSON.stringify(err)
-      );
-    }
-  };
+        const processedList = amounts.map(amount => {
+          let date = new Date(amount.date);
 
-  const _fetchAmounts = async dateOptions => {
-    try {
-      const amounts = await fetchAmountsByDateCriteria({
-        ...dateOptions,
-      });
+          return {
+            day: new Date(date).getDate(),
+            month: new Date(date).getMonth(),
+            relevance: amount.totalAmount,
+          };
+        });
+        setRelevantByDateCriteria(processedList);
+      } catch (err) {
+        alerts.throwErrorAlert("calcular los montos", JSON.stringify(err));
+      }
+    },
+    [fetchAmountsByDateCriteria, alerts]
+  );
 
-      const processedList = amounts.map(a => {
-        let date = new Date(a.date);
-
-        return {
-          day: new Date(date).getDate(),
-          month: new Date(date).getMonth(),
-          relevance: a.totalAmount,
-        };
-      });
-      setRelevantByDateCriteria(processedList);
-    } catch (err) {
-      alerts.throwErrorAlert("calcular los montos", JSON.stringify(err));
-    }
-  };
-
-  const handleChangeDateNavigation = date => {
+  const handleChangeDateNavigation = useCallback(date => {
     setDateSelected(date);
-  };
+  }, []);
 
-  const renderCalendarTitle = viewMode => {
+  const renderCalendarTitle = useCallback(viewMode => {
     const titles = {
       month: "Egresos por día",
       year: "Egresos por año",
@@ -209,7 +214,7 @@ const DashbhoardGate = () => {
         <Text style={styles.calendarTitle}>{titles[viewMode]}</Text>
       )
     );
-  };
+  }, []);
 
   return (
     <SafeAreaView style={styles.dashboardScrollViewContainer}>
