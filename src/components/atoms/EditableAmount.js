@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity
-} from "react-native"
+  TouchableOpacity,
+} from "react-native";
 
-import { extractNumbers, thousandFormat } from "../../utils/number"
+import { extractNumbers, thousandFormat } from "../../utils/number";
+import color from "../../assets/colors";
 
 const EditableAmount = ({ amount, editedAmount, onChange, onBlur }) => {
-  const [isVisibleEditableElm, setIsVisibleEditableElm] = useState(false)
-  const [maskedValue, setMaskedValue] = useState(editedAmount)
+  const [isVisibleEditableElm, setIsVisibleEditableElm] = useState(false);
+  const [maskedValue, setMaskedValue] = useState(editedAmount);
 
   useEffect(() => {
     const valueOnInput = thousandFormat(
@@ -19,28 +20,29 @@ const EditableAmount = ({ amount, editedAmount, onChange, onBlur }) => {
       0,
       ",",
       "."
-    )
-    if (editedAmount <= 1000000000) setMaskedValue(valueOnInput)
-  }, [editedAmount])
+    );
+    if (editedAmount <= 1000000000) setMaskedValue(valueOnInput);
+  }, [editedAmount]);
 
   const handlePressExpenseAmount = () => {
-    setIsVisibleEditableElm(true)
-  }
+    setIsVisibleEditableElm(true);
+  };
 
   const handleBlurTextInput = () => {
-    setIsVisibleEditableElm(false)
-    onBlur()
-  }
+    setIsVisibleEditableElm(false);
+    onBlur();
+  };
 
   const handleChangeTextInput = e => {
-    onChange(extractNumbers(e))
-  }
+    onChange(extractNumbers(e));
+  };
 
   return (
     <TouchableOpacity
       style={styles.amountTouchable}
       onPress={handlePressExpenseAmount}
     >
+      <Text style={styles.featureName}>Monto</Text>
       <View style={styles.amountViewContainer}>
         <Text style={styles.currencySymbol}>$</Text>
         {isVisibleEditableElm ? (
@@ -60,49 +62,58 @@ const EditableAmount = ({ amount, editedAmount, onChange, onBlur }) => {
         )}
       </View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   amountTouchable: {
     // borderColor: "blue",
     // borderWidth: 1,
     // borderStyle: "solid",
-    paddingVertical: 8
+    paddingVertical: 16,
+    gap: 8,
+  },
+  featureName: {
+    color: color.gray["110"],
+    fontWeight: "bold",
+    textTransform: "capitalize",
+    textAlign: "center",
   },
   amountViewContainer: {
     // borderColor: "red",
     // borderWidth: 1,
     // borderStyle: "solid",
     flexDirection: "row",
-    justifyContent: "center"
+    justifyContent: "center",
+    alignItems: "center",
   },
   currencySymbol: {
-    color: "red",
-    fontSize: 14,
+    color: color.green["0"],
+    fontSize: 20,
     fontWeight: "bold",
-    marginRight: 5
+    marginRight: 5,
   },
   amountStyles: {
     // borderColor: "brown",
     // borderWidth: 1,
     // borderStyle: "solid",
-    color: "red",
-    fontSize: 14,
-    fontWeight: "bold"
+    height: 19,
+    color: color.green["0"],
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   amountTextInput: {
     // borderColor: "green",
     // borderWidth: 1,
     // borderStyle: "solid",
     height: 19,
-    marginRight: 1,
-    lineHeight: 19
+    // lineHeight: 19,
   },
   amountNoEditable: {
     lineHeight: 19,
-    minWidth: 22
-  }
-})
+    minWidth: 22,
+  },
+});
 
-export default EditableAmount
+export default EditableAmount;

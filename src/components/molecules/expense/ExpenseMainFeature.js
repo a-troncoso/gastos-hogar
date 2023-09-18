@@ -1,9 +1,9 @@
-import React from "react"
-import { StyleSheet, View, TouchableHighlight, Image } from "react-native"
-import EditableAmount from "../../atoms/EditableAmount"
-import ExpenseCamera from "../../atoms/Camera"
+import React from "react";
+import { StyleSheet, View, TouchableHighlight, Image } from "react-native";
+import EditableAmount from "../../atoms/EditableAmount";
+// import ExpenseCamera from "../../atoms/Camera";
 
-import color from "../../../assets/colors"
+import color from "../../../assets/colors";
 
 const ExpenseMainFeature = props => {
   const {
@@ -13,20 +13,20 @@ const ExpenseMainFeature = props => {
     mode,
     onPressCamera,
     onChange,
-    onBlurEditableAmount
-  } = props
+    onBlurEditableAmount,
+  } = props;
 
   const handleChangeEditableAmount = e => {
-    onChange(e)
-  }
+    onChange(e);
+  };
 
   const handleBlurEditableAmount = () => {
-    if (onBlurEditableAmount) onBlurEditableAmount()
-  }
+    if (onBlurEditableAmount) onBlurEditableAmount();
+  };
 
   return (
     <View style={[styles.view, isUnsavedFeature && styles.unsaveFeature]}>
-      <View style={styles.expenseCameraView}>
+      {/* <View style={styles.expenseCameraView}>
         <TouchableHighlight
           style={styles.cameraTouchable}
           onPress={() => onPressCamera()}
@@ -40,7 +40,7 @@ const ExpenseMainFeature = props => {
             />
           )}
         </TouchableHighlight>
-      </View>
+      </View> */}
       <EditableAmount
         amount={amount}
         editedAmount={amount}
@@ -48,8 +48,8 @@ const ExpenseMainFeature = props => {
         onBlur={handleBlurEditableAmount}
       />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   view: {
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderStyle: "solid",
     width: 136,
-    height: 224,
+    // height: 224,
     flexDirection: "column",
     borderRadius: 16,
     overflow: "hidden",
@@ -65,35 +65,35 @@ const styles = StyleSheet.create({
     shadowColor: color.gray["50"],
     shadowOffset: {
       width: 0,
-      height: 6
+      height: 6,
     },
     shadowOpacity: 1,
     shadowRadius: 8,
-    elevation: 6
+    elevation: 6,
   },
   unsaveFeature: {
     borderWidth: 1,
     borderStyle: "solid",
-    borderColor: color.yellow["30"]
+    borderColor: color.yellow["30"],
   },
   expenseCameraView: {
     // borderColor: "red",
     // borderWidth: 1,
     // borderStyle: "solid",
-    flex: 1
+    flex: 1,
   },
   amount: {
     color: "red",
     borderStyle: "solid",
     textAlign: "center",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   cameraTouchable: {
     // borderColor: "blue",
     // borderWidth: 1,
     // borderStyle: "solid",
-    flex: 1
-  }
-})
+    flex: 1,
+  },
+});
 
-export default ExpenseMainFeature
+export default ExpenseMainFeature;

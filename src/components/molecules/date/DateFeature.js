@@ -5,7 +5,7 @@ import DateModalSelector from "../../atoms/DateModalSelector";
 import { formatDate, formatHour } from "../../../utils/date";
 
 const DateFeature = props => {
-  const { date, isUnsavedFeature, onChange } = props;
+  const { date = null, isUnsavedFeature, onChange } = props;
 
   const [isEditableElementVisible, setIdEditatableElementVisible] =
     useState(false);

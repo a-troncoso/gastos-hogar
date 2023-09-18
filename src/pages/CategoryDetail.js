@@ -131,7 +131,7 @@ const CategoryDetail = () => {
   const addCategory = async () => {
     try {
       const insertResult = await apiCategories.add({
-        name: featureDataUI.name,
+        name: featureDataUI.name.trim(),
         imagePath: featureDataUI.image,
         maxAmountPerMonth: extractNumbers(featureDataUI.maxAmountPerMonth) ?? 0,
       });

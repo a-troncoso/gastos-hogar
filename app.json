@@ -1,12 +1,20 @@
 {
   "expo": {
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "packagerOpts": {
-      "assetExts": ["db"]
+      "assetExts": [
+        "db"
+      ]
     },
     "name": "gastos-hogar",
     "slug": "gastos-hogar",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "4.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,11 +28,15 @@
     },
     "scheme": "gastos-hogar-redirect",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.alvaro.gastoshogar"
     },
     "android": {
       "package": "com.alvaro.gastoshogar",
-      "versionCode": 4
+      "versionCode": 4,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "plugins": [
       [
@@ -32,7 +44,19 @@
         {
           "iCloudContainerEnvironment": "Production"
         }
+      ],
+      [
+        "@react-native-voice/voice",
+        {
+          "microphonePermission": "Allow Voice to Text Tutorial to access the microphone",
+          "speechRecognitionPermission": "Allow Voice to Text Tutorial to securely recognize user speech"
+        }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "05e5dd99-36f8-41ad-a3e0-e65eeb74ddd6"
+      }
+    }
   }
 }

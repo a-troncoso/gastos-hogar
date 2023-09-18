@@ -11,11 +11,11 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import Hero from "../components/atoms/Hero";
-// import ModalPicture from "../components/atoms/ModalPicture";
+
 import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator";
 
 import { fetchPurchasesByCategory } from "../dbOperations/purchase/purchaseBDTransactions";
-import { toCurrencyFormat } from "../utils/number";
+import { extractNumbers, toCurrencyFormat } from "../utils/number";
 import { formatDate } from "../utils/date";
 
 import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions";
@@ -109,7 +109,7 @@ const PurchasesList = props => {
             key={item.id}
             image={item.imagePath}
             date={item.date}
-            amount={item.amount}
+            amount={extractNumbers(item.amount)}
             onPress={() => handlePressPurchase(item.id)}
             onPressImage={onPressImage}
           />
@@ -162,6 +162,7 @@ const Expenses = props => {
         mode,
         categoryId,
       });
+
       setPurchases(purchases);
     },
     [fetchPurchasesByCategory]

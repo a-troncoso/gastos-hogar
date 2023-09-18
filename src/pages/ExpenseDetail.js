@@ -12,6 +12,7 @@ import {
   SafeAreaView,
   ScrollView,
   ToastAndroid,
+  TouchableOpacity,
 } from "react-native";
 import {
   useFocusEffect,
@@ -29,6 +30,7 @@ import SubcategoryFeature from "../components/molecules/subcategory/SubcategoryF
 import DescriptionFeature from "../components/molecules/description/DescriptionFeature";
 import ExpenseMainFeature from "../components/molecules/expense/ExpenseMainFeature";
 import Picker from "../components/atoms/Picker";
+import { FontAwesome } from "@expo/vector-icons";
 
 import {
   fetchPurchaseById,
@@ -37,7 +39,8 @@ import {
 } from "../dbOperations/purchase/purchaseBDTransactions";
 import { fetchCategoryById } from "../dbOperations/category/categoryBDTransactions";
 import apiDomain from "../utils/apiDomain";
-import { numberFormat, extractNumbers } from "../utils/number";
+import useSpeech from "../hooks/useSpeech";
+import useExpenseFeaturesStructuring from "../hooks/useExpenseFeatureStructuring";
 
 import { EXPENSE_DETAIL_MODES } from "../domain/expense/expenseDetailModes";
 import color from "../assets/colors";
@@ -62,11 +65,12 @@ const Toast = memo(({ visible, message }) => {
 
 const ExpenseDetail = () => {
   const navigation = useNavigation();
-  const route = useRoute();
+  const { params: routeParams } = useRoute();
   const apiExpense = apiDomain("expense");
-  const { params: routeParams } = route;
   const expenseDetailMode =
     routeParams.mode || EXPENSE_DETAIL_MODES.NEW_EXPENSE;
+  const { isVoiceEntry, expenseId } = routeParams;
+
   const [isUnsavedFeature, setIsUnsavedFeature] = useState({
     ...unsavedFeaturesInitial,
   });
@@ -75,13 +79,13 @@ const ExpenseDetail = () => {
   const [isFixedBottomAreaVisible, setIsFixedBottomAreaVisible] =
     useState(true);
   const [isVisibleToast, setIsVisibleToast] = useState(false);
-  const expenseId = routeParams.expenseId;
+  const [isLookingVoiceExpenseInfo, setIsLookingVoiceExpenseInfo] =
+    useState(false);
 
   const [featureKeys, setFeatureKeys] = useState({
     category: 0,
     subcategory: 0,
   });
-
   const [featureDataUI, setFeatureDataUI] = useState({
     pictures: [],
     newPictures: [],
@@ -91,9 +95,75 @@ const ExpenseDetail = () => {
     description: "",
     date: null,
   });
+  const [isVisibleVoiceEntryPanel, setIsVisibleVoiceEntryPanel] =
+    useState(true);
 
-  useLayoutEffect(() => {
-    if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
+  const features = {
+    category: (
+      <CategoryFeature
+        key={shortid.generate()}
+        categoryId={featureKeys.categoryId}
+        categoryName={featureDataUI.category}
+        isUnsavedFeature={isUnsavedFeature.category}
+        onChange={category => {
+          saveFeatureKey("category", category.id);
+          saveFeatureIntoUI("category", category.name);
+          onChangeFeature("category");
+        }}
+      />
+    ),
+    date: (
+      <DateFeature
+        key={shortid.generate()}
+        date={featureDataUI.date}
+        isUnsavedFeature={isUnsavedFeature.date}
+        onChange={date => {
+          saveFeatureIntoUI("date", date);
+          onChangeFeature("date");
+        }}
+      />
+    ),
+    subcategory: (
+      <SubcategoryFeature
+        key={shortid.generate()}
+        subcategoryId={featureKeys.subcategoryId}
+        subcategoryName={featureDataUI.subcategory}
+        isUnsavedFeature={isUnsavedFeature.subcategory}
+        onChange={subcategory => {
+          saveFeatureKey("subcategory", subcategory.id);
+          saveFeatureIntoUI("subcategory", subcategory.name);
+          onChangeFeature("subcategory");
+        }}
+      />
+    ),
+    description: (
+      <DescriptionFeature
+        key={shortid.generate()}
+        description={featureDataUI.description}
+        isUnsavedFeature={isUnsavedFeature.description}
+        onChange={({ value }) => {
+          saveFeatureIntoUI("description", value);
+          onChangeFeature("description");
+        }}
+        onChangeKeyboardVisibility={e => {}}
+      />
+    ),
+  };
+  const { genFeatValueStructure } = useExpenseFeaturesStructuring({
+    featuresList: Object.keys(features),
+  });
+
+  const {
+    speechesResults,
+    isMicOpen,
+    startSpeechToText,
+    stopSpeechToText,
+    resetSpeechResults,
+    onSpeechDestroy,
+  } = useSpeech();
+
+  useEffect(() => {
+    if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE) {
       navigation.setOptions({
         headerRight: () => (
           <Picker
@@ -107,31 +177,40 @@ const ExpenseDetail = () => {
           />
         ),
       });
-  }, [navigation]);
 
-  useEffect(() => {
-    if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
       fetchExpenseDetail(expenseId);
+    }
     if (expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE) {
       const date = new Date();
       saveFeatureKey("category", routeParams.categoryId);
       saveFeatureIntoUI("date", date);
       fetchCategory(routeParams.categoryId);
+
+      navigation.setOptions({
+        headerRight: () => (
+          <Picker
+            items={[
+              {
+                title: "Ingreso por voz",
+                onPressItem: handlePressVoiceEntry,
+              },
+            ]}
+          />
+        ),
+      });
     }
-    return () => {};
   }, []);
 
   useFocusEffect(
     useCallback(() => {
-      // if (expenseDetailMode === EXPENSE_DETAIL_MODES.EXISTING_EXPENSE)
-      //   fetchExpenseDetail(expenseId)
-      // if (expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE) {
-      //   const date = new Date()
-      //   saveFeatureKey("category", routeParams.categoryId)
-      //   saveFeatureIntoUI("date", date)
-      //   fetchCategory(routeParams.categoryId)
-      // }
-      // return () => {}
+      if (isVoiceEntry) startSpeechToText();
+
+      return () => {
+        onSpeechDestroy();
+        setIsVisibleVoiceEntryPanel(false);
+        setIsLookingVoiceExpenseInfo(false);
+        resetSpeechResults();
+      };
     }, [])
   );
 
@@ -143,6 +222,10 @@ const ExpenseDetail = () => {
   useEffect(() => {
     isExpenseUpdated && setIsVisibleToast(true);
   }, [isExpenseUpdated]);
+
+  const handlePressVoiceEntry = () => {
+    setIsVisibleVoiceEntryPanel(true);
+  };
 
   const fetchCategory = async categoryId => {
     const categoryDetail = await fetchCategoryById(categoryId);
@@ -268,57 +351,21 @@ const ExpenseDetail = () => {
     }));
   };
 
-  const features = {
-    category: (
-      <CategoryFeature
-        key={shortid.generate()}
-        categoryId={featureKeys.categoryId}
-        categoryName={featureDataUI.category}
-        isUnsavedFeature={isUnsavedFeature.category}
-        onChange={category => {
-          saveFeatureKey("category", category.id);
-          saveFeatureIntoUI("category", category.name);
-          onChangeFeature("category");
-        }}
-      />
-    ),
-    date: (
-      <DateFeature
-        key={shortid.generate()}
-        date={featureDataUI.date}
-        isUnsavedFeature={isUnsavedFeature.date}
-        onChange={date => {
-          saveFeatureIntoUI("date", date);
-          onChangeFeature("date");
-        }}
-      />
-    ),
-    subcategory: (
-      <SubcategoryFeature
-        key={shortid.generate()}
-        subcategoryId={featureKeys.subcategoryId}
-        subcategoryName={featureDataUI.subcategory}
-        isUnsavedFeature={isUnsavedFeature.subcategory}
-        onChange={subcategory => {
-          saveFeatureKey("subcategory", subcategory.id);
-          saveFeatureIntoUI("subcategory", subcategory.name);
-          onChangeFeature("subcategory");
-        }}
-      />
-    ),
-    description: (
-      <DescriptionFeature
-        key={shortid.generate()}
-        description={featureDataUI.description}
-        isUnsavedFeature={isUnsavedFeature.description}
-        onChange={({ value }) => {
-          saveFeatureIntoUI("description", value);
-          onChangeFeature("description");
-        }}
-        onChangeKeyboardVisibility={e => {}}
-      />
-    ),
+  const handlePressMicOff = () => {
+    stopSpeechToText();
+    setIsLookingVoiceExpenseInfo(true);
   };
+
+  useEffect(() => {
+    if (!isLookingVoiceExpenseInfo) return;
+    if (speechesResults.length === 0) return;
+
+    const data = genFeatValueStructure(speechesResults[0]);
+
+    Object.keys(data).forEach(feat => {
+      if (data[feat]) saveFeatureIntoUI(feat, data[feat]);
+    });
+  }, [speechesResults, isLookingVoiceExpenseInfo]);
 
   return (
     <View style={styles.mainView}>
@@ -365,6 +412,41 @@ const ExpenseDetail = () => {
           </SafeAreaView>
         </ScrollView>
       </KeyboardAwareScrollView>
+      {isVisibleVoiceEntryPanel && (
+        <View
+          style={{
+            alignItems: "center",
+            paddingVertical: 16,
+          }}
+        >
+          <TouchableOpacity
+            title="Start Speech to Text"
+            onPressIn={startSpeechToText}
+            onPressOut={handlePressMicOff}
+            style={{
+              borderWidth: 1,
+              width: isMicOpen ? 120 : 104,
+              height: isMicOpen ? 120 : 104,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: isMicOpen ? 60 : 56,
+              backgroundColor: color.blue[70],
+              borderColor: isMicOpen ? color.blue[30] : color.blue[60],
+            }}
+          >
+            {isMicOpen ? (
+              <FontAwesome
+                name="microphone-slash"
+                size={48}
+                color={color.red[20]}
+              />
+            ) : (
+              <FontAwesome name="microphone" size={48} color={color.blue[20]} />
+            )}
+          </TouchableOpacity>
+        </View>
+      )}
+
       <Toast visible={isVisibleToast} message="Egreso actualizado" />
     </View>
   );

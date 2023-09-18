@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ToastAndroid,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import {
   useFocusEffect,
@@ -17,6 +18,8 @@ import Picker from "../components/atoms/Picker";
 import apiDomain from "../utils/apiDomain";
 import useDataExtractor from "../hooks/useDataExtractor/useDataExtractor";
 import color from "../assets/colors";
+import useSpeech from "../hooks/useSpeech";
+import { FontAwesome } from "@expo/vector-icons";
 
 const toastMessagesByEvent = {
   PURCHASE_SAVED: "Egreso ingresado",
@@ -35,10 +38,6 @@ const Toast = ({ visible, message }) => {
 const RegistryExpenseGate = props => {
   const route = useRoute();
   const navigation = useNavigation();
-  const [categories, setCategories] = useState([]);
-  const [toastMessage, setToastMessage] = useState("");
-  const [visibleToast, setVisibleToast] = useState(false);
-  const [loading, setLoading] = useState(false);
   const apiCategories = apiDomain("category");
   const { chargeDataFromDevice } = useDataExtractor({
     onSendMessage: ({ MSG_CODE }) => {
@@ -47,6 +46,25 @@ const RegistryExpenseGate = props => {
     },
     movementType: "expenses",
   });
+
+  const [categories, setCategories] = useState([]);
+  const [toastMessage, setToastMessage] = useState("");
+  const [visibleToast, setVisibleToast] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isLookingCategoryBySpeech, setIsLookingCategoryBySpeech] =
+    useState(false);
+  const [isVisibleVoiceEntryPanel, setIsVisibleVoiceEntryPanel] =
+    useState(false);
+
+  const {
+    onSpeechStart,
+    speechesResults,
+    isMicOpen,
+    startSpeechToText,
+    stopSpeechToText,
+    resetSpeechResults,
+    onSpeechDestroy,
+  } = useSpeech();
 
   const handleLoadSheet = async () => {
     setLoading(true);
@@ -60,6 +78,14 @@ const RegistryExpenseGate = props => {
   useFocusEffect(
     useCallback(() => {
       fetchCategories();
+      onSpeechStart();
+
+      return () => {
+        onSpeechDestroy();
+        setIsVisibleVoiceEntryPanel(false);
+        setIsLookingCategoryBySpeech(false);
+        resetSpeechResults();
+      };
     }, [])
   );
 
@@ -80,7 +106,11 @@ const RegistryExpenseGate = props => {
           items={[
             {
               title: "Cargar planilla",
-              onPressItem: () => handleLoadSheet(),
+              onPressItem: handleLoadSheet,
+            },
+            {
+              title: "Ingreso por voz",
+              onPressItem: handlePressVoiceEntry,
             },
           ]}
         />
@@ -94,11 +124,45 @@ const RegistryExpenseGate = props => {
   };
 
   const handlePressCategory = id => {
+    navigateToNewExpensePage({ categoryId: id });
+  };
+
+  const navigateToNewExpensePage = ({ categoryId, isVoiceEntry = false }) => {
     navigation.push("ExpenseDetail", {
-      categoryId: id,
+      categoryId: categoryId,
       mode: "NEW_EXPENSE",
+      isVoiceEntry,
     });
   };
+
+  const handlePressVoiceEntry = () => {
+    setIsVisibleVoiceEntryPanel(true);
+  };
+
+  const handlePressMicOff = () => {
+    stopSpeechToText();
+    findCategoryBySpeech();
+  };
+
+  const findCategoryBySpeech = useCallback(() => {
+    setIsLookingCategoryBySpeech(true);
+  }, [speechesResults]);
+
+  useEffect(() => {
+    if (!isLookingCategoryBySpeech) return;
+    if (speechesResults.length === 0 || categories.length === 0) return;
+
+    const speechesResultsInOneLine = speechesResults.join().toLowerCase();
+    const matchedCategory = categories.find(category => {
+      return speechesResultsInOneLine.includes(category.name.toLowerCase());
+    });
+
+    if (matchedCategory)
+      navigateToNewExpensePage({
+        categoryId: matchedCategory.id,
+        isVoiceEntry: true,
+      });
+  }, [isMicOpen, speechesResults, categories, isLookingCategoryBySpeech]);
 
   return (
     <>
@@ -123,6 +187,45 @@ const RegistryExpenseGate = props => {
             </SafeAreaView>
             <Toast visible={visibleToast} message={toastMessage} />
           </View>
+
+          {isVisibleVoiceEntryPanel && (
+            <View
+              style={{
+                alignItems: "center",
+                paddingVertical: 16,
+              }}
+            >
+              <TouchableOpacity
+                title="Start Speech to Text"
+                onPressIn={startSpeechToText}
+                onPressOut={handlePressMicOff}
+                style={{
+                  borderWidth: 1,
+                  width: isMicOpen ? 120 : 104,
+                  height: isMicOpen ? 120 : 104,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: isMicOpen ? 60 : 56,
+                  backgroundColor: color.blue[70],
+                  borderColor: isMicOpen ? color.blue[30] : color.blue[60],
+                }}
+              >
+                {!isMicOpen ? (
+                  <FontAwesome
+                    name="microphone"
+                    size={48}
+                    color={color.blue[20]}
+                  />
+                ) : (
+                  <FontAwesome
+                    name="microphone-slash"
+                    size={48}
+                    color={color.red[20]}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       )}
     </>
