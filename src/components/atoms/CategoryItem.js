@@ -2,25 +2,37 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
+
 import Thermometer from "./Termometer";
 import CategoryIcon from "./CategoryIcon/CategoryIcon";
-
+import { isJsonString } from "../../utils/object";
 import color from "../../assets/colors";
 
 const CategoryItem = props => {
-  const { name, extraInfo, onPress } = props;
+  const {
+    name,
+    thermometerData = {},
+    imagePath,
+    extraData = {},
+    onPress,
+  } = props;
+
+  const iconFamily = isJsonString(extraData) ? JSON.parse(extraData) : {};
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.category}>
-      <CategoryIcon iconName="shopping-cart" />
+      <CategoryIcon
+        iconFamily={iconFamily.imageIconFamily}
+        iconName={imagePath}
+      />
       <View style={styles.rightSection}>
         <View style={styles.name}>
           <Text style={styles.categoryCategoryName}>{name}</Text>
-          {Object.keys(extraInfo).length > 0 && (
+          {Object.keys(thermometerData).length > 0 && (
             <View style={{ marginTop: 8 }}>
               <Thermometer
-                maxValue={extraInfo.maximumStop}
-                value={extraInfo.currentAmount}
+                maxValue={thermometerData.maximumStop}
+                value={thermometerData.currentAmount}
               />
             </View>
           )}

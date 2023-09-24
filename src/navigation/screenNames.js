@@ -20,6 +20,7 @@ const RootStackScreenNavigator = { Main: "Main" };
 
 const MainStackScreenNavigator = {
   Dashboard: "Dashboard",
+  Home: "Home",
   RegistryExpense: "RegistryExpense",
   Summary: "Summary",
   CategoryManagement: "CategoryManagement",
@@ -27,6 +28,10 @@ const MainStackScreenNavigator = {
 };
 
 const DashboardStackScreenNavigator = { DashbhoardGate: "DashbhoardGate" };
+
+const HomeStackNavigator = {
+  HomeGate: "HomeGate",
+};
 
 const RegistryExpenseStackNavigator = {
   ExpenseCategoryGate: "ExpenseCategoryGate",
@@ -54,6 +59,7 @@ export default {
   RootStackScreenNavigator,
   MainStackScreenNavigator,
   DashboardStackScreenNavigator,
+  HomeStackNavigator,
   RegistryExpenseStackNavigator,
   SummaryStackScreenNavigator,
   CategoryManagementStackScreenNavigator,

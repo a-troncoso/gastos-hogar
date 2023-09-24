@@ -44,13 +44,13 @@ export const fetchCategoryById = categoryId => {
 
 export const updateCategory = (
   categoryId,
-  { name, maxAmountPerMonth, imagePath }
+  { name, maxAmountPerMonth, imagePath, extraData = "" }
 ) => {
   return new Promise((resolve, reject) => {
     connDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.UPDATE_CATEGORY,
-        [name, maxAmountPerMonth, imagePath, categoryId],
+        [name, maxAmountPerMonth, imagePath, extraData, categoryId],
         (_, s) => {
           resolve(s);
         },
@@ -97,12 +97,17 @@ export const deleteCategory = categoryId => {
   });
 };
 
-export const insertCategory = ({ name, imagePath, maxAmountPerMonth }) => {
+export const insertCategory = ({
+  name,
+  imagePath,
+  extraData = "",
+  maxAmountPerMonth,
+}) => {
   return new Promise(resolve => {
     connDB.transaction(tx => {
       tx.executeSql(
         CATEGORY_QUERIES.ADD_CATEGORY,
-        [name.toLowerCase(), imagePath, maxAmountPerMonth],
+        [name.toLowerCase(), imagePath, extraData, maxAmountPerMonth],
         (_, result) => {
           resolve(result);
         },

@@ -69,7 +69,7 @@ const ExpenseDetail = () => {
   const apiExpense = apiDomain("expense");
   const expenseDetailMode =
     routeParams.mode || EXPENSE_DETAIL_MODES.NEW_EXPENSE;
-  const { isVoiceEntry, expenseId } = routeParams;
+  const { isVoiceEntry = false, expenseId } = routeParams;
 
   const [isUnsavedFeature, setIsUnsavedFeature] = useState({
     ...unsavedFeaturesInitial,
@@ -149,6 +149,7 @@ const ExpenseDetail = () => {
       />
     ),
   };
+
   const { genFeatValueStructure } = useExpenseFeaturesStructuring({
     featuresList: Object.keys(features),
   });
@@ -181,11 +182,6 @@ const ExpenseDetail = () => {
       fetchExpenseDetail(expenseId);
     }
     if (expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE) {
-      const date = new Date();
-      saveFeatureKey("category", routeParams.categoryId);
-      saveFeatureIntoUI("date", date);
-      fetchCategory(routeParams.categoryId);
-
       navigation.setOptions({
         headerRight: () => (
           <Picker
@@ -222,6 +218,15 @@ const ExpenseDetail = () => {
   useEffect(() => {
     isExpenseUpdated && setIsVisibleToast(true);
   }, [isExpenseUpdated]);
+
+  useEffect(() => {
+    if (expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE) {
+      const date = new Date();
+      saveFeatureKey("category", routeParams.categoryId);
+      saveFeatureIntoUI("date", date);
+      fetchCategory(routeParams.categoryId);
+    }
+  }, [routeParams.categoryId, expenseDetailMode]);
 
   const handlePressVoiceEntry = () => {
     setIsVisibleVoiceEntryPanel(true);
@@ -412,40 +417,45 @@ const ExpenseDetail = () => {
           </SafeAreaView>
         </ScrollView>
       </KeyboardAwareScrollView>
-      {isVisibleVoiceEntryPanel && (
-        <View
-          style={{
-            alignItems: "center",
-            paddingVertical: 16,
-          }}
-        >
-          <TouchableOpacity
-            title="Start Speech to Text"
-            onPressIn={startSpeechToText}
-            onPressOut={handlePressMicOff}
+      {isVisibleVoiceEntryPanel &&
+        expenseDetailMode === EXPENSE_DETAIL_MODES.NEW_EXPENSE && (
+          <View
             style={{
-              borderWidth: 1,
-              width: isMicOpen ? 120 : 104,
-              height: isMicOpen ? 120 : 104,
               alignItems: "center",
-              justifyContent: "center",
-              borderRadius: isMicOpen ? 60 : 56,
-              backgroundColor: color.blue[70],
-              borderColor: isMicOpen ? color.blue[30] : color.blue[60],
+              paddingVertical: 16,
             }}
           >
-            {isMicOpen ? (
-              <FontAwesome
-                name="microphone-slash"
-                size={48}
-                color={color.red[20]}
-              />
-            ) : (
-              <FontAwesome name="microphone" size={48} color={color.blue[20]} />
-            )}
-          </TouchableOpacity>
-        </View>
-      )}
+            <TouchableOpacity
+              title="Start Speech to Text"
+              onPressIn={startSpeechToText}
+              onPressOut={handlePressMicOff}
+              style={{
+                borderWidth: 1,
+                width: isMicOpen ? 120 : 104,
+                height: isMicOpen ? 120 : 104,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: isMicOpen ? 60 : 56,
+                backgroundColor: color.blue[70],
+                borderColor: isMicOpen ? color.blue[30] : color.blue[60],
+              }}
+            >
+              {isMicOpen ? (
+                <FontAwesome
+                  name="microphone-slash"
+                  size={48}
+                  color={color.red[20]}
+                />
+              ) : (
+                <FontAwesome
+                  name="microphone"
+                  size={48}
+                  color={color.blue[20]}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
 
       <Toast visible={isVisibleToast} message="Egreso actualizado" />
     </View>

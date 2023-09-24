@@ -14,6 +14,7 @@ import {
   ScrollView,
   Platform,
   ToastAndroid,
+  TouchableOpacity,
 } from "react-native";
 import {
   useFocusEffect,
@@ -27,6 +28,7 @@ import CategoryIcon from "../components/atoms/CategoryIcon/CategoryIcon";
 import AmountFeature from "../components/molecules/amount/AmountFeature";
 import NameFeature from "../components/molecules/name/NameFeature";
 import Picker from "../components/atoms/Picker";
+import { ModalIconSelector } from "../components/atoms";
 
 import { CATEGORY_DETAIL_MODES } from "../domain/category/categoryDetailModes";
 
@@ -37,6 +39,7 @@ import { extractNumbers } from "../utils/number";
 
 import color from "../assets/colors";
 import alerts from "../components/atoms/Alerts";
+import { isJsonString } from "../utils/object";
 
 const initialStateUnsavedFeature = {
   image: false,
@@ -54,9 +57,8 @@ const Toast = memo(({ visible, message }) => {
 
 const CategoryDetail = () => {
   const navigation = useNavigation();
-  const route = useRoute();
+  const { params: routeParams } = useRoute();
   const apiCategories = apiDomain("category");
-  const { params: routeParams } = route;
   const detailMode = routeParams.mode || CATEGORY_DETAIL_MODES.NEW_CATEGORY;
   const [isUnsavedFeature, setIsUnsavedFeature] = useState(
     initialStateUnsavedFeature
@@ -70,9 +72,14 @@ const CategoryDetail = () => {
 
   const [featureDataUI, setFeatureDataUI] = useState({
     image: "",
+    extraData: {
+      imageIconFamily: "",
+    },
     name: "",
     maxAmountPerMonth: 0,
   });
+  const [isModalIconSelectorVisible, setIsModalIconSelectorVisible] =
+    useState(false);
 
   useLayoutEffect(() => {
     if (detailMode === CATEGORY_DETAIL_MODES.EXISTING_CATEGORY)
@@ -94,7 +101,6 @@ const CategoryDetail = () => {
   useFocusEffect(
     useCallback(() => {
       if (detailMode === CATEGORY_DETAIL_MODES.EXISTING_CATEGORY)
-        // TODO: Aqui voy
         fetchCategoryDetail(categoryId);
       if (detailMode === CATEGORY_DETAIL_MODES.NEW_CATEGORY) {
       }
@@ -118,6 +124,9 @@ const CategoryDetail = () => {
       ...prev,
       name: categoryDetail.name,
       maxAmountPerMonth: categoryDetail.maxAmountPerMonth?.toString(),
+      extraData: isJsonString(categoryDetail.extraData)
+        ? JSON.parse(categoryDetail.extraData)
+        : {},
       image: categoryDetail.imagePath,
     }));
   };
@@ -133,6 +142,7 @@ const CategoryDetail = () => {
       const insertResult = await apiCategories.add({
         name: featureDataUI.name.trim(),
         imagePath: featureDataUI.image,
+        extraData: JSON.stringify(featureDataUI.extraData),
         maxAmountPerMonth: extractNumbers(featureDataUI.maxAmountPerMonth) ?? 0,
       });
       if (insertResult.rowsAffected) setIsCategoryInserted(true);
@@ -146,6 +156,7 @@ const CategoryDetail = () => {
       const updateResult = await updateCategory(categoryId, {
         name: featureDataUI.name,
         imagePath: featureDataUI.image,
+        extraData: JSON.stringify(featureDataUI.extraData),
         maxAmountPerMonth: extractNumbers(featureDataUI.maxAmountPerMonth) ?? 0,
       });
       if (updateResult.rowsAffected) {
@@ -189,6 +200,16 @@ const CategoryDetail = () => {
     setFeatureDataUI(prev => ({ ...prev, [field]: value }));
   };
 
+  const handlePressCategoryIcon = () => {
+    setIsModalIconSelectorVisible(true);
+  };
+
+  const handleChangeIcon = icon => {
+    saveFeatureIntoUI("image", icon.iconName);
+    saveFeatureIntoUI("extraData", { imageIconFamily: icon.iconFamily });
+    setIsModalIconSelectorVisible(false);
+  };
+
   return (
     <View style={styles.mainView}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
@@ -203,7 +224,16 @@ const CategoryDetail = () => {
           enabled
         >
           <SafeAreaView style={{ flex: 1 }}>
-            <Hero central={<CategoryIcon iconName="shopping-cart" />} />
+            <Hero
+              central={
+                <TouchableOpacity onPress={handlePressCategoryIcon}>
+                  <CategoryIcon
+                    iconName={featureDataUI.image}
+                    iconFamily={featureDataUI.extraData.imageIconFamily}
+                  />
+                </TouchableOpacity>
+              }
+            />
             <View style={styles.features}>
               <NameFeature
                 value={featureDataUI.name}
@@ -252,36 +282,37 @@ const CategoryDetail = () => {
         </KeyboardAvoidingView>
       </ScrollView>
       <Toast visible={isVisibleToast} message="Categoría actualizada" />
+      <ModalIconSelector
+        items={[
+          { iconName: "food-apple-outline", iconFamily: "materialCommunity" },
+          { iconName: "shirt-outline", iconFamily: "ion" },
+          { iconName: "money", iconFamily: "fontAwesome" },
+          { iconName: "child", iconFamily: "fontAwesome" },
+          { iconName: "car-sport", iconFamily: "ion" },
+          { iconName: "home", iconFamily: "entypo" },
+          { iconName: "healing", iconFamily: "material" },
+        ]}
+        isModalVisible={isModalIconSelectorVisible}
+        onChange={handleChangeIcon}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   mainView: {
-    // borderColor: "black",
-    // borderWidth: 1,
-    // borderStyle: "solid",
     flex: 1,
     backgroundColor: color.blue["90"],
   },
   secondaryPart: {
-    // borderColor: "yellow",
-    // borderWidth: 2,
-    // borderStyle: "solid",
     flex: 1,
   },
   features: {
-    // borderColor: "blue",
-    // borderWidth: 1,
-    // borderStyle: "solid",
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 24,
   },
   fixedBottomArea: {
-    // borderColor: "red",
-    // borderWidth: 1,
-    // borderStyle: "solid",
     paddingHorizontal: 16,
     paddingBottom: 16,
   },

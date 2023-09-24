@@ -48,7 +48,9 @@ const CategoriesList = props => {
           <CategoryItem
             key={item.id}
             name={item.name}
-            extraInfo={item.extraInfo}
+            imagePath={item.imagePath}
+            extraData={item.extraData}
+            thermometerData={item.extraInfo}
             onPress={() => handlePressCategory(item.id)}
           />
         </View>

@@ -77,9 +77,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   viewModal: {
-    // borderWidth: 1,
-    // borderStyle: "solid",
-    // borderColor: "red",
     paddingVertical: 64,
     flex: 1,
     justifyContent: "center",
@@ -87,9 +84,6 @@ const styles = StyleSheet.create({
     backgroundColor: color.transparent.gray["130"]["90"],
   },
   viewList: {
-    // borderWidth: 1,
-    // borderStyle: "solid",
-    // borderColor: "blue",
     justifyContent: "center",
     width: 300,
     backgroundColor: color.blue["90"],
@@ -106,9 +100,6 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   placeholder: {
-    // borderWidth: 1,
-    // borderStyle: "solid",
-    // borderColor: "blue",
     textAlign: "center",
   },
 });

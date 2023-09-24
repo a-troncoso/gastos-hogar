@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import DateNavigator from "../components/molecules/date/DateNavigator";
 import DateFilterSelector from "../components/atoms/DateFilterSelector";
 import Chart from "../components/atoms/Chart";
 import Calendar from "../components/atoms/calendar/Calendar";
 import Hero from "../components/atoms/Hero";
 import DateNavigatorActivator from "../components/molecules/date/DateNavigatorActivator";
+import DashboardCard from "../components/atoms/DashboardCard";
 
 import alerts from "../components/atoms/Alerts";
 import color from "../assets/colors";
@@ -19,57 +19,12 @@ import {
 import { fetchTotalIncomesByDateCriteria } from "../dbOperations/income/incomeBDTransactions";
 
 import { currentDate, formattedMonthNumber } from "../utils/date";
-import { toCurrencyFormat } from "../utils/number";
 
 const dateTranslation = {
   day: "día",
   month: "mes",
   year: "año",
 };
-
-const DashboardCard = props => {
-  const { backgroundColor, value, description } = props;
-
-  return (
-    <View style={[dashboardCardStyles.dashboardCard, { backgroundColor }]}>
-      <View style={dashboardCardStyles.dashboardCardContent}>
-        <Text style={dashboardCardStyles.dashboardCardValue}>
-          {toCurrencyFormat(value)}
-        </Text>
-        <Text style={dashboardCardStyles.dashboardCardDesc}>{description}</Text>
-      </View>
-    </View>
-  );
-};
-
-const dashboardCardStyles = StyleSheet.create({
-  dashboardCard: {
-    // borderColor: "red",
-    // borderStyle: "solid",
-    // borderWidth: 1,
-    flex: 1,
-    padding: 16,
-    backgroundColor: color["blue"][20],
-    borderRadius: 16,
-    marginBottom: 8,
-  },
-  dashboardCardContent: {
-    // borderColor: "green",
-    // borderStyle: "solid",
-    // borderWidth: 1,
-    alignItems: "center",
-    // flexDirection: "row",
-    // justifyContent: "space-between",
-  },
-  dashboardCardValue: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  dashboardCardDesc: {
-    fontSize: 16,
-    textTransform: "capitalize",
-  },
-});
 
 const DashboardGate = () => {
   const [viewMode, setViewMode] = useState("month");
@@ -232,26 +187,26 @@ const DashboardGate = () => {
           />
         }
       />
-      <ScrollView style={styles.dashboardScrollView}>
+      <ScrollView>
         <View style={styles.dashboardView}>
           <View style={styles.dateFilterSelectorContainer}>
             <DateFilterSelector onChangeMode={e => handleChangeMode(e)} />
           </View>
           <View style={styles.incomesExpensesCardsContainer}>
             <DashboardCard
-              backgroundColor={color["green"][50]}
-              value={totalIncome || 0}
+              backgroundColor={color.green[50]}
+              value={totalIncome}
               description={`ingresos ${dateTranslation[viewMode]}`}
             />
             <DashboardCard
-              backgroundColor={color["red"][60]}
-              value={totalAmount || 0}
+              backgroundColor={color.red[60]}
+              value={totalAmount}
               description={`egresos ${dateTranslation[viewMode]}`}
             />
           </View>
           <DashboardCard
-            backgroundColor={color["green"][40]}
-            value={totalIncome - totalAmount || 0}
+            backgroundColor={color.green[40]}
+            value={totalIncome - totalAmount}
             description={`disponible ${dateTranslation[viewMode]}`}
           />
           {amountsPerCategory.length > 0 && <Chart data={amountsPerCategory} />}
@@ -271,18 +226,15 @@ const DashboardGate = () => {
 
 const styles = StyleSheet.create({
   dashboardScrollViewContainer: {
-    // borderColor: "blue",
-    // borderWidth: 1,
     height: "100%",
     backgroundColor: color.blue["90"],
   },
-  dashboardScrollView: {
-    // borderColor: "red",
-    // borderWidth: 1
-  },
   dashboardView: { paddingHorizontal: 16, paddingBottom: 64 },
   dateFilterSelectorContainer: { marginVertical: 16 },
-  incomesExpensesCardsContainer: { flexDirection: "row", gap: 8 },
+  incomesExpensesCardsContainer: {
+    flexDirection: "row",
+    gap: 8,
+  },
   calendarTitle: {
     fontSize: 16,
     fontWeight: "bold",

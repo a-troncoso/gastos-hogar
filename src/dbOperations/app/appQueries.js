@@ -56,6 +56,7 @@ export const MAIN_QUERIES = {
       "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
       "name" TEXT NOT NULL,
       "imagePath" TEXT DEFAULT "",
+      "extraData" TEXT DEFAULT "",
       "maxAmountPerMonth" INTEGER DEFAULT 0,
       "active" INTEGER DEFAULT 1
     );
@@ -66,6 +67,7 @@ export const MAIN_QUERIES = {
       "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
       "name" TEXT NOT NULL,
       "imagePath" TEXT DEFAULT "",
+      "extraData" TEXT DEFAULT "",
       "maxAmountPerMonth" INTEGER DEFAULT 0,
       "active" INTEGER DEFAULT 1
     );

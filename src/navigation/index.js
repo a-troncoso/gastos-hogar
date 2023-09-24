@@ -16,6 +16,7 @@ import HistoryGate from "../pages/HistoryGate";
 import Expenses from "../pages/Expenses";
 import CategoriesAdminGate from "../pages/CategoriesAdminGate";
 import DashbhoardGate from "../pages/DashbhoardGate";
+import HomeGate from "../pages/HomeGate";
 import CategoryDetail from "../pages/CategoryDetail";
 import IncomeDetail from "../pages/IncomeDetail";
 
@@ -63,6 +64,7 @@ const AppNavigation = () => {
           name={ScreenNames.RootStackScreenNavigator.Main}
           component={MainStackScreenNavigator}
           options={{ headerShown: false }}
+          initialRouteName={ScreenNames.HomeStackNavigator.HomeGate}
         />
       </RootStack.Navigator>
     );
@@ -73,13 +75,15 @@ const AppNavigation = () => {
       <>
         <StatusBar
           animated
-          backgroundColor={color.blue["30"]}
+          backgroundColor={color.blue["20"]}
           barStyle="dark-content"
         />
-        <Drawer.Navigator
-          initialRouteName={ScreenNames.MainStackScreenNavigator.Dashboard}
-          drawerContent={props => <DrawerContent {...props} />}
-        >
+        <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+          <Drawer.Screen
+            name={ScreenNames.MainStackScreenNavigator.Home}
+            component={HomeStackNavigator}
+            options={{ headerShown: false, title: "Home" }}
+          />
           <Drawer.Screen
             name={ScreenNames.MainStackScreenNavigator.Dashboard}
             component={DashboardStackScreenNavigator}
@@ -134,6 +138,23 @@ const AppNavigation = () => {
           })}
         />
       </DashboardStack.Navigator>
+    );
+  };
+
+  const HomeStackNavigator = () => {
+    return (
+      <RegistryExpenseStack.Navigator
+        initialRouteName={ScreenNames.HomeStackNavigator.HomeGate}
+      >
+        <RegistryExpenseStack.Screen
+          name={ScreenNames.HomeStackNavigator.HomeGate}
+          component={HomeGate}
+          options={({ navigation }) => ({
+            ...screenOptionsBase(navigation),
+            title: "Home",
+          })}
+        />
+      </RegistryExpenseStack.Navigator>
     );
   };
 
