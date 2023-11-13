@@ -15,12 +15,13 @@ import alerts from "./src/components/atoms/Alerts";
 import AppContext from "./src/state";
 import { initialContext } from "./src/state";
 // import useDataExtractor from "./src/hooks/useDataExtractor/useDataExtractor";
+import { useUserCache } from "./src/modules/user";
 
 start();
 
 const App = () => {
   const [isBasicTablesCreated, setIsBasicTablesCreated] = useState(false);
-
+  const userCache = useUserCache();
   // useDataExtractor();
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const App = () => {
   }, []);
 
   const setup = async () => {
+    userCache.setUserLogged(1); // FIXME: Aqui debería ir un usuario realemente loggeadoa
     await _createInitialTables({ overrideTables: false });
   };
 

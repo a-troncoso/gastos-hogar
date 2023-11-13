@@ -4,11 +4,12 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 
 import { Screen, DashboardCard, CategoryIcon } from "../components/atoms/";
-import { useExpenses, useIncomes, useCategories } from "../hooks/";
+import { useExpenses, useIncomes } from "../hooks/";
 import { currentDate, formattedMonthNumber } from "../utils/date";
 import color from "../assets/colors";
 import ScreenNames from "../navigation/screenNames";
 import { isJsonString } from "../utils/object";
+import { useHomeGate } from "./useHomeGate";
 
 const date = {
   day: currentDate().getDate(),
@@ -23,13 +24,12 @@ const Home = () => {
 
   const { fetchTotalExpenses, totalAmount } = useExpenses();
   const { fetchTotalIncomes, totalIncome } = useIncomes();
-  const { categories, fetchCategories } = useCategories();
+  const { categories } = useHomeGate();
 
   useFocusEffect(
     useCallback(() => {
       fetchTotalExpenses({ mode: "month", date });
       fetchTotalIncomes({ mode: "month", date });
-      fetchCategories();
     }, [])
   );
 

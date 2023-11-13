@@ -1,10 +1,18 @@
-import { dbOperations } from "../dbOperations/"
+import { dbOperations } from "../dbOperations/";
 
-export const fetchDomain = (domain, params) => {
-  if (!params) return dbOperations[domain].fetch.fetchAll()
-  if (params && params.id) return dbOperations[domain].fetch.fetchById()
-}
+export const domainSource = {
+  localDB: "LOCAL_DB",
+  api: "API",
+};
 
-export const addDomain = (domain, params) => dbOperations[domain].add(params)
+export const fetchDomain = (domain, source = domainSource.localDB, params) => {
+  if (!params) return dbOperations[domain][source].fetch.fetchAll();
+  if (params && params.id)
+    return dbOperations[domain][source].fetch.fetchById();
+};
 
-export const removeDomain = (domain, params) => dbOperations[domain].remove(params)
+export const addDomain = (domain, source = domainSource.localDB, params) =>
+  dbOperations[domain][source].add(params);
+
+export const removeDomain = (domain, source = domainSource.localDB, params) =>
+  dbOperations[domain][source].remove(params);

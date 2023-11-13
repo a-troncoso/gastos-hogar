@@ -61,7 +61,7 @@ export default ({
               />
             )}
           </View>
-          <View style={styles.viewList}>
+          {/* <View style={styles.viewList}>
             <FlatList
               numColumns={4}
               data={colors}
@@ -79,7 +79,7 @@ export default ({
               )}
               showsHorizontalScrollIndicator={false}
             />
-          </View>
+          </View> */}
         </View>
       </Modal>
     </View>

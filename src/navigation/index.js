@@ -17,7 +17,7 @@ import Expenses from "../pages/Expenses";
 import CategoriesAdminGate from "../pages/CategoriesAdminGate";
 import DashbhoardGate from "../pages/DashbhoardGate";
 import HomeGate from "../pages/HomeGate";
-import CategoryDetail from "../pages/CategoryDetail";
+import { CategoryDetail } from "../modules/category/pages";
 import IncomeDetail from "../pages/IncomeDetail";
 
 import ScreenNames from "./screenNames";

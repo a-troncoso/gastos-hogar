@@ -5,12 +5,17 @@ Keep track of your monthly expenses.
 ---
 
 To build project first u neet to install dependencies:
-```npm install```
+`npm install`
 
 To build project in dev mode:
-```yarn start```
+`yarn start`
 or
-```expo start --dev --no-minify --localhost```
+`expo start --dev --no-minify --localhost`
 
 To build Android apk:
-```expo build:android```
+`expo build:android`
+
+Pages/Components
+Data
+Adapters
+Models

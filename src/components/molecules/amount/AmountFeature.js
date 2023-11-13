@@ -42,6 +42,7 @@ const AmountFeature = props => {
       "."
     );
     _setValue(valueFormattedInThousand);
+    onChange({ id: null, value: valueFormattedInThousand });
   };
 
   const handleBlurInput = () => {
@@ -49,8 +50,6 @@ const AmountFeature = props => {
       ...editableElements,
       value: { isVisible: false },
     });
-
-    onChange({ id: null, value: _value });
   };
 
   const handlePressFeature = () => {

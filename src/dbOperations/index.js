@@ -16,22 +16,31 @@ import {
 
 export const dbOperations = {
   category: {
-    fetch: {
-      fetchAll: fetchAllCategories,
-      fetchById: fetchCategoryById,
+    localDB: {
+      fetch: {
+        fetchAll: fetchAllCategories,
+        fetchById: fetchCategoryById,
+      },
+      add: insertCategory,
+      remove: deleteCategory,
     },
-    add: insertCategory,
-    remove: deleteCategory,
+    api: {},
   },
   expense: {
-    remove: deleteExpense,
+    localDB: {
+      remove: deleteExpense,
+    },
+    api: {},
   },
   income: {
-    add: insertIncome,
-    fetch: {
-      fetchByDate: fetchIncomeByDate,
-      fetchByMonth: fetchIncomeByMonth,
-      fetchByYear: fetchIncomeByYear,
+    localDB: {
+      add: insertIncome,
+      fetch: {
+        fetchByDate: fetchIncomeByDate,
+        fetchByMonth: fetchIncomeByMonth,
+        fetchByYear: fetchIncomeByYear,
+      },
     },
+    api: {},
   },
 };
